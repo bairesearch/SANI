@@ -23,43 +23,43 @@
 
 /*******************************************************************************
  *
- * File Name: GIAtxtRelTranslatorSANIParser.hpp
+ * File Name: GIAposRelTranslatorSANIParser.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 3k1c 05-March-2020
+ * Project Version: 3k2a 10-March-2020
  * Requirements: 
- * Description: Textual Relation Translator SANI (Sequentially Activated Neuronal Input neural network) Parser
+ * Description: Part-of-speech Relation Translator SANI (Sequentially Activated Neuronal Input neural network) Parser
  * /
  *******************************************************************************/
 
 
-#ifndef HEADER_GIA_TXT_REL_TRANSLATOR_SANI_PARSER
-#define HEADER_GIA_TXT_REL_TRANSLATOR_SANI_PARSER
+#ifndef HEADER_GIA_POS_REL_TRANSLATOR_SANI_PARSER
+#define HEADER_GIA_POS_REL_TRANSLATOR_SANI_PARSER
 
 #include "GIAglobalDefs.hpp"
 
 
-#ifdef GIA_TXT_REL_TRANSLATOR_SANI_PARSER
+#ifdef GIA_POS_REL_TRANSLATOR_SANI_PARSER
 
-//#include "GIAtxtRelTranslatorParser.hpp"
-#include "GIAtxtRelTranslatorParserOperations.hpp"
-#include "GIAtxtRelTranslatorRulesComponentClass.hpp"
-#include "GIAtxtRelTranslatorRules.hpp"
+//#include "GIAposRelTranslatorParser.hpp"
+#include "GIAposRelTranslatorParserOperations.hpp"
+#include "GIAposRelTranslatorRulesComponentClass.hpp"
+#include "GIAposRelTranslatorRules.hpp"
 #include "GIApreprocessorWordClass.hpp"
 
-class GIAtxtRelTranslatorSANIParserClass
+class GIAposRelTranslatorSANIParserClass
 {
 	private: SHAREDvarsClass SHAREDvars;
-	//private: GIAtxtRelTranslatorParserClass GIAtxtRelTranslatorParser;
-	private: GIAtxtRelTranslatorParserOperationsClass GIAtxtRelTranslatorParserOperations;
-	private: GIAtxtRelTranslatorRulesComponentClass GIAtxtRelTranslatorRulesComponentClassObject;
-	private: GIAtxtRelTranslatorRulesClass GIAtxtRelTranslatorRules;
+	//private: GIAposRelTranslatorParserClass GIAposRelTranslatorParser;
+	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
+	private: GIAposRelTranslatorRulesComponentClass GIAposRelTranslatorRulesComponentClassObject;
+	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
 	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
-	private: GIAtxtRelTranslatorRulesGroupClass GIAtxtRelTranslatorRulesGroupClassObject;
+	private: GIAposRelTranslatorRulesGroupClass GIAposRelTranslatorRulesGroupClassObject;
 	
-	#ifdef GIA_TXT_REL_TRANSLATOR_SANI_PARSE_SIMULTANEOUS
-	public: bool generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, GIAtxtRelTranslatorRulesGroupParseTree* firstParseTreeGroup, GIAtxtRelTranslatorSANIForwardPropogationSignalData* forwardPropogationSignalData, int layer);
-		public: bool generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, GIAtxtRelTranslatorRulesGroupParseTree* currentParseTreeGroup, GIAtxtRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer);
+	#ifdef GIA_POS_REL_TRANSLATOR_SANI_PARSE_SIMULTANEOUS
+	public: bool generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, GIAposRelTranslatorRulesGroupParseTree* firstParseTreeGroup, GIAposRelTranslatorSANIForwardPropogationSignalData* forwardPropogationSignalData, int layer);
+		public: bool generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, GIAposRelTranslatorRulesGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer);
 	#endif
 };
 
