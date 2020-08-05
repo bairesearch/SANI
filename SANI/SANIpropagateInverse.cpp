@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3c 01-August-2020
+ * Project Version: 1m3d 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Inverse
  * /
@@ -36,7 +36,7 @@
 #include "SANIpropagateInverse.hpp"
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3
-#ifdef GIA_POS_REL_TRANSLATOR_INVERSE_NEURAL_NETWORK
+#ifdef SANI_INVERSE
 
 bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets)
 {

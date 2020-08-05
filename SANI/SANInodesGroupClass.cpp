@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3c 01-August-2020
+ * Project Version: 1m3d 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Group Class
  * /
@@ -169,7 +169,7 @@ SANIGroup::SANIGroup(void)
 	previousWordPOStype = "";
 	existsPreceedingWordPOStype = "";
 	#endif
-	#ifdef GIA_POS_REL_TRANSLATOR_INVERSE_NEURAL_NETWORK
+	#ifdef SANI_INVERSE
 	numberOfConsecutiveTimesPreviousGroupType = 0;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 	wordVerbVariantTypeDerived = GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
@@ -530,7 +530,7 @@ SANIForwardPropogationSentenceData::~SANIForwardPropogationSentenceData(void)
 
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-#ifdef GIA_POS_REL_TRANSLATOR_INVERSE_NEURAL_NETWORK
+#ifdef SANI_INVERSE
 void SANInodesGroupClass::copyParseGroupInfo(SANIGroupParseTree* currentParseTreeGroupTemp, SANIGroupParseTree* currentParseTreeGroup)	
 {
 	//NOT ALLOWED as will overwrite previous tree linking to currentParseTreeGroup:  *currentParseTreeGroup = currentParseTreeGroupTemp;

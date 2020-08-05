@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3c 01-August-2020
+ * Project Version: 1m3d 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Group Class
  * /
@@ -229,7 +229,7 @@ public:
 	string previousWordPOStype;
 	string existsPreceedingWordPOStype;
 	#endif
-	#ifdef GIA_POS_REL_TRANSLATOR_INVERSE_NEURAL_NETWORK
+	#ifdef SANI_INVERSE
 	int numberOfConsecutiveTimesPreviousGroupType;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 	int wordVerbVariantTypeDerived;
@@ -600,7 +600,7 @@ public:
 class SANInodesGroupClass
 {
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-	#ifdef GIA_POS_REL_TRANSLATOR_INVERSE_NEURAL_NETWORK
+	#ifdef SANI_INVERSE
 	public: void copyParseGroupInfo(SANIGroupParseTree* currentParseTreeGroupTemp, SANIGroupParseTree* currentParseTreeGroup);
 	#endif
 	public: bool isTopLevelGroupType(const string groupTypeName, const int groupTypeReferenceSetType, const bool isQuery, const bool parseIsolatedSubreferenceSets);	
