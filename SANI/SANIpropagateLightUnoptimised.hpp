@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightUnoptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3b 01-August-2020
+ * Project Version: 1m3c 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Light Unoptimised - ~O(n^2)
  * /
@@ -39,7 +39,7 @@
 #include "GIAglobalDefs.hpp"
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
-#include "GIAposRelTranslatorRules.hpp"
+#include "SANIrules.hpp"
 #include "SANInodes.hpp"
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
@@ -65,7 +65,7 @@ class SANIpropagateLightUnoptimisedClass
 	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	private: GIApreprocessorPOStaggerClass GIApreprocessorPOStagger;
 	private: GIApreprocessorSentenceClass GIApreprocessorSentenceClassObject;
-	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
+	private: SANIrulesClass SANIrules;
 	private: SANInodesClass SANInodes;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;

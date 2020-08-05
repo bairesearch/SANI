@@ -26,7 +26,7 @@
  * File Name: SANIparser.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3b 01-August-2020
+ * Project Version: 1m3c 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Parser
  * /
@@ -104,7 +104,7 @@ bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 				GIAposRelTranslatorParserForwardPropogationSignalData* parseTreeComponentSignalData = &(parseTreeComponentSignalDataArray[i]);
 
 				#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS2
-				GIAposRelTranslatorRules.printComponent(parseTreeComponent, layer);
+				SANIrules.printComponent(parseTreeComponent, layer);
 				#endif
 
 				if(parseTreeComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP)

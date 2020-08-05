@@ -26,8 +26,8 @@
  * File Name: SANIpropagateInverse.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3b 01-August-2020
- * Requirements: requires plain text file
+ * Project Version: 1m3c 01-August-2020
+ * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Inverse
  * /
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3
 #ifdef GIA_POS_REL_TRANSLATOR_INVERSE_NEURAL_NETWORK
 
-bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets)
+bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets)
 {
 	bool result = false;
 
@@ -72,7 +72,7 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* GI
 			int layer = GIA_POS_REL_TRANSLATOR_RULES_LAYER_START;
 			string previousGroupType = "";
 			int numberOfConsecutiveTimesPreviousGroupType = 0;
-			if(generateParseTreeGroupType(GIAposRelTranslatorRulesTokenLayers, groupType, sentenceContents, firstParseTreeGroupTemp, &performanceTemp, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType, NULL))
+			if(generateParseTreeGroupType(SANIrulesTokenLayers, groupType, sentenceContents, firstParseTreeGroupTemp, &performanceTemp, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType, NULL))
 			{
 				result = true;	//at least one group type has been successfully parsed
 				passedTemp = true;
@@ -122,7 +122,7 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* GI
 	return result;
 }
 
-bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupType* groupType, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent)
+bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupType* groupType, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent)
 {
 	bool result = false;
 	
@@ -167,7 +167,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 		currentParseTreeGroupTemp->components.clear();	//added 5 Mar 2018
 		int performanceTemp = performanceOriginal;
 		bool passedTemp = false;
-		if(generateParseTreeGroup(GIAposRelTranslatorRulesTokenLayers, group, sentenceContentsSubset, currentParseTreeGroupTemp, &performanceTemp, layer+1, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
+		if(generateParseTreeGroup(SANIrulesTokenLayers, group, sentenceContentsSubset, currentParseTreeGroupTemp, &performanceTemp, layer+1, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
 		{
 			result = true;	//at least one group has been successfully parsed
 			passedTemp = true;
@@ -216,7 +216,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 	return result;
 }
 
-bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupNeuralNetwork* group, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = true;
 
@@ -259,7 +259,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* GI
 		}
 		#endif
 	
-		if(!generateRulesGroupTreeComponents(GIAposRelTranslatorRulesTokenLayers, &(group->components), sentenceContentsSubset, currentParseTreeGroup, performance, false, INT_DEFAULT_VALUE, false, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
+		if(!generateRulesGroupTreeComponents(SANIrulesTokenLayers, &(group->components), sentenceContentsSubset, currentParseTreeGroup, performance, false, INT_DEFAULT_VALUE, false, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
 		{
 			//currentParseTreeGroup->components.clear();	//already done in generateRulesGroupTreeComponents
 			foundWordMatch = false;
@@ -273,7 +273,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* GI
 	return foundWordMatch;
 }
 
-bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, bool subcomponents, int subcomponentsType, bool subcomponentsOptional, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, bool subcomponents, int subcomponentsType, bool subcomponentsOptional, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = true;
 	
@@ -365,7 +365,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 							#endif
 							
 							GIApreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2+1);
-							if(findStringMatch(GIAposRelTranslatorRulesTokenLayers, component, currentWord, newParseComponent))
+							if(findStringMatch(SANIrulesTokenLayers, component, currentWord, newParseComponent))
 							{
 								foundWordMatch = false;	//component should be missing but was found
 							}
@@ -396,7 +396,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 								deleteParseComponent(newParseComponent);
 
 								int performanceTemp = *performance;
-								if(generateRulesGroupTreeComponents(GIAposRelTranslatorRulesTokenLayers, &(component->subComponents), sentenceContentsSubset, currentParseTreeGroup, &performanceTemp, true, component->componentType, component->optional, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
+								if(generateRulesGroupTreeComponents(SANIrulesTokenLayers, &(component->subComponents), sentenceContentsSubset, currentParseTreeGroup, &performanceTemp, true, component->componentType, component->optional, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
 								{
 									*performance = performanceTemp;
 								}
@@ -431,7 +431,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 								}
 								#endif
 								//cout << "AAAA1" << endl;
-								if(generateRulesGroupTreeComponent(GIAposRelTranslatorRulesTokenLayers, component, sentenceContentsSubset, newParseComponent, &performanceTemp, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
+								if(generateRulesGroupTreeComponent(SANIrulesTokenLayers, component, sentenceContentsSubset, newParseComponent, &performanceTemp, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType))
 								{
 									#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_OR
 									if(subcomponentsOr)
@@ -592,7 +592,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 	return foundWordMatch;
 }
 
-bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIComponentNeuralNetwork* component, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = false;
 
@@ -625,7 +625,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparser
 
 			//cout << "minIndexOfMatchesFound = " << minIndexOfMatchesFound << endl;
 			//cout << "currentWord = " << currentWord->tagName << endl;
-			if(findStringMatch(GIAposRelTranslatorRulesTokenLayers, component, currentWord, currentParseTreeComponent))
+			if(findStringMatch(SANIrulesTokenLayers, component, currentWord, currentParseTreeComponent))
 			{
 				#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
 				cout << "findStringMatch: currentWord = " << currentWord->tagName << endl;
@@ -707,7 +707,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparser
 				forwardNounVerbVariantRequirementsComponentToGroup(currentParseTreeComponent, newParseGroup);
 				#endif
 
-				if(generateParseTreeGroup(GIAposRelTranslatorRulesTokenLayers, currentParseTreeComponent->groupRef, sentenceContentsSubset, newParseGroup, performance, layer+1, component->groupTypeRefName, numberOfConsecutiveTimesPreviousGroupType))
+				if(generateParseTreeGroup(SANIrulesTokenLayers, currentParseTreeComponent->groupRef, sentenceContentsSubset, newParseGroup, performance, layer+1, component->groupTypeRefName, numberOfConsecutiveTimesPreviousGroupType))
 				{
 					foundWordMatch = true;
 				}
@@ -721,7 +721,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparser
 				forwardNounVerbVariantRequirementsComponentToGroup(currentParseTreeComponent, newParseGroup);
 				#endif
 				
-				if(generateParseTreeGroupType(GIAposRelTranslatorRulesTokenLayers, currentParseTreeComponent->groupTypeRef, sentenceContentsSubset, newParseGroup, performance, layer+1, component->groupTypeRefName, numberOfConsecutiveTimesPreviousGroupType, currentParseTreeComponent))
+				if(generateParseTreeGroupType(SANIrulesTokenLayers, currentParseTreeComponent->groupTypeRef, sentenceContentsSubset, newParseGroup, performance, layer+1, component->groupTypeRefName, numberOfConsecutiveTimesPreviousGroupType, currentParseTreeComponent))
 				{
 					foundWordMatch = true;
 				}	
@@ -787,7 +787,7 @@ bool SANIpropagateInverseClass::forwardNounVerbVariantRequirementsGroupToCompone
 #endif
 			
 
-bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIComponentNeuralNetwork* component, GIApreprocessorPlainTextWord* currentWord, SANIComponentParseTree* currentParseTreeComponent)
+bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, GIApreprocessorPlainTextWord* currentWord, SANIComponentParseTree* currentParseTreeComponent)
 {
 	bool foundWordMatchTemp = false;
 	if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS)
@@ -939,7 +939,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* GIAposRel
 	}
 	else if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_TOKENS)
 	{
-		if(GIAposRelTranslatorRules.isClassTagWrapper(currentWord->tagName, component->tokenLayer, component->tokenClass, component->tokenType, GIAposRelTranslatorRulesTokenLayers))
+		if(SANIrules.isClassTagWrapper(currentWord->tagName, component->tokenLayer, component->tokenClass, component->tokenType, SANIrulesTokenLayers))
 		{
 			foundWordMatchTemp = true;
 			int wordPOStype = GIA_PREPROCESSOR_POS_TYPE_UNDEFINED;

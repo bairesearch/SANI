@@ -23,12 +23,12 @@
 
 /*******************************************************************************
  *
- * File Name: GIAposRelTranslatorRules.hpp
+ * File Name: SANIrules.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 3m3b 01-August-2020
- * Requirements: requires plain text file
- * Description: Part-of-speech Relation Translator Rules
+ * Project Version: 1m3c 01-August-2020
+ * Requirements: 
+ * Description: SANI (Sequentially Activated Neuronal Input neural network) Rules
  * /
  *******************************************************************************/
 
@@ -290,7 +290,7 @@ static string GIAposRelTranslatorHybridLogicReferenceClassPrepositionTypes[GIA_P
 
 
 
-class GIAposRelTranslatorRulesClass
+class SANIrulesClass
 {
 	private: XMLparserClassClass XMLparserClass;
 	private: SHAREDvarsClass SHAREDvars;
@@ -301,17 +301,17 @@ class GIAposRelTranslatorRulesClass
 	//private: SANIpropagateCompactGenerateClass SANIpropagateCompactGenerate;
 	#endif
 
-	public: bool extractGIAposRelTranslatorRules(vector<SANIGroupType*>* SANIGroupTypes, vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers);
+	public: bool extractSANIrules(vector<SANIGroupType*>* SANIGroupTypes, vector<XMLparserTag*>* SANIrulesTokenLayers);
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 		public: bool extractSANIGroups(vector<SANIGroupType*>* SANIGroupTypes);
 			private: bool parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFirstComponentTag, SANIGroupNeuralNetwork* groupOwner, vector<SANIComponentNeuralNetwork*>* componentsList, const bool parseSubcomponent, SANIComponentNeuralNetwork* subComponentOwner);
 			private: bool connectGroupsReferences(vector<SANIGroupType*>* SANIGroupTypes);
 				private: bool connectComponentsReferences(vector<SANIGroupType*>* SANIGroupTypes, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents);
-		public: bool extractGIAposRelTranslatorRulesTokens(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers);
+		public: bool extractSANIrulesTokens(vector<XMLparserTag*>* SANIrulesTokenLayers);
 
-	public: bool isClassTagWrapper(string word, string layerNameToFind, string classNameToFind, string classTypeNameToFind, vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers);
-		public: bool isClassTag(string word, string layerNameToFind, string classNameToFind, string* classTypeNameFound, vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers);
-		public: bool isClassTag(string word, string layerNameToFind, string classNameToFind, string classTypeNameToFind, vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers);
+	public: bool isClassTagWrapper(string word, string layerNameToFind, string classNameToFind, string classTypeNameToFind, vector<XMLparserTag*>* SANIrulesTokenLayers);
+		public: bool isClassTag(string word, string layerNameToFind, string classNameToFind, string* classTypeNameFound, vector<XMLparserTag*>* SANIrulesTokenLayers);
+		public: bool isClassTag(string word, string layerNameToFind, string classNameToFind, string classTypeNameToFind, vector<XMLparserTag*>* SANIrulesTokenLayers);
 	#endif	
 		
 };

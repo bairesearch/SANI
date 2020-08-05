@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3b 01-August-2020
+ * Project Version: 1m3c 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Formation
  * /
@@ -40,7 +40,7 @@
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-#include "GIAposRelTranslatorRules.hpp"
+#include "SANIrules.hpp"
 #endif
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
@@ -57,7 +57,7 @@ class SANIformationClass
 	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
+	private: SANIrulesClass SANIrules;
 	#endif
 	private: ANNdisplayClass ANNdisplay;
 	
@@ -75,8 +75,8 @@ class SANIformationClass
 	public: SANIGroupNeuralNetwork* getFirstInputGroupInNetwork();
 	#endif
 
-	public: bool createSANI(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
-		private: bool createInputNeuronLayer(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
+	public: bool createSANI(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
+		private: bool createInputNeuronLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 			private: bool createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, int* numberOfGroupsInSection);
 			public: bool addInputNeuronLayerSectionWordOrig(GIApreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
@@ -90,14 +90,14 @@ class SANIformationClass
 				#endif
 			private: bool createInputNeuronLayerSectionExplicitWord(SANIGroupNeuralNetwork** currentGroupInInputLayerSection, int* numberOfGroupsInSection, vector<SANIGroupType*>* SANIGroupTypes);	
 				private: bool createInputNeuronLayerSectionExplicitWord(vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, vector<string>* explicitWordList);	
-			private: bool createInputNeuronLayerSectionTokensLayer(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupNeuralNetwork** currentGroupInInputLayerSectionTokensLayer, int* numberOfGroupsInSectionTokensLayer);
+			private: bool createInputNeuronLayerSectionTokensLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork** currentGroupInInputLayerSectionTokensLayer, int* numberOfGroupsInSectionTokensLayer);
 			#endif
 			#endif
 	#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
-		private: bool createNeuronLayerIntro(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
-			private: bool createNeuronLayerGroupType(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, SANIGroupType* groupType);
-				private: bool createNeuronLayerGroup(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupNeuralNetwork* group);
-					private: bool createNeuronLayerComponents(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, SANIComponentNeuralNetwork* higherLevelComponent);
+		private: bool createNeuronLayerIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
+			private: bool createNeuronLayerGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, SANIGroupType* groupType);
+				private: bool createNeuronLayerGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group);
+					private: bool createNeuronLayerComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, SANIComponentNeuralNetwork* higherLevelComponent);
 		
 		
 	private: bool findTokensLayerClassType(string layerName, string layerClassName, string layerClassTypeName, SANIGroupNeuralNetwork** groupFound);		

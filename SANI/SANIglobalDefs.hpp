@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3b 01-August-2020
+ * Project Version: 1m3c 01-August-2020
  * Requirements: 
  * Description: SANI specific global definitions
  * /
@@ -1142,7 +1142,7 @@
 							#define SANI_SOLIDIFY_NET_BACKPROP		//SANI1g11j	//SANI1g1cTEMP4	//disabled SANI1g1cTEMP5
 							#ifdef SANI_SOLIDIFY_NET_BACKPROP
 								#define SANI_SOLIDIFY_NET_BACKPROP_AFTER_ACTIVATING_INDIVIDUAL_COMPONENTS	//SANI1g1cTEMP4	
-								#define SANI_LIGHT_OPTIMISED_SOLIDIFY	//preprocessor tag for GIAposRelTranslatorRules.xml
+								#define SANI_LIGHT_OPTIMISED_SOLIDIFY	//preprocessor tag for SANIrules.xml
 							#endif
 						#endif
 

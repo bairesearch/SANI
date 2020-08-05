@@ -26,8 +26,8 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3b 01-August-2020
- * Requirements: requires plain text file
+ * Project Version: 1m3c 01-August-2020
+ * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Nodes
  * /
  *******************************************************************************/
@@ -43,7 +43,7 @@ static int newNeuronIndex;
 #endif
 
 vector<SANIGroupType*>* SANIGroupTypesGlobal;
-vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayersGlobal;
+vector<XMLparserTag*>* SANIrulesTokenLayersGlobal;
 
 void SANInodesClass::setSANIGroupTypesGlobal(vector<SANIGroupType*>* SANIGroupTypes)
 {
@@ -53,13 +53,13 @@ vector<SANIGroupType*>* SANInodesClass::getSANIGroupTypesGlobal()
 {
 	return SANIGroupTypesGlobal;
 }
-void SANInodesClass::setGIAposRelTranslatorRulesTokenLayersGlobal(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers)
+void SANInodesClass::setSANIrulesTokenLayersGlobal(vector<XMLparserTag*>* SANIrulesTokenLayers)
 {
-	GIAposRelTranslatorRulesTokenLayersGlobal = GIAposRelTranslatorRulesTokenLayers;
+	SANIrulesTokenLayersGlobal = SANIrulesTokenLayers;
 }
-vector<XMLparserTag*>* SANInodesClass::getGIAposRelTranslatorRulesTokenLayersGlobal()
+vector<XMLparserTag*>* SANInodesClass::getSANIrulesTokenLayersGlobal()
 {
-	return GIAposRelTranslatorRulesTokenLayersGlobal;
+	return SANIrulesTokenLayersGlobal;
 }
 
 #ifdef SANI_SEQUENCE_GRAMMAR

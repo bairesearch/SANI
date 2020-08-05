@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3b 01-August-2020
+ * Project Version: 1m3c 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Formation
  * /
@@ -125,14 +125,14 @@ pre-input layer:                                     InputLayerSectionWordPOStyp
 
 
 
-bool SANIformationClass::createSANI(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
+bool SANIformationClass::createSANI(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
 {
 	bool result = true;
 	
-	createInputNeuronLayer(GIAposRelTranslatorRulesTokenLayers, SANIGroupTypes);
+	createInputNeuronLayer(SANIrulesTokenLayers, SANIGroupTypes);
 	
 	#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY		
-	createNeuronLayerIntro(GIAposRelTranslatorRulesTokenLayers, SANIGroupTypes);
+	createNeuronLayerIntro(SANIrulesTokenLayers, SANIGroupTypes);
 	#endif
 	
 	#ifdef SANI_DEBUG_CREATE
@@ -143,7 +143,7 @@ bool SANIformationClass::createSANI(vector<XMLparserTag*>* GIAposRelTranslatorRu
 	return result;
 }
 
-bool SANIformationClass::createInputNeuronLayer(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
+bool SANIformationClass::createInputNeuronLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
 {
 	bool result = true;
 	
@@ -152,8 +152,8 @@ bool SANIformationClass::createInputNeuronLayer(vector<XMLparserTag*>* GIAposRel
 		wordPOStype
 			wordNounVariantType
 			wordVerbVariantType
-		explicit words in GIAposRelTranslatorRules.xml
-		tokens-layer in GIAposRelTranslatorRules.xml
+		explicit words in SANIrules.xml
+		tokens-layer in SANIrules.xml
 			classes
 				types
 	*/
@@ -194,7 +194,7 @@ bool SANIformationClass::createInputNeuronLayer(vector<XMLparserTag*>* GIAposRel
 	
 	firstGroupInInputLayerSectionTokensLayer = new SANIGroupNeuralNetwork();
 	currentGroupInInputLayerSection = firstGroupInInputLayerSectionTokensLayer;
-	if(!createInputNeuronLayerSectionTokensLayer(GIAposRelTranslatorRulesTokenLayers, &currentGroupInInputLayerSection, &numberOfInputGroupsInSectionTokensLayer))
+	if(!createInputNeuronLayerSectionTokensLayer(SANIrulesTokenLayers, &currentGroupInInputLayerSection, &numberOfInputGroupsInSectionTokensLayer))
 	{
 		result = false;
 	}
@@ -408,7 +408,7 @@ bool SANIformationClass::createInputNeuronLayerSectionExplicitWord(vector<SANICo
 				{
 					explicitWordList->push_back(word);
 					#ifdef SANI_DEBUG_CREATE
-					cout << "GIAposRelTranslatorRulesClass::connectComponentsReferences{} explicitWordList->push_back(word) = " << word << endl;
+					cout << "SANIrulesClass::connectComponentsReferences{} explicitWordList->push_back(word) = " << word << endl;
 					#endif
 					
 					#ifdef SANI_ADD_EXPLICIT_WORD_REFERENCES_AS_INDEPENDENT_POS_PERMUTATIONS_EFFICIENT
@@ -428,13 +428,13 @@ bool SANIformationClass::createInputNeuronLayerSectionExplicitWord(vector<SANICo
 			if(subcomponents)
 			{
 				result = false;
-				cerr << "GIAposRelTranslatorRulesClass::connectComponentsReferences{} error: (component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR/REPEAT) && subcomponents" << endl;
+				cerr << "SANIrulesClass::connectComponentsReferences{} error: (component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR/REPEAT) && subcomponents" << endl;
 				exit(EXIT_ERROR);	
 			}
 			if(!createInputNeuronLayerSectionExplicitWord(&(component->subComponents), true, explicitWordList))
 			{
 				result = false;
-				cerr << "GIAposRelTranslatorRulesClass::connectComponentsReferences{} error: !connectComponentsReferences()" << endl;
+				cerr << "SANIrulesClass::connectComponentsReferences{} error: !connectComponentsReferences()" << endl;
 				exit(EXIT_ERROR);			
 			}
 		}
@@ -444,16 +444,16 @@ bool SANIformationClass::createInputNeuronLayerSectionExplicitWord(vector<SANICo
 }
 
 
-bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupNeuralNetwork** currentGroupInInputLayerSectionTokensLayer, int* numberOfGroupsInSectionTokensLayer)
+bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork** currentGroupInInputLayerSectionTokensLayer, int* numberOfGroupsInSectionTokensLayer)
 {
 	bool classTagFound = false;
 	bool result = false;
 	
 	inputLayerSectionTokensLayerMap.clear();	//added GIA3g11aTEMP62
 	
-	for(int i=0; i<GIAposRelTranslatorRulesTokenLayers->size(); i++)
+	for(int i=0; i<SANIrulesTokenLayers->size(); i++)
 	{	
-		XMLparserTag* currentLayerTag = GIAposRelTranslatorRulesTokenLayers->at(i);
+		XMLparserTag* currentLayerTag = SANIrulesTokenLayers->at(i);
 
 		//cout << "i = " << i << endl;
 		//cout << "currentLayerTag->name = " << currentLayerTag->name << endl;	//only the first 3 xml rules <tokens> <layer> layers detected
@@ -499,7 +499,7 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 					if(currentTagInClass->name == GIA_POS_REL_TRANSLATOR_RULES_TOKENS_TAG_type)
 					{
 						#ifdef GIA_DEBUG_PREPROCESSOR_SENTENCE_LOGIC_REFERENCE
-						//cout << "\tGIAposRelTranslatorRules::isClassTag{} debug: GIA_POS_REL_TRANSLATOR_RULES_TOKENS_TAG_type" << endl;
+						//cout << "\tSANIrules::isClassTag{} debug: GIA_POS_REL_TRANSLATOR_RULES_TOKENS_TAG_type" << endl;
 						#endif
 						string classTypeName = "";
 						bool sameType = false;
@@ -520,14 +520,14 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 							if(currentTagInType->name == GIA_POS_REL_TRANSLATOR_RULES_TOKENS_TAG_instance)
 							{
 								#ifdef GIA_DEBUG_PREPROCESSOR_SENTENCE_LOGIC_REFERENCE
-								//cout << "\t\tGIAposRelTranslatorRules::isClassTag{} debug: GIA_POS_REL_TRANSLATOR_RULES_TOKENS_TAG_instance" << endl;
+								//cout << "\t\tSANIrules::isClassTag{} debug: GIA_POS_REL_TRANSLATOR_RULES_TOKENS_TAG_instance" << endl;
 								#endif
 								string instanceName = "";
 								if(currentTagInType->firstAttribute->name == GIA_POS_REL_TRANSLATOR_RULES_TOKENS_ATTRIBUTE_name)
 								{
 									instanceName = currentTagInType->firstAttribute->value;
 									#ifdef SANI_DEBUG_CREATE
-									cout << "GIAposRelTranslatorRulesClass::createInputNeuronLayerSectionTokensLayer{} instanceName = " << instanceName << endl;
+									cout << "SANIrulesClass::createInputNeuronLayerSectionTokensLayer{} instanceName = " << instanceName << endl;
 									#endif
 								}
 								
@@ -583,7 +583,7 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 
 
 #ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
-bool SANIformationClass::createNeuronLayerIntro(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
+bool SANIformationClass::createNeuronLayerIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
 {
 	bool result = true;
 	
@@ -663,7 +663,7 @@ bool SANIformationClass::createNeuronLayerIntro(vector<XMLparserTag*>* GIAposRel
 				}
 				#endif
 				
-				if(!createNeuronLayerGroup(GIAposRelTranslatorRulesTokenLayers, group))
+				if(!createNeuronLayerGroup(SANIrulesTokenLayers, group))
 				{
 					result = false;
 				}
@@ -678,7 +678,7 @@ bool SANIformationClass::createNeuronLayerIntro(vector<XMLparserTag*>* GIAposRel
 	return result;
 }
 
-bool SANIformationClass::createNeuronLayerGroupType(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, SANIGroupType* groupType)
+bool SANIformationClass::createNeuronLayerGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, SANIGroupType* groupType)
 {
 	bool result = true;
 	
@@ -703,7 +703,7 @@ bool SANIformationClass::createNeuronLayerGroupType(vector<XMLparserTag*>* GIApo
 		#endif
 		*/
 		
-		if(!createNeuronLayerGroup(GIAposRelTranslatorRulesTokenLayers, group))
+		if(!createNeuronLayerGroup(SANIrulesTokenLayers, group))
 		{
 			result = false;
 		}
@@ -718,14 +718,14 @@ bool SANIformationClass::createNeuronLayerGroupType(vector<XMLparserTag*>* GIApo
 }
 
 
-bool SANIformationClass::createNeuronLayerGroup(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupNeuralNetwork* group)
+bool SANIformationClass::createNeuronLayerGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group)
 {
 	bool result = true;
 	
 	if(!group->neuronGenerated)	//prevent circular loops
 	{
 		group->neuronGenerated = true;
-		if(!createNeuronLayerComponents(GIAposRelTranslatorRulesTokenLayers, group, &(group->components), false, NULL))
+		if(!createNeuronLayerComponents(SANIrulesTokenLayers, group, &(group->components), false, NULL))
 		{
 			result = false;
 		}
@@ -734,7 +734,7 @@ bool SANIformationClass::createNeuronLayerGroup(vector<XMLparserTag*>* GIAposRel
 	return result;
 }
 
-bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* GIAposRelTranslatorRulesTokenLayers, SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, SANIComponentNeuralNetwork* higherLevelComponent)
+bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, SANIComponentNeuralNetwork* higherLevelComponent)
 {
 	bool result = true;
 	
@@ -807,7 +807,7 @@ bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* GIAp
 				//forwardNounVerbVariantRequirementsComponentToGroup(currentParseTreeComponent, newParseGroup);
 				//#endif
 				
-				if(createNeuronLayerGroup(GIAposRelTranslatorRulesTokenLayers, component->groupRef))
+				if(createNeuronLayerGroup(SANIrulesTokenLayers, component->groupRef))
 				{
 					#ifdef SANI_DEBUG_CREATE
 					cout << "SANIformationClass::createNeuronLayerComponents{}: createNeuronLayerGroup" << endl;
@@ -824,7 +824,7 @@ bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* GIAp
 				//cout << "group->groupName = " << group->groupName << endl;
 				//cout << "\tcomponent->groupTypeRef = " << component->groupTypeRef->groupTypeName << endl;
 				
-				if(createNeuronLayerGroupType(GIAposRelTranslatorRulesTokenLayers, component, component->groupTypeRef))
+				if(createNeuronLayerGroupType(SANIrulesTokenLayers, component, component->groupTypeRef))
 				{
 					#ifdef SANI_DEBUG_CREATE
 					cout << "SANIformationClass::createNeuronLayerComponents{}: createNeuronLayerGroupType" << endl;
@@ -847,7 +847,7 @@ bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* GIAp
 				cerr << "SANIformationClass::createNeuronLayerComponents{} error: (component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR/REPEAT) && subcomponents" << endl;
 				exit(EXIT_ERROR);
 			}
-			if(!createNeuronLayerComponents(GIAposRelTranslatorRulesTokenLayers, group, &(component->subComponents), true, component))	//CHECKTHIS (NB repeat/optional subcomponents are currently added directly to the groupNeuron like the other neurons)
+			if(!createNeuronLayerComponents(SANIrulesTokenLayers, group, &(component->subComponents), true, component))	//CHECKTHIS (NB repeat/optional subcomponents are currently added directly to the groupNeuron like the other neurons)
 			{
 				result = false;
 				cerr << "SANIformationClass::createNeuronLayerComponents{} error: !connectComponentsReferences()" << endl;
