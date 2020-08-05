@@ -23,26 +23,26 @@
 
 /*******************************************************************************
  *
- * File Name: GIAposRelTranslatorRulesComponentClass.cpp
+ * File Name: SANIComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 3m2b 30-July-2020
+ * Project Version: 1m3a 01-August-2020
  * Requirements: requires plain text file
- * Description: Part-of-speech Relation Translator Rules
+ * Description: SANI (Sequentially Activated Neuronal Input neural network) Component Class
  * /
  *******************************************************************************/
 
 
-#include "GIAposRelTranslatorRulesComponentClass.hpp"
+#include "SANIComponentClass.hpp"
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES
 
 
-GIAposRelTranslatorRulesComponent::GIAposRelTranslatorRulesComponent(void)
+SANIComponent::SANIComponent(void)
 {
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_SEQUENCE_GRAMMAR
+	#ifdef SANI_SEQUENCE_GRAMMAR
 	//ANNbackGroupConnectionList = NULL;
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_SEQUENCE_GRAMMAR_WEIGHTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
 	componentStrength = 0;
 	#endif
 	#endif
@@ -66,7 +66,7 @@ GIAposRelTranslatorRulesComponent::GIAposRelTranslatorRulesComponent(void)
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_MISSING
 	missing = false;
 	#endif
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_ADD_EXPLICIT_WORD_REFERENCES_AS_INDEPENDENT_POS_PERMUTATIONS_EFFICIENT
+	#ifdef SANI_ADD_EXPLICIT_WORD_REFERENCES_AS_INDEPENDENT_POS_PERMUTATIONS_EFFICIENT
 	stringTypeExplicitAddToExplicitWordTempPOS = false;
 	#endif
 		
@@ -76,7 +76,7 @@ GIAposRelTranslatorRulesComponent::GIAposRelTranslatorRulesComponent(void)
 		semanticRelationIndexType[i] = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_SEMANTIC_RELATION_INDEX_TYPE_UNKNOWN;
 	}
 	semanticRelationReturnEntity = false;
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_SEMANTICALLY_DETERMINED_DYNAMIC_CONNECTIONS
+	#ifdef SANI_SEMANTICALLY_DETERMINED_DYNAMIC_CONNECTIONS
 	semanticRelationReturnConnectionDynamic = false;
 	#endif
 	
@@ -108,10 +108,10 @@ GIAposRelTranslatorRulesComponent::GIAposRelTranslatorRulesComponent(void)
 	isExpletive = false;
 	#endif	
 	
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI
+	#ifdef SANI
 	neuronComponentConnectionActive = false;
 	neuronComponentConnectionActiveWordRecord = NULL;
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
 	//neuronComponentConnectionActiveWordRecordMemory = NULL;
 	#endif
 	#endif
@@ -119,60 +119,60 @@ GIAposRelTranslatorRulesComponent::GIAposRelTranslatorRulesComponent(void)
 	groupTypeRef = NULL;
 	groupRef = NULL;
 	
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_PARSE_SIMULTANEOUS_BIO
+	#ifdef SANI_PARSE_SIMULTANEOUS_BIO
 	parserForwardPropogationSignalData = NULL;
 	#endif
 	
 }
-GIAposRelTranslatorRulesComponent::~GIAposRelTranslatorRulesComponent(void)
+SANIComponent::~SANIComponent(void)
 {
 }
 
 
-GIAposRelTranslatorRulesComponentNeuralNetwork::GIAposRelTranslatorRulesComponentNeuralNetwork(void)
+SANIComponentNeuralNetwork::SANIComponentNeuralNetwork(void)
 {
 	//subComponents = NULL;
 
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI
+	#ifdef SANI
 	ownerGroup = NULL;
 	isSubcomponent = false;
 	ownerComponent = NULL;
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_ANN
+	#ifdef SANI_ANN
 	//ANNbackNeuronConnectionList = NULL;
 	#endif
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
+	#ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
 	//optimumPathwayWordList = NULL;
 	#endif
 	#endif
 }
-GIAposRelTranslatorRulesComponentNeuralNetwork::~GIAposRelTranslatorRulesComponentNeuralNetwork(void)
+SANIComponentNeuralNetwork::~SANIComponentNeuralNetwork(void)
 {
 }
 
 
-GIAposRelTranslatorRulesComponentParseTree::GIAposRelTranslatorRulesComponentParseTree(void)
+SANIComponentParseTree::SANIComponentParseTree(void)
 {
 	//parse tree variables:
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_PARSE_GENERATE_PARSE_TREE
+	#ifdef SANI_PARSE_GENERATE_PARSE_TREE
 	parseTreeGroupRef = NULL;
 	#endif
 	componentRef = NULL;
 	wordPOStypeInferred = GIA_PREPROCESSOR_POS_TYPE_UNDEFINED;
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_LIGHT_BIO2
+	#ifdef SANI_LIGHT_BIO2
 	groupFrontComponentConnectionListIndex = INT_DEFAULT_VALUE;
 	numberOfWordsCurrentlyParsed = INT_DEFAULT_VALUE;
 	#endif
-	#ifdef GIA_POS_REL_TRANSLATOR_SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
+	#ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
 	int wordIndex;
 	#endif
 }
-GIAposRelTranslatorRulesComponentParseTree::~GIAposRelTranslatorRulesComponentParseTree(void)
+SANIComponentParseTree::~SANIComponentParseTree(void)
 {
 }
 
 
 
-bool GIAposRelTranslatorRulesComponentClass::componentHasSubcomponents(GIAposRelTranslatorRulesComponent* component)
+bool SANIComponentClass::componentHasSubcomponents(SANIComponent* component)
 {
 	bool hasSubcomponents = false;
 	if((component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR) || (component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_REPEAT))
