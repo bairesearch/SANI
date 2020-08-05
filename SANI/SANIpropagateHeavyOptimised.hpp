@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: SANIPropagateHeavyOptimised.hpp
+ * File Name: SANIpropagateHeavyOptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Heavy Optimised - ~O(nlogn)
  * /
@@ -39,11 +39,11 @@
 #include "GIAglobalDefs.hpp"
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
-#include "GIAposRelTranslatorRules.hpp"
-#include "SANIGroupClass.hpp"
-#include "SANIComponentClass.hpp"
-#include "SANIPropagateOperations.hpp"
-#include "SANIFormation.hpp"
+#include "SANInodes.hpp"
+#include "SANInodesGroupClass.hpp"
+#include "SANInodesComponentClass.hpp"
+#include "SANIpropagateOperations.hpp"
+#include "SANIformation.hpp"
 #ifdef SANI_PARSE
 #include "GIAposRelTranslatorParserOperations.hpp"
 #endif
@@ -57,18 +57,18 @@
 #ifdef SANI_HEAVY
 #ifdef SANI_HEAVY_OPTIMISED
 
-class SANIPropagateHeavyOptimisedClass
+class SANIpropagateHeavyOptimisedClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
 	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	private: GIApreprocessorPOStaggerClass GIApreprocessorPOStagger;
 	private: GIApreprocessorSentenceClass GIApreprocessorSentenceClassObject;
-	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
-	private: SANIGroupClass SANIGroupClassObject;
-	private: SANIComponentClass SANIComponentClassObject;
-	private: SANIPropagateOperationsClass SANIPropagateOperations;
-	private: SANIFormationClass SANIFormation;
+	private: SANInodesClass SANInodes;
+	private: SANInodesGroupClass SANInodesGroupClassObject;
+	private: SANInodesComponentClass SANInodesComponentClassObject;
+	private: SANIpropagateOperationsClass SANIpropagateOperations;
+	private: SANIformationClass SANIformation;
 	#ifdef SANI_PARSE
 	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
 	#endif

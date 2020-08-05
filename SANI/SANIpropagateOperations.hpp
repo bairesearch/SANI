@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: SANIPropagateOperations.hpp
+ * File Name: SANIpropagateOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Operations - generic functions
  * /
@@ -42,10 +42,10 @@
 
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
-#include "GIAposRelTranslatorRules.hpp"
-#include "SANIGroupClass.hpp"
-#include "SANIComponentClass.hpp"
-//#include "SANIFormation.hpp"
+#include "SANInodes.hpp"
+#include "SANInodesGroupClass.hpp"
+#include "SANInodesComponentClass.hpp"
+//#include "SANIformation.hpp"
 #ifdef SANI_PARSE
 //#include "GIAposRelTranslatorParserOperations.hpp"
 #endif
@@ -56,16 +56,17 @@
 extern bool firstExecution;
 #endif
 
-class SANIPropagateOperationsClass
+
+class SANIpropagateOperationsClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
 	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	private: GIApreprocessorSentenceClass GIApreprocessorSentenceClassObject;
-	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
-	private: SANIGroupClass SANIGroupClassObject;
-	private: SANIComponentClass SANIComponentClassObject;
-	//private: SANIFormationClass SANIFormation;
+	private: SANInodesClass SANInodes;
+	private: SANInodesGroupClass SANInodesGroupClassObject;
+	private: SANInodesComponentClass SANInodesComponentClassObject;
+	//private: SANIformationClass SANIformation;
 	#ifdef SANI_PARSE
 	//private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
 	#endif
@@ -129,7 +130,11 @@ class SANIPropagateOperationsClass
 	#ifdef SANI_HEAVY
 	public: bool componentWordConnectivityTestsWrapper(SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIForwardPropogationWordData* forwardPropogationWordData);
 	#else
+	#ifdef SANI_LIGHT_UNOPTIMISED
+	public: bool componentWordConnectivityTestsWrapper(SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIForwardPropogationWordData* forwardPropogationWordData);
+	#else
 	public: bool componentWordConnectivityTestsWrapper(SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIForwardPropogationWordData* forwardPropogationWordData, const bool existingActivationFoundStartComponent);
+	#endif	
 		public: bool componentWordConnectivityTestsWrapper(SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* currentParseTreeGroupTemp, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIForwardPropogationWordData* forwardPropogationWordData, const bool existingActivationFoundStartComponent, const bool existingActivationFoundEndComponent);
 	#endif
 			private: bool componentWordConnectivityTests(SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef, SANIComponent* lastActiveComponent, SANIGroupParseTree* lastActiveComponentInParseTreeParseTreeGroupRef, SANIComponentParseTree* lastActiveComponentInParseTree, SANIGroupParseTree* previousActiveComponentInParseTreeParseTreeGroupRef, SANIForwardPropogationWordData* forwardPropogationWordData, const bool existingActivationFoundStartComponent);
@@ -146,7 +151,9 @@ class SANIPropagateOperationsClass
 
 	#ifdef SANI_PARSE
 	#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	public: bool updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
+	#endif
 		public: bool updatePerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
 	#endif
 		public: bool traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<GIApreprocessorPlainTextWord*>* sentenceContents);
@@ -158,6 +165,7 @@ class SANIPropagateOperationsClass
 	public: void isSentenceWordDataFullyConnected(vector<bool>* previousWordConnectionsFound, SANIForwardPropogationWordData* currentWordData);
 	#endif
 
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 	public: bool componentTests1(SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
 	#endif
@@ -168,6 +176,7 @@ class SANIPropagateOperationsClass
 		private: bool findPreviousWordInSentence(vector<GIApreprocessorPlainTextWord*>* sentenceContents, GIApreprocessorPlainTextWord* currentWord, int previousWordPOStype);
 		private: bool findPreceedingWordInSentence(vector<GIApreprocessorPlainTextWord*>* sentenceContents, GIApreprocessorPlainTextWord* currentWord, int existsPreceedingWordPOStype);
 			public: bool checkWordPOStype(GIApreprocessorPlainTextWord* currentWord, int unambiguousPOSindex);
+	#endif
 	#endif
 
 	public: bool resetAllNeurons(vector<SANIGroupType*>* SANIGroupTypes, const int groupBoolIndexType);
@@ -203,73 +212,7 @@ class SANIPropagateOperationsClass
 
 	public: bool doesRequireResetGroupActivation(SANIComponentNeuralNetwork* Xcomponent, int indexOfXcomponentInGroup, SANIGroupNeuralNetwork* ownerGroup, SANIForwardPropogationWordData* forwardPropogationWordData);
 		private: bool findNextAvailableComponent(int indexOfXcomponentInGroup, SANIGroupNeuralNetwork* ownerGroup);
-
-	public: bool currentWordAmbiguous(GIApreprocessorPlainTextWord* currentWord);
-
-	public: int convertWordIndexToSentenceEntityIndex(int wordIndex);
-	public: int convertSentenceEntityIndexToWordIndex(int sentenceEntityIndex);
-
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_VERIFY_HYPOTHETICAL_PROPOGATION_FINDS_PREVIOUS_WORD_NOUNS_ONLY
-	public: bool isWordPOStypeNoun(int wordPOStype);
-	#endif
 	
-	public: int countParseTreeLeafSize(SANIGroupParseTree* currentParseTreeGroup);
-	public: int countParseTreeLeafSizeUnoptimised(SANIGroupParseTree* currentParseTreeGroup);
-	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
-	public: bool adjustNetworkDepth(SANIGroupNeuralNetwork* group);
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-	public: bool adjustNetworkDepthReset(SANIGroupNeuralNetwork* group);
-	#endif
-	public: bool getNeuralNetworkDepth(SANIGroupNeuralNetwork* currentNeuron, int* maxDepth);
-		public: bool getNeuralNetworkDepth(SANIComponentNeuralNetwork* component, int* maxDepth);
-	public: bool countNeuralNetworkMaxLeafSizeAndDepth(SANIGroupNeuralNetwork* currentGroup, int* maxLeafSize, int* maxDepth);
-		public: bool countNeuralNetworkMaxLeafSizeAndDepth(SANIComponentNeuralNetwork* component, int* maxLeafSize, int* maxDepth);
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-	public: bool countNeuralNetworkMaxLeafSizeAndDepthReset(SANIGroupNeuralNetwork* currentNeuron);
-		public: bool countNeuralNetworkMaxLeafSizeAndDepthReset(SANIComponentNeuralNetwork* component);
-	#endif
-	#endif
-
-	public: SANIComponentNeuralNetwork* getFirstComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron, bool fromStart);
-	public: SANIComponentParseTree* getFirstComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentNeuron, bool fromStart);
-
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH	
-	public: int calculateDepthFromBinaryTreeLeafSize(int numberOfLeafNodesInBinaryTree);
-	#endif
-
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS_RANDOMISE
-	public: double generateRandomNumber();
-	#endif
-
-	#endif
-	
-
-	public: bool deleteGroup(SANIGroupNeuralNetwork* group);
-		public: bool deleteComponents(vector<SANIComponentNeuralNetwork*>* components);
-	public: bool deleteGroup(SANIGroupParseTree* group);
-		public: bool deleteComponents(vector<SANIComponentParseTree*>* components);
-	public: bool deleteGroup(SANIGroupActivationMemory* group);
-		
-	public: bool printGroup(SANIGroupNeuralNetwork* group, int layer);
-		public: bool printComponent(SANIComponentParseTree* component, int layer);
-		public: bool printComponent(SANIComponentNeuralNetwork* component, int layer);
-	public: bool printParseTreeDebugIndentation(int layer);
-	
-	public: int calculateMinIndexOfMatchesFound(vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset);
-
-	public: void deleteParseTree(SANIGroupParseTree* parseTreeGroupToDelete, int level);
-	public: SANIGroupParseTree* replicateParseTree(SANIGroupParseTree* parseTreeGroupToReplicate, int level);
-
-	public: SANIGroupParseTree* convertNeuralNetworkGroupToParseTreeGroup(SANIGroupNeuralNetwork* group);
-	public: SANIComponentParseTree* convertNeuralNetworkComponentToParseTreeComponent(SANIComponentNeuralNetwork* component);
-	public: SANIGroupActivationMemory* convertNeuralNetworkGroupToMemoryActivationGroup(SANIGroupNeuralNetwork* group);
-	public: SANIGroupParseTree* convertNeuralNetworkGroupToParseTreeGroupNew(SANIGroupNeuralNetwork* group);
-	public: SANIComponentParseTree* convertNeuralNetworkComponentToParseTreeComponentNew(SANIComponentNeuralNetwork* component);
-	public: SANIGroupActivationMemory* convertNeuralNetworkGroupToMemoryActivationGroupNew(SANIGroupNeuralNetwork* group);
-
-	#ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
-	private: bool resetGroupOptimumPathway(SANIGroupNeuralNetwork* group);
-	private: bool resetComponentsOptimumPathway(vector<SANIComponentNeuralNetwork*>* components);
 	#endif
 	
 	#ifdef SANI_FREE_MEMORY
@@ -277,23 +220,7 @@ class SANIPropagateOperationsClass
 	public: bool deinitialiseParseTreeGroupList(vector<SANIGroupType*>* SANIGroupTypes, vector<SANIGroupParseTree*>* parseTreeGroupList);
 	#endif
 	
-	#ifdef SANI_SEQUENCE_GRAMMAR
-	public: int calculateCoverage(SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage);
-	public: bool traceBackpropNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int level, int previousComponentIndex, int previousComponentType);
-	public: bool isNeuronString(SANIGroupNeuralNetwork* currentNeuron);
-	public: bool getWordPOStypeFromAmbiguousWord(GIApreprocessorPlainTextWord* currentWord, int* wordPOStype);
-	#endif
 	
-	#ifdef SANI_SEQUENCE_GRAMMAR
-	public: bool printParseTreeGroupIndices(SANIGroupParseTree* currentParseTreeGroup, int layer);
-	public: string printParseTreeGroupIndicesFlat(SANIGroupParseTree* currentParseTreeGroup);
-
-	public: bool printParseTree(SANIGroupParseTree* currentParseTreeGroup, int layer);
-	#endif
-	
-	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_WORDCONNECTIVITY_VERIFICATION_CONTINUOUS
-	public: bool verifyWordIndexCoverageIntegrity(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationWordData* forwardPropogationWordData);
-	#endif
 };
 
 

@@ -23,23 +23,30 @@
 
 /*******************************************************************************
  *
- * File Name: SANISpiked.cpp
+ * File Name: SANIspiked.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Spiked
  * /
  *******************************************************************************/
 
 
-#include "SANISpiked.hpp"
-#include "SHAREDvars.hpp"
+#ifndef HEADER_SANI_SPIKED
+#define HEADER_SANI_SPIKED
+
+#include "GIAglobalDefs.hpp"
 
 
 #ifdef SANI_SPIKED
 
 
+class SANIspikedClass
+{
 
+};
+
+#endif
 
 #endif

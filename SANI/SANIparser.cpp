@@ -23,17 +23,17 @@
 
 /*******************************************************************************
  *
- * File Name: SANIParser.cpp
+ * File Name: SANIparser.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Parser
  * /
  *******************************************************************************/
 
 
-#include "SANIParser.hpp"
+#include "SANIparser.hpp"
 #include "SHAREDvars.hpp"
 
 
@@ -43,7 +43,7 @@
 #ifdef SANI_PARSER
 
 #ifdef SANI_PARSE_SIMULTANEOUS
-bool SANIParserClass::generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer)
+bool SANIparserClass::generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer)
 {
 	bool result = true;
 	
@@ -64,7 +64,7 @@ bool SANIParserClass::generateSemanticRelationsFromTxtRelationsWrapperNeuralNetw
 	return result;
 }
 
-bool SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, SANIGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer)
+bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, SANIGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer)
 {
 	bool result = true;
 	
@@ -88,7 +88,7 @@ bool SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 				
 				/*
 				//code used if SANIGroupParseTree* currentParseTreeGroup replaced with SANIGroupNeuralNetwork* currentParseTreeGroup
-				if(SANIComponentClassObject.componentHasSubcomponents(ownerComponent))
+				if(SANInodesComponentClassObject.componentHasSubcomponents(ownerComponent))
 				{
 					for(int i1=0; i1<ownerComponent->subComponents.size(); i1++)
 					{
@@ -126,7 +126,7 @@ bool SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 							//note it will not reset semanticRelationReturnEntityForwardPropogationSignalData, but deactivate the group+components
 						if(!parseTreeComponent->parseTreeGroupRef->neuronActive)
 						{
-							cerr << "SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork{} error; (!parseTreeComponent->parseTreeGroupRef->neuronActive)" << endl;
+							cerr << "SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork{} error; (!parseTreeComponent->parseTreeGroupRef->neuronActive)" << endl;
 							exit(EXIT_ERROR);
 						}
 						*/						
@@ -134,14 +134,14 @@ bool SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 					}
 					else
 					{
-						cout << "SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork error: (parseTreeComponent->parseTreeGroupRef == NULL)" << endl;
+						cout << "SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork error: (parseTreeComponent->parseTreeGroupRef == NULL)" << endl;
 						exit(EXIT_ERROR);
 					}
 					#endif
 					
 					if(parseTreeComponentSignalData->semanticRelationReturnEntity == NULL)
 					{
-						cerr << "SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork{} error; (parseTreeComponentSignalData->semanticRelationReturnEntity == NULL)" << endl;
+						cerr << "SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork{} error; (parseTreeComponentSignalData->semanticRelationReturnEntity == NULL)" << endl;
 						exit(EXIT_ERROR);
 					}
 				}
@@ -165,7 +165,7 @@ bool SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 				bool optional = false;
 				if(!(ownerComponent->optional))
 				{
-					cerr << "SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork error: !(ownerComponent->optional)" << endl;
+					cerr << "SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork error: !(ownerComponent->optional)" << endl;
 					exit(EXIT_ERROR);
 				}
 			}
@@ -182,7 +182,7 @@ bool SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 	else
 	{
 		#ifndef SANI_PARSE_BASIC
-		cerr << "SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork error: !(currentParseTreeGroup->neuronActive)" << endl;
+		cerr << "SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork error: !(currentParseTreeGroup->neuronActive)" << endl;
 		exit(EXIT_ERROR);
 		#endif
 	}

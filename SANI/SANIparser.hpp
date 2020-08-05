@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: SANIParser.hpp
+ * File Name: SANIparser.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Parser
  * /
@@ -43,19 +43,19 @@
 
 //#include "GIAposRelTranslatorParser.hpp"
 #include "GIAposRelTranslatorParserOperations.hpp"
-#include "SANIComponentClass.hpp"
+#include "SANInodesComponentClass.hpp"
 #include "GIAposRelTranslatorRules.hpp"
 #include "GIApreprocessorWordClass.hpp"
 
-class SANIParserClass
+class SANIparserClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	//private: GIAposRelTranslatorParserClass GIAposRelTranslatorParser;
 	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
-	private: SANIComponentClass SANIComponentClassObject;
+	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
 	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
-	private: SANIGroupClass SANIGroupClassObject;
+	private: SANInodesGroupClass SANInodesGroupClassObject;
 	
 	#ifdef SANI_PARSE_SIMULTANEOUS
 	public: bool generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer);

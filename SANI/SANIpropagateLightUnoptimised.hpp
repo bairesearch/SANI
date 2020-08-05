@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: SANIPropagateLightUnoptimised.hpp
+ * File Name: SANIpropagateLightUnoptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Light Unoptimised - ~O(n^2)
  * /
@@ -40,10 +40,11 @@
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
 #include "GIAposRelTranslatorRules.hpp"
-#include "SANIGroupClass.hpp"
-#include "SANIComponentClass.hpp"
-#include "SANIPropagateOperations.hpp"
-#include "SANIFormation.hpp"
+#include "SANInodes.hpp"
+#include "SANInodesGroupClass.hpp"
+#include "SANInodesComponentClass.hpp"
+#include "SANIpropagateOperations.hpp"
+#include "SANIformation.hpp"
 #ifdef SANI_PARSE
 #include "GIAposRelTranslatorParserOperations.hpp"
 #endif
@@ -57,7 +58,7 @@
 #ifdef SANI_LIGHT_UNOPTIMISED
 
 
-class SANIPropagateLightUnoptimisedClass
+class SANIpropagateLightUnoptimisedClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
@@ -65,10 +66,11 @@ class SANIPropagateLightUnoptimisedClass
 	private: GIApreprocessorPOStaggerClass GIApreprocessorPOStagger;
 	private: GIApreprocessorSentenceClass GIApreprocessorSentenceClassObject;
 	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
-	private: SANIGroupClass SANIGroupClassObject;
-	private: SANIComponentClass SANIComponentClassObject;
-	private: SANIPropagateOperationsClass SANIPropagateOperations;
-	private: SANIFormationClass SANIFormation;
+	private: SANInodesClass SANInodes;
+	private: SANInodesGroupClass SANInodesGroupClassObject;
+	private: SANInodesComponentClass SANInodesComponentClassObject;
+	private: SANIpropagateOperationsClass SANIpropagateOperations;
+	private: SANIformationClass SANIformation;
 	#ifdef SANI_PARSE
 	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
 	#endif
@@ -93,7 +95,7 @@ class SANIPropagateLightUnoptimisedClass
 										private: bool isSentenceWordDataFullyConnected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
 										private: void isSentenceWordDataFullyConnected(vector<bool>* previousWordConnectionsFound, SANIForwardPropogationWordData* currentWordData);
 										#endif
-										private: void restoreGroupActivations(SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIForwardPropogationWordData* forwardPropogationWordData, bool restoreCurrentParseTreeGroupTemp);
+										private: void restoreGroupActivations(SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool restoreCurrentParseTreeGroupTemp);
 										private: bool propagateWordThroughNetworkGroupComponentPassNextWord(GIAtranslatorVariablesClass* translatorVariables, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner);
 
 										#ifdef SANI_PREVIOUS_WORD_POS_TYPE_CHECKS

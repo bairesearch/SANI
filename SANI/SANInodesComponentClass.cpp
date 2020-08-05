@@ -23,19 +23,19 @@
 
 /*******************************************************************************
  *
- * File Name: SANIComponentClass.cpp
+ * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Component Class
  * /
  *******************************************************************************/
 
 
-#include "SANIComponentClass.hpp"
+#include "SANInodesComponentClass.hpp"
 
-#ifdef GIA_POS_REL_TRANSLATOR_RULES
+#ifdef SANI_NODES
 
 
 SANIComponent::SANIComponent(void)
@@ -47,19 +47,23 @@ SANIComponent::SANIComponent(void)
 	#endif
 	#endif
 	
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	#ifdef GIA_POS_REL_TRANSLATOR_HYBRID
 	referenceSetTypeHybrid = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_REFERENCE_SET_TYPE_HYBRID_UNKNOWN;
+	#endif
+	groupTypeRefName = "";
+	groupRefName = "";
 	#endif
 	
 	componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_UNKNOWN;
 	componentIndex = INT_DEFAULT_VALUE;
 	
-	groupTypeRefName = "";
-	groupRefName = "";
-	
 	stringType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_UNKNOWN;
 	word = "";
 	wordPOStype = "";
+	
+	
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	tokenLayer = "";
 	tokenClass = "";
 	tokenType = "";
@@ -107,7 +111,13 @@ SANIComponent::SANIComponent(void)
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_NUMBER_EXPLETIVES
 	isExpletive = false;
 	#endif	
+
+	#ifdef SANI_PARSE_SIMULTANEOUS_BIO
+	parserForwardPropogationSignalData = NULL;
+	#endif
+	#endif
 	
+
 	#ifdef SANI
 	neuronComponentConnectionActive = false;
 	neuronComponentConnectionActiveWordRecord = NULL;
@@ -119,10 +129,6 @@ SANIComponent::SANIComponent(void)
 	groupTypeRef = NULL;
 	groupRef = NULL;
 	
-	#ifdef SANI_PARSE_SIMULTANEOUS_BIO
-	parserForwardPropogationSignalData = NULL;
-	#endif
-	
 }
 SANIComponent::~SANIComponent(void)
 {
@@ -131,11 +137,15 @@ SANIComponent::~SANIComponent(void)
 
 SANIComponentNeuralNetwork::SANIComponentNeuralNetwork(void)
 {
+	#ifdef SANI_SUPPORT_COMPONENTS_SUB
 	//subComponents = NULL;
-
+	#endif
+	
 	#ifdef SANI
 	ownerGroup = NULL;
+	#ifdef SANI_SUPPORT_COMPONENTS_SUB
 	isSubcomponent = false;
+	#endif
 	ownerComponent = NULL;
 	#ifdef SANI_ANN
 	//ANNbackNeuronConnectionList = NULL;
@@ -171,8 +181,8 @@ SANIComponentParseTree::~SANIComponentParseTree(void)
 }
 
 
-
-bool SANIComponentClass::componentHasSubcomponents(SANIComponent* component)
+#ifdef SANI_SUPPORT_COMPONENTS_SUB
+bool SANInodesComponentClass::componentHasSubcomponents(SANIComponent* component)
 {
 	bool hasSubcomponents = false;
 	if((component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR) || (component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_REPEAT))
@@ -181,7 +191,7 @@ bool SANIComponentClass::componentHasSubcomponents(SANIComponent* component)
 	}
 	return hasSubcomponents;
 }
-
+#endif
 
 
 #endif

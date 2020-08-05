@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: SANIComponentClass.hpp
+ * File Name: SANInodesComponentClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Component Class
  * /
@@ -43,15 +43,29 @@
 #include "ANNneuronConnectionClass.hpp"
 #endif
 
-#ifdef GIA_POS_REL_TRANSLATOR_RULES
+#ifdef SANI_NODES
 
+
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_UNKNOWN (0)
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING (1)
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP (2)
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR (3)
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_REPEAT (4)
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_NUMBER_OF_TYPES (5)
+static string SANIGroupsComponentTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_NUMBER_OF_TYPES] = {"unknown", "string", "group", "or", "repeat"};
+#else
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_NUMBER_OF_TYPES (3)
+static string SANIGroupsComponentTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_NUMBER_OF_TYPES] = {"unknown", "string", "group"};
+#endif
+
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_UNKNOWN (0)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS (1)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_EXPLICIT (2)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_TOKENS (3)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_NUMBER_OF_TYPES (4)
 static string SANIGroupsComponentStringTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_NUMBER_OF_TYPES] = {"unknown", "LRPexternalWordLists", "explicit", "tokens"};
-
 
 #ifdef GIA_POS_REL_TRANSLATOR_HYBRID
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_REFERENCE_SET_TYPE_HYBRID_UNKNOWN (0)
@@ -65,14 +79,6 @@ static string SANIGroupsComponentStringTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS
 static string SANIGroupsComponentReferenceSetTypeHybridTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_REFERENCE_SET_TYPE_HYBRID_NUMBER_OF_TYPES] = {"unknown", "logicReferenceSet", "logicReferenceSetDelimiter", "referenceSet", "referenceSetDelimiter", "subReferenceSet", "subReferenceSetDelimiter"};
 #endif
 
-#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_UNKNOWN (0)
-#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING (1)
-#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP (2)
-#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR (3)
-#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_REPEAT (4)
-#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_NUMBER_OF_TYPES (5)
-static string SANIGroupsComponentTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_NUMBER_OF_TYPES] = {"unknown", "string", "group", "or", "repeat"};
-
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_SEMANTIC_RELATION_INDEX_TYPE_UNKNOWN (0)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_SEMANTIC_RELATION_INDEX_TYPE_LIST (1)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_SEMANTIC_RELATION_INDEX_TYPE_SUBJECT (2)
@@ -81,6 +87,12 @@ static string SANIGroupsComponentTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPO
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_SEMANTIC_RELATION_INDEX_TYPE_DELIMITER_OR_SUBJECT (5)	//artificial GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_SEMANTIC_RELATION_RETURN_FUNCTION_NAME_DYNAMIC_INDEX_TESTS	//detect nearest preceeeding determiner and if not find nearest preceeding subject
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_SEMANTIC_RELATION_INDEX_NUMBER_OF_TYPES (6)
 static string SANIGroupsComponentSemanticRelationIndexTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_SEMANTIC_RELATION_INDEX_NUMBER_OF_TYPES] = {"unknown", "list", "subject", "object", "delimiter", "delimiterOrSubject"};
+#else
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_UNKNOWN (0)
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS (1)
+#define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_NUMBER_OF_TYPES (2)
+static string SANIGroupsComponentStringTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_NUMBER_OF_TYPES] = {"unknown", "LRPexternalWordLists"};
+#endif
 
 
 class SANIGroupType;
@@ -103,19 +115,23 @@ public:
 	#endif
 	#endif
 	
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	#ifdef GIA_POS_REL_TRANSLATOR_HYBRID
 	int referenceSetTypeHybrid;
+	#endif
+	string groupTypeRefName;
+	string groupRefName;
 	#endif
 	
 	int componentType;
 	int componentIndex;	//component index in group - required for shortcutting between base component and parseTreeGroup component
 	
-	string groupTypeRefName;
-	string groupRefName;
-	
 	int stringType;	//explicit, tokens, LRPexternalWordLists
 	string word;	//explicit
 	string wordPOStype;	//LRPexternalWordLists
+	
+	
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	string tokenLayer;	//tokens
 	string tokenClass;	//tokens
 	string tokenType;	//tokens
@@ -162,7 +178,13 @@ public:
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_NUMBER_EXPLETIVES
 	bool isExpletive;
 	#endif	
+
+	#ifdef SANI_PARSE_SIMULTANEOUS_BIO
+	GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData;	//semantic relation function parameters of parseTreeGroupRef->semanticRelationReturnEntityForwardPropogationSignalData
+	#endif
+	#endif
 	
+		
 	#ifdef SANI
 	bool neuronComponentConnectionActive;
 	GIApreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord;
@@ -174,10 +196,6 @@ public:
 	SANIGroupType* groupTypeRef;	
 	SANIGroupNeuralNetwork* groupRef;
 	
-	#ifdef SANI_PARSE_SIMULTANEOUS_BIO
-	GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData;	//semantic relation function parameters of parseTreeGroupRef->semanticRelationReturnEntityForwardPropogationSignalData
-	#endif
-
 };
 
 
@@ -187,12 +205,15 @@ public:
 	SANIComponentNeuralNetwork(void);
 	~SANIComponentNeuralNetwork(void);
 	
-	
+	#ifdef SANI_SUPPORT_COMPONENTS_SUB
 	vector<SANIComponentNeuralNetwork*> subComponents;	//for componentType or/repeat only
+	#endif
 	
 	#ifdef SANI
 	SANIGroupNeuralNetwork* ownerGroup;
+	#ifdef SANI_SUPPORT_COMPONENTS_SUB
 	bool isSubcomponent;
+	#endif
 	SANIComponentNeuralNetwork* ownerComponent;	//if isSubComponent==true only
 	#ifdef SANI_ANN
 	vector<ANNneuronConnection*> ANNbackNeuronConnectionList;
@@ -226,11 +247,13 @@ public:
 };
 
 
-
-class SANIComponentClass
+class SANInodesComponentClass
 {
-	public: bool componentHasSubcomponents(SANIComponent* component);	
+	#ifdef SANI_SUPPORT_COMPONENTS_SUB
+	public: bool componentHasSubcomponents(SANIComponent* component);
+	#endif
 };
+
 
 
 #endif

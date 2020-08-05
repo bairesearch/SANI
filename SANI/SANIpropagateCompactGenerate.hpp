@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: SANIPropagateCompactGenerate.hpp
+ * File Name: SANIpropagateCompactGenerate.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Propagate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -39,12 +39,12 @@
 #include "GIAglobalDefs.hpp"
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
-#include "GIAposRelTranslatorRules.hpp"
-#include "SANIGroupClass.hpp"
-#include "SANIComponentClass.hpp"
-#include "SANIPropagateOperations.hpp"
-#include "SANIPropagateCompact.hpp"
-#include "SANIFormation.hpp"
+#include "SANInodes.hpp"
+#include "SANInodesGroupClass.hpp"
+#include "SANInodesComponentClass.hpp"
+#include "SANIpropagateOperations.hpp"
+#include "SANIpropagateCompact.hpp"
+#include "SANIformation.hpp"
 #include "GIApreprocessorSentenceClass.hpp"
 #include "GIApreprocessorWordClass.hpp"
 #include "ANNdisplay.hpp"
@@ -53,18 +53,18 @@
 
 #ifdef SANI_SEQUENCE_GRAMMAR
 
-class SANIPropagateCompactGenerateClass
+class SANIpropagateCompactGenerateClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
 	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	private: GIApreprocessorSentenceClass GIApreprocessorSentenceClassObject;
-	private: GIAposRelTranslatorRulesClass GIAposRelTranslatorRules;
-	private: SANIGroupClass SANIGroupClassObject;
-	private: SANIComponentClass SANIComponentClassObject;
-	private: SANIPropagateOperationsClass SANIPropagateOperations;
-	private: SANIPropagateCompactClass SANIPropagateCompact;
-	private: SANIFormationClass SANIFormation;
+	private: SANInodesClass SANInodes;
+	private: SANInodesGroupClass SANInodesGroupClassObject;
+	private: SANInodesComponentClass SANInodesComponentClassObject;
+	private: SANIpropagateOperationsClass SANIpropagateOperations;
+	private: SANIpropagateCompactClass SANIpropagateCompact;
+	private: SANIformationClass SANIformation;
 
 	private: ANNdisplayClass ANNdisplay;
 

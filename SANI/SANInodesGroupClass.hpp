@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: SANIGroupClass.hpp
+ * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3a 01-August-2020
+ * Project Version: 1m3b 01-August-2020
  * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Group Class
  * /
@@ -44,10 +44,14 @@
 #endif
 
 
+#ifdef SANI_NODES
+
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_NEURON_GENERATED (1)	//type 1
 
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_FORWARDPROP_NEURON_PROPAGATED (3)	//type 2
-#define GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_FORWARDPROP_NEURON_PREVIOUS_POS_WORD_TYPE_TESTED (4)	//type 2
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
+//#define GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_FORWARDPROP_NEURON_PREVIOUS_POS_WORD_TYPE_TESTED (4)	//type 2
+#endif
 
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_NEURON_COMPONENT_CONNECTION_ACTIVE (5)	//type 3
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF (6)	//type 3
@@ -62,7 +66,8 @@
 
 
 
-//TODO: rename COMPONENT to GROUP TYPE:
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
+
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_REFERENCE_SET_TYPE_UNKNOWN (0)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_REFERENCE_SET_TYPE_LOGICREFERENCESET (1)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_REFERENCE_SET_TYPE_REFERENCESET (2)
@@ -70,7 +75,6 @@
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_REFERENCE_SET_TYPE_SENTENCE (4)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_REFERENCE_SET_TYPE_NUMBER_OF_TYPES (5)
 static string SANIGroupsComponentReferenceSetTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_REFERENCE_SET_TYPE_NUMBER_OF_TYPES] = {"unknown", "logicReferenceSet", "referenceSet", "subReferenceSet", "sentence"};
-
 
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_TYPE_UNKNOWN (0)
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_TYPE_LOGICREFERENCESETS (1)
@@ -85,6 +89,7 @@ static string SANIGroupsComponentReferenceSetTypes[GIA_POS_REL_TRANSLATOR_RULES_
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_TYPE_NUMBER_OF_TYPES (10)	//this is just a selection of prominent groupTypes (it doesn't include all of them)
 static string SANIGroupsTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_TYPE_NUMBER_OF_TYPES] = {"unknown", "logicReferenceSets", "referenceSets", "subReferenceSets", "subReferenceSetsPart", "subReferenceSetsAppend", "logicReferenceSetsOptional", "statements", "questions", "subjects"};
 
+#endif
 
 
 
@@ -104,6 +109,7 @@ public:
 
 
 
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 class GIAposRelTranslatorParserForwardPropogationSignalData
 {
 public:
@@ -125,6 +131,7 @@ public:
 	vector<GIAentityNode*> semanticRelationReturnFunctionEntityArray;
 	#endif
 };
+#endif
 
 #ifdef SANI
 class SANIForwardPropogationSignalData
@@ -143,10 +150,11 @@ public:
 	int activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed;	//OLD: +1 (e.g. sentence length); ie word indices must occur before activatedNeuronWithMaxWordIndexCoverageLastWordIndex
 	#endif
 	
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 	int wordNounVariantType;
 	int wordVerbVariantType;
-	#endif	
+	#endif
 	
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY
 	bool foundPreviousActiveWord;
@@ -154,6 +162,7 @@ public:
 	
 	#ifdef SANI_PARSE_SIMULTANEOUS
 	GIAposRelTranslatorParserForwardPropogationSignalData parserForwardPropogationSignalData;	//semantic relation function parameters
+	#endif
 	#endif
 	
 	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
@@ -201,18 +210,20 @@ public:
 	SANIGroup(void);
 	~SANIGroup(void);
 
-	//shared variables;	
+	//shared variables;
 	string groupName;
+	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT_BASE
+	int groupWeight;
+	#endif
 	string groupTypeName;
+			
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	int groupTypeReferenceSetType;
 	vector<string> semanticRelationFunctionName;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_NEW_CONDITIONS
 	string semanticRelationFunctionConditionNewName;
 	#endif				
-	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT_BASE
-	int groupWeight;
-	#endif
-				
+					
 	//SANIGroup variables;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_GROUP_PREVIOUS_WORD_POS_TYPE
 	string previousWordPOStype;
@@ -225,6 +236,8 @@ public:
 	int wordNounVariantTypeDerived;	
 	#endif
 	#endif	
+	#endif
+	
 };
 
 
@@ -268,10 +281,10 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_VERIFY_NO_CIRCULAR
 	bool verified;
 	#endif
-	bool inputLayerNeuron;
 	#ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS_ENFORCE_DURING_FIRST_HIDDEN_LAYER_GENERATION
 	bool firstHiddenLayerNeuron;
-	#endif
+	#endif	
+	bool inputLayerNeuron;
 	bool groupTypeIsString;
 	//SANIForwardPropogationWordData* wordDataTemp;
 	int wordPOStype;
@@ -283,6 +296,7 @@ public:
 	bool topLevelSentenceNeuron;
 	#endif
 	#endif
+	
 	#ifdef SANI_LIGHT_OPTIMISED_PREPROCESS
 	#ifdef SANI_LIGHT_OPTIMISED_PREPROCESS_RESET
 	bool nonResetActivationFoundDuringPreprocess;
@@ -291,8 +305,10 @@ public:
 	bool newActivationFoundDuringPreprocess;
 	#endif
 	#endif
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	//ie #ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
 	vector<SANIGroupNeuralNetwork*> ANNfrontGroupConnectionList;	//for IO only
 	vector<SANIGroupNeuralNetwork*> ANNbackGroupConnectionList;	//for IO only
+	#endif
 	vector<SANIComponentNeuralNetwork*> ANNfrontComponentConnectionList;
 	SANIGroupNeuralNetwork* next;
 	#ifdef SANI_ANN
@@ -306,20 +322,25 @@ public:
 	int neuronDisplayPositionYcentred;	
 	#endif
 	#endif
+	
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	//ie #ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
 	string GIAtokenLayerName;
 	string GIAtokenLayerClassName;
 	string GIAtokenLayerClassTypeName;
 	string GIAtokenLayerClassTypeInstanceName;
+	#endif
 	bool neuronGenerated;
 	bool neuronPropagated;
 	#ifdef SANI_LIGHT_OPTIMISED_RESET_ONLY_ONCE_FOUND_FIRST_COMPONENT_RESET_ONCE_PER_WORD_BASIC
 	bool neuronProcessed;
 	#endif
 	bool neuronPropagatedSave;
-	bool neuronPreviousWordPOStypeTested;	//NOT USED
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
+	//bool neuronPreviousWordPOStypeTested;	//NOT USED
+	#endif
 	#ifdef SANI_LIGHT
 	SANIForwardPropogationSignalData semanticRelationReturnEntityForwardPropogationSignalData;
-	SANIForwardPropogationSignalData semanticRelationReturnEntityForwardPropogationSignalDataProspective;	//temporary	//only update semanticRelationReturnEntityForwardPropogationSignalData upon complete/group activation (prevents ownerGroup->semanticRelationReturnEntityForwardPropogationSignalData from being invalidated by partial reactivations of a group; when accessed by an unrelated instance of SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwor) 	
+	SANIForwardPropogationSignalData semanticRelationReturnEntityForwardPropogationSignalDataProspective;	//temporary	//only update semanticRelationReturnEntityForwardPropogationSignalData upon complete/group activation (prevents ownerGroup->semanticRelationReturnEntityForwardPropogationSignalData from being invalidated by partial reactivations of a group; when accessed by an unrelated instance of SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwor) 	
 	#ifdef SANI_SOLIDIFY_NET_BACKPROP_AFTER_ACTIVATING_INDIVIDUAL_COMPONENTS
 	#ifdef SANI_SOLIDIFY_BIO_WEAK3
 	bool solidified;
@@ -417,10 +438,10 @@ public:
 	#ifdef SANI_HEAVY_OPTIMISED
 	#ifdef SANI_EFFICIENCY_STORE_POINT_ARRAY_IN_BASE_GROUP
 	vector<SANIGroupParseTree*> activationPathWordFirstParseTreeGroupActivationPointArray;	
+	#endif
 	#endif	
 	SANIForwardPropogationSignalData semanticRelationReturnEntityForwardPropogationSignalData;
-	SANIForwardPropogationSignalData semanticRelationReturnEntityForwardPropogationSignalDataProspective;	//temporary	//only update semanticRelationReturnEntityForwardPropogationSignalData upon complete/group activation (prevents ownerGroup->semanticRelationReturnEntityForwardPropogationSignalData from being invalidated by partial reactivations of a group; when accessed by an unrelated instance of SANIParserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwor) 	
-	#endif
+	SANIForwardPropogationSignalData semanticRelationReturnEntityForwardPropogationSignalDataProspective;	//temporary	//only update semanticRelationReturnEntityForwardPropogationSignalData upon complete/group activation (prevents ownerGroup->semanticRelationReturnEntityForwardPropogationSignalData from being invalidated by partial reactivations of a group; when accessed by an unrelated instance of SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwor) 	
 	#ifdef SANI_HEAVY_UNOPTIMISED
 	SANIGroupNeuralNetwork* parseTreeGroupRefReverse;
 	int parseTreeGroupRefReverseComponentIndex;
@@ -461,7 +482,9 @@ public:
 	~SANIGroupType(void);
 
 	string groupTypeName;
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	int referenceSetType;
+	#endif
 	
 	#ifdef SANI_ANN
 	bool neuronDisplayPositionSet;
@@ -544,12 +567,14 @@ public:
 	int performance;
 	#endif
 	vector<GIApreprocessorPlainTextWord*>* sentenceContents;
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
 	bool isQuery;
 	#endif
 	//#ifdef GIA_POS_REL_TRANSLATOR_RULES_PARSE_ISOLATED_SUBREFERENCE_SETS
 	bool parseIsolatedSubreferenceSets;
 	//#endif
+	#endif
 	
 	bool finishedPassingSentenceWords;
 	
@@ -572,17 +597,21 @@ public:
 #endif
 
 
-class SANIGroupClass
+class SANInodesGroupClass
 {
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
+	#ifdef GIA_POS_REL_TRANSLATOR_INVERSE_NEURAL_NETWORK
 	public: void copyParseGroupInfo(SANIGroupParseTree* currentParseTreeGroupTemp, SANIGroupParseTree* currentParseTreeGroup);
+	#endif
 	public: bool isTopLevelGroupType(const string groupTypeName, const int groupTypeReferenceSetType, const bool isQuery, const bool parseIsolatedSubreferenceSets);	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
 	public: bool determineIsQuery(vector<GIApreprocessorPlainTextWord*>* sentenceContents);
+	#endif
 	#endif
 };
 
 
 
-
+#endif
 
 #endif
