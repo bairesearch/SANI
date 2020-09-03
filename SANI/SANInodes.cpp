@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4a 01-September-2020
+ * Project Version: 1m4b 01-September-2020
  * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Nodes
  * /
@@ -951,7 +951,7 @@ SANIComponentParseTree* SANInodesClass::getFirstComponent(SANIForwardPropogation
 
 
 
-#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH	
+#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH	
 int SANInodesClass::calculateDepthFromBinaryTreeLeafSize(int numberOfLeafNodesInBinaryTree)
 {
 	//see http://courses.cs.vt.edu/~cs3114/Fall09/wmcquain/Notes/T03a.BinaryTreeTheorems.pdf
