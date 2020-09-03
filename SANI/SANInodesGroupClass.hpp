@@ -26,8 +26,8 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3d 01-August-2020
- * Requirements: 
+ * Project Version: 1m4a 01-September-2020
+ * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Group Class
  * /
  *******************************************************************************/
@@ -269,12 +269,12 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	bool counted;
 	#endif
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
 	bool activatedNeuronWithMaxWordIndexCoverageVariableStartComponentTemp;
 	#endif
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_LAST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
 	bool activatedNeuronWithMaxWordIndexCoverageVariableEndComponentTemp;
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_LAST_COMPONENTS_GENERATE_DETECT_COVERAGE_SUPPORT_VARIABLE_END_COMPONENT
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS_GENERATE_DETECT_COVERAGE_SUPPORT_VARIABLE_END_COMPONENT
 	bool lowestLayerInArray;
 	#endif
 	#endif
@@ -424,12 +424,12 @@ public:
 	#ifdef SANI
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	SANIGroupNeuralNetwork* groupRef;	//backup of original group (non-parse-tree)
-	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_SUPPORT_VARIABLE_FIRST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 	//bool variableStartComponentFound;
 	bool missingOrVariableStartComponentFound;
 	#endif
 	/*
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
 	bool missingStartComponentFound;
 	#endif
 	*/
@@ -527,10 +527,10 @@ public:
 	bool recordActivatedNeuronWithMaxWordIndexCoverage;
 	SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage;
 	bool activatedNeuronWithMaxWordIndexCoveragePartial;
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_LAST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
 	bool recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent;
 	#endif
-	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_SUPPORT_VARIABLE_FIRST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 	bool recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableStartComponent;
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH
 	int variableFirstComponentMaxDepth;
@@ -541,7 +541,7 @@ public:
 	vector<SANIGroupNeuralNetwork*> listOfHighLevelNeuronsCompleteHistory;
 	#endif
 	/*
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
 	bool activatedNeuronWithMaxWordIndexCoverageMissingStartComponent;
 	#endif
 	*/

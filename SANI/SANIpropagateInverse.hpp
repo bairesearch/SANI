@@ -26,8 +26,8 @@
  * File Name: SANIpropagateInverse.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m3d 01-August-2020
- * Requirements: 
+ * Project Version: 1m4a 01-September-2020
+ * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Inverse
  * /
  *******************************************************************************/
