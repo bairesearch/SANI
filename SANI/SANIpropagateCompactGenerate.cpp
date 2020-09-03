@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4c 01-September-2020
+ * Project Version: 1m4d 01-September-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Propagate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -119,6 +119,7 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GI
 		
 	}
 	#endif
+
 	
 	SANIpropagateCompact.executeTxtRelTranslatorNeuralNetworkPart2(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance);
 		
@@ -177,7 +178,11 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileCentralVariationWrapper(
 							{
 								//ownerGroup represents a central variation of currentNeuron (ie start and end sequences are identical)
 								
-								//TODO: link these nodes together; if one node fires (both inputs are satisfied), then second node fires
+								#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS_LINK
+								//link these nodes together; if one node fires (both inputs are satisfied), then second node fires
+								secondComponentOfOutputNeuronSourceVector1[v1]->phraseCandidateSynonyms.push_back(secondComponentOfOutputNeuronSourceVector2[v2]);
+								secondComponentOfOutputNeuronSourceVector2[v2]->phraseCandidateSynonyms.push_back(secondComponentOfOutputNeuronSourceVector1[v1]);
+								#endif
 							}
 						}
 					}
