@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4d 01-September-2020
+ * Project Version: 1m5a 01-September-2020
  * Requirements: 
  * Description: SANI specific global definitions
  * /
@@ -48,7 +48,7 @@
 		#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS	//SANI1k1a
 		//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS	//SANI1j5a
 		//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS	//SANI1l8e
-		#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS	//SANI1m4a
+		//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS	//SANI1m4a
 	#endif
 #endif
 #ifndef SANI_SEQUENCE_GRAMMAR
@@ -66,17 +66,6 @@
 	//debug variables (should all be disabled by default):
 	//#define GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_SENTENCES
 	//#define SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-	
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
-		//#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION	//not yet defined
-			//#ifdef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE	//not yet defined (generation code implementation has not yet been derived for ELONGATED_TREE)
-				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS
-					#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS_LINK	//SANI1m5a
-					#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_TEMP_RECORD	//required to know which new neurons have been created for given sentence (rather than using SANIGroupTypes)
-				#endif
-			//#endif
-		//#endif
-	#endif
 		
 	//#define SANI_SEMANTIC_NETWORK	//SANI1m1a	//store semantic network within SANI parse tree rather than generating from SANI parse tree
 	#ifdef SANI_SEMANTIC_NETWORK
@@ -86,6 +75,41 @@
 			#define SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_LEMMAS	//optional (feed lemmas rather than exact words)
 		#endif
 	#endif
+	
+	#define SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
+	#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
+
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
+			#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
+				//#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PREPROCESSOR	//not yet coded - TODO: perform logic reference, reference, [and sub reference] set identification (using SANIpropagateLightOptimised) before generating SANI network, ensuring that logic/sub/reference set delimiters are assigned to top/high level neurons within SANI network
+				#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY	//SANI1m5a - perform SANI reference set identification without sequentially enforced [from start and from end of sentence]
+				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
+					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_MIN_MATCHES (2)	//CHECKTHIS
+					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V1 (0.7)	//percentage matches for V1	//CHECKTHIS
+					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V2 (0.7)	//percentage matches for V2	//CHECKTHIS
+					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_LINK
+					#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD2		//record parse tree neurons (need to check against new neurons generated for sentence and stored by method 1)
+					#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD2
+						#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1		//store newly created sentence neurons in newHiddenLayerGroupsTemp
+						#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1B	//mark all neurons in newHiddenLayerGroupsTemp
+					#endif
+				#endif
+			#endif
+		#endif
+
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
+			//#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION	//not yet defined
+				//#ifdef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE	//not yet defined (generation code implementation has not yet been derived for ELONGATED_TREE)
+					#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS
+						#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS_LINK	//SANI1m5a
+						#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1	//required to know which new neurons have been created for given sentence (rather than using SANIGroupTypes)
+					#endif
+				//#endif
+			//#endif
+		#endif
+	#endif
+	
 #endif
 
 

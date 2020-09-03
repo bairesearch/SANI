@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4d 01-September-2020
+ * Project Version: 1m5a 01-September-2020
  * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Group Class
  * /
@@ -302,10 +302,15 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	#endif
 	#endif
 	
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1B
+	newlyGeneratedForSentenceTemp = false;
+	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS_LINK
 	//phraseCandidateSynonyms = NULL;
 	#endif
-
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_LINK
+	//referenceSetCandidateDuplicates = NULL;
+	#endif
 }
 SANIGroupNeuralNetwork::~SANIGroupNeuralNetwork(void)
 {

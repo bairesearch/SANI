@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4d 01-September-2020
+ * Project Version: 1m5a 01-September-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Propagate Compact - ~O(n)
  * /
@@ -165,17 +165,12 @@ bool SANIpropagateCompactClass::executeTxtRelTranslatorNeuralNetworkPart1(GIAtra
 	//OLD: defineFirstLayer(translatorVariables, forwardPropogationSentenceData, &firstLayer)
 	
 	#ifndef SANI_SEQUENCE_GRAMMAR_PRELIMTEST_GENERATE_CLASSIFICATION_NET_INPUT_DATASET_VIA_ANN
-	if(performPropagationTest(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData))
+	if(performPropagationTest(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, true, topLevelParseTreeGroup))
 	{
 		//cout << "SANIpropagateCompactClass::executeTxtRelTranslatorNeuralNetworkPart1: performPropagationTest pass" << endl;
 
 		result = true;
 		//printBackpropParseTree(topLevelParseTreeGroupLocalCompact, 3);
-		
-		#ifdef SANI_PARSE_SAVE_PARSE_TREE
-		//cout << "SANI_PARSE_SAVE_PARSE_TREE: *topLevelParseTreeGroup = topLevelParseTreeGroupLocalCompact;" << endl;
-		*topLevelParseTreeGroup = topLevelParseTreeGroupLocalCompact;
-		#endif
 	}
 	else
 	{
@@ -214,13 +209,17 @@ bool SANIpropagateCompactClass::executeTxtRelTranslatorNeuralNetworkPart2(GIAtra
 
 
 
-
 bool SANIpropagateCompactClass::performPropagationTest(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+{	
+	bool recordTopLevelParseTreeGroup = false;
+	return performPropagationTest(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, recordTopLevelParseTreeGroup, NULL);
+}
+bool SANIpropagateCompactClass::performPropagationTest(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool recordTopLevelParseTreeGroup, SANIGroupParseTree** topLevelParseTreeGroup)
 {
 	bool result = false;
 	
-	bool resetAllNeuronComponents = true;
 	bool deinitialiseParseTreeGroupAfterFinish = true;
+	bool resetAllNeuronComponents = true;
 	int firstIndexInSequence = 0;
 	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_TEST_VERIFICATION_PROPAGATION_IN_OPPOSITE_DIRECTION
@@ -233,6 +232,13 @@ bool SANIpropagateCompactClass::performPropagationTest(GIAtranslatorVariablesCla
 		cout << "toplevelGroupActivationFound: groupIndexes = " << SANInodes.printParseTreeGroupIndices(topLevelParseTreeGroupLocalCompact, 0) << endl;
 		#endif
 		result = true;
+		
+		#ifdef SANI_PARSE_SAVE_PARSE_TREE
+		if(recordTopLevelParseTreeGroup)
+		{
+			*topLevelParseTreeGroup = topLevelParseTreeGroupLocalCompact;
+		}
+		#endif
 	}
 	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_TEST_VERIFICATION_PROPAGATION_IN_OPPOSITE_DIRECTION
