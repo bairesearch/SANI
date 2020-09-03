@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5e 01-September-2020
+ * Project Version: 1m5f 01-September-2020
  * Requirements: 
  * Description: Formation
  * /
@@ -44,6 +44,7 @@
 #endif
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
+#include "SANInodes.hpp"
 #include "GIApreprocessorSentenceClass.hpp"
 #include "GIApreprocessorWordClass.hpp"
 #include "ANNdisplay.hpp"
@@ -59,6 +60,7 @@ class SANIformationClass
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	private: SANIrulesClass SANIrules;
 	#endif
+	private: SANInodesClass SANInodes;
 	private: ANNdisplayClass ANNdisplay;
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5e 01-September-2020
+ * Project Version: 1m5f 01-September-2020
  * Requirements: 
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -229,7 +229,6 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates1(SANIF
 {
 	bool result = true;
 	
-	
 	if(currentParseTreeGroup->groupRef->newlyGeneratedForSentenceTemp)	//CHECKTHIS: only perform reference set candidate detection for sentence newly generated neurons
 	{
 		SANIGroupNeuralNetwork* referenceSetCandidate2best = NULL;	//considered best based on some function of number of matches with candidateVector1 and recency
@@ -300,7 +299,8 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates2(SANIF
 	if(!hasComponentGroupRefs)
 	{
 		//every component points to an inputLayerNeuron
-		if(!findAndLinkReferenceSetCandidates3(forwardPropogationSentenceData, referenceSetCandidate2best, currentParseTreeGroup->groupRef, referenceSetCandidate1, referenceSetCandidateVector1, layer))
+		SANIGroupNeuralNetwork* referenceSetCandidate2 = currentParseTreeGroup->groupRef;
+		if(!findAndLinkReferenceSetCandidates3(forwardPropogationSentenceData, referenceSetCandidate2best, referenceSetCandidate2, referenceSetCandidate1, referenceSetCandidateVector1, layer))
 		{
 			result = false;
 		}	
@@ -315,10 +315,22 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates3(SANIF
 {
 	bool result = true;
 
-	vector<SANIGroupNeuralNetwork*> referenceSetCandidateVector2;
-	createReferenceSetCandidateVector(referenceSetCandidate2, &referenceSetCandidateVector2);
-	findAndLinkReferenceSetCandidatesCompareVectors(referenceSetCandidate2best, referenceSetCandidate1, referenceSetCandidate2, referenceSetCandidateVector1, &referenceSetCandidateVector2);
-			
+	bool referenceSetCandidate2InReferenceSetCandidateVector1 = false;
+	for(int v1=0; v1<referenceSetCandidateVector1->size(); v1++)
+	{
+		if(referenceSetCandidate2 == (*referenceSetCandidateVector1)[v1])
+		{
+			referenceSetCandidate2InReferenceSetCandidateVector1 = true;
+		}
+	}
+	if(!referenceSetCandidate2InReferenceSetCandidateVector1)
+	{
+		//cout << "!referenceSetCandidate2InReferenceSetCandidateVector1" << endl;
+		vector<SANIGroupNeuralNetwork*> referenceSetCandidateVector2;
+		createReferenceSetCandidateVector(referenceSetCandidate2, &referenceSetCandidateVector2);
+		findAndLinkReferenceSetCandidatesCompareVectors(referenceSetCandidate2best, referenceSetCandidate1, referenceSetCandidate2, referenceSetCandidateVector1, &referenceSetCandidateVector2);
+	}
+		
 	for(int i=0; i<referenceSetCandidate2->ANNfrontComponentConnectionList.size(); i++)
 	{
 		SANIComponentNeuralNetwork* currentComponent = (referenceSetCandidate2->ANNfrontComponentConnectionList)[i];
@@ -404,7 +416,9 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidatesCompare
 	int numberMatchesV2 = 0;
 	for(int v1=0; v1<referenceSetCandidateVector1->size(); v1++)
 	{
+		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY
 		totalParseTreeRecencyV1 = totalParseTreeRecencyV1 + (*referenceSetCandidateVector1)[v1]->timeIndex;
+		#endif
 		
 		for(int v2=0; v2<referenceSetCandidateVector2->size(); v2++)
 		{
@@ -419,10 +433,16 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidatesCompare
 		}
 	}
 
+	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
+	//cout << "numberMatchesV2 = " << numberMatchesV2 << endl;
+	#endif
 	if(numberMatchesV2 >= SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_MIN_MATCHES)
 	{
 		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY
 		double metric = double(totalMatchRecencyV2)/double(totalParseTreeRecencyV1);
+		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
+		//cout << "(metric > referenceSetCandidate1->referenceSetCandidateBestMetric)" << endl;
+		#endif
 		if(metric > SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY_MATCH_PERCENTAGE_REQUISITE)
 		{	
 		#else
@@ -432,8 +452,9 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidatesCompare
 		#endif	
 			if(metric > referenceSetCandidate1->referenceSetCandidateBestMetric)
 			{
-				cout << "(metric > referenceSetCandidate1->referenceSetCandidateBestMetric)" << endl;
-				cout << "metric = " << metric << endl;
+				#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
+				//cout << "(metric > referenceSetCandidate1->referenceSetCandidateBestMetric)" << endl;
+				#endif
 				
 				*referenceSetCandidate2best = referenceSetCandidate2;
 				referenceSetCandidate1->referenceSetCandidateBestMetric = metric;
@@ -463,7 +484,7 @@ bool SANIpropagateCompactGenerateClass::createReferenceSetCandidateVector(SANIGr
 	referenceSetCandidateVector->push_back(currentParseTreeGroup->groupRef);
 	
 	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
-	{				
+	{		
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 
 		if(parseTreeComponent->parseTreeGroupRef != NULL)
@@ -471,6 +492,17 @@ bool SANIpropagateCompactGenerateClass::createReferenceSetCandidateVector(SANIGr
 			if(!createReferenceSetCandidateVector(parseTreeComponent->parseTreeGroupRef, referenceSetCandidateVector))
 			{
 				result = false;
+			}
+		}
+		else
+		{
+			if(parseTreeComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+			{
+				SANIGroupNeuralNetwork* componentSource = parseTreeComponent->componentRef->ANNbackGroupConnectionList[0];
+				referenceSetCandidateVector->push_back(componentSource);	//added SANI1m5f
+				
+				//cout << "(componentSource->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)" << endl;
+				//cout << "componentSource->groupIndex = " << componentSource->groupIndex << endl;
 			}
 		}
 	}
@@ -489,6 +521,7 @@ bool SANIpropagateCompactGenerateClass::createReferenceSetCandidateVector(SANIGr
 		for(int j=0; j<component->ANNbackGroupConnectionList.size(); j++)
 		{
 			SANIGroupNeuralNetwork* componentSource = (component->ANNbackGroupConnectionList)[j];
+			//cout << "componentSource->inputLayerNeuron = " << componentSource->inputLayerNeuron << endl;
 			
 			if(!createReferenceSetCandidateVector(componentSource, referenceSetCandidateVector))
 			{

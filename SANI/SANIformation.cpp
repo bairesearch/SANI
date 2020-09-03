@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5e 01-September-2020
+ * Project Version: 1m5f 01-September-2020
  * Requirements: 
  * Description: Formation
  * /
@@ -233,9 +233,9 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(GIApreprocessorPlain
 	currentGroupInInputLayerSectionWordOrig->groupTypeIsString = true;
 	#endif
 	#ifdef SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
-	int newNeuronIndex = SANInodes.assignGroupIndex(currentGroupInInputLayerSectionWordOrig);	
+	int newNeuronIndex = SANInodes.assignGroupIndex(currentGroupInInputLayerSectionWordOrig);
 	#ifdef SANI_ANN
-	currentGroupInInputLayerSectionWordOrig->initiateANNneuron("groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex));
+	currentGroupInInputLayerSectionWordOrig->initiateANNneuron(wordOrig + ", groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex));	//OLD: groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex)
 	#endif
 	#endif
 	addGroupToLayer(&currentGroupInInputLayerSectionWordOrig, numberOfGroupsInSection);
