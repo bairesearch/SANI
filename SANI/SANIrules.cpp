@@ -26,7 +26,7 @@
  * File Name: SANIrules.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m5a 01-September-2020
+ * Project Version: 1m5b 01-September-2020
  * Requirements: requires plain text file
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Rules
  * /
