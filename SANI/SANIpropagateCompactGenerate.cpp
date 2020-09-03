@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5c 01-September-2020
+ * Project Version: 1m5d 01-September-2020
  * Requirements: 
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -61,7 +61,7 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GI
 
 bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance, const bool createNewConnections)
 {
-	bool result = false;
+	bool result = true;
 	
 	#ifdef SANI_FREE_MEMORY
 	parseTreeGroupListPointer = SANIpropagateCompact.getParseTreeGroupList();
@@ -112,25 +112,41 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GI
 			#endif
 		}
 		
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD2
 		*topLevelParseTreeGroup = NULL;
-		if(!SANIpropagateCompact.performPropagationTest(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, true, topLevelParseTreeGroup))
+		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
+		forwardPropogationSentenceData->updateNeuronRecency = true;
+		#endif
+		if(!SANIpropagateCompact.performPropagationTest(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, true, topLevelParseTreeGroup))
 		{
+			result = false;
 			cerr << "SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD2: SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork error: !SANIpropagateCompact.performPropagationTest" << endl;
 			exit(EXIT_ERROR);
 		}
+		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
+		forwardPropogationSentenceData->updateNeuronRecency = false;
+		#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS_BEFORE_REFERENCE_SET_IDENTIFICATION
+		updateNetworkRecency(translatorVariables->currentPreprocessorSentenceInList->sentenceIndexOriginal, *topLevelParseTreeGroup, 0);
+		#endif
 		#endif	
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
-		if(!findAndLinkReferenceSetCandidatesWrapper(SANIGroupTypes, &forwardPropogationSentenceData, *topLevelParseTreeGroup, 0))
+		if(!findAndLinkReferenceSetCandidates1(&forwardPropogationSentenceData, *topLevelParseTreeGroup, 0))
 		{
+			result = false;
 		}	
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS
 		if(!findAndLinkCentralVariationCandidates(SANIGroupTypes, &forwardPropogationSentenceData))
 		{	
+			result = false;
 		}
 		#endif
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1B
 		for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
@@ -140,8 +156,14 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GI
 		}
 		#endif
 		newHiddenLayerGroupsTemp.clear();
-		#endif	
 		#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS_AFTER_REFERENCE_SET_IDENTIFICATION
+		updateNetworkRecency(translatorVariables->currentPreprocessorSentenceInList->sentenceIndexOriginal, topLevelParseTreeGroup, 0)
+		#endif
+		
+		#endif
+		
+
 	
 	}
 		
@@ -151,18 +173,58 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GI
 	return toplevelGroupActivationFound;
 }
 
+#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
+
+#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
+bool SANIpropagateCompactGenerateClass::updateNetworkRecency(const int timeIndex, SANIGroupParseTree* currentParseTreeGroup, int layer)
+{
+	//this function only updates recency of nodes in successfully parsed/generated parse tree
+	
+	bool result = true;
+	
+	currentParseTreeGroup->groupRef->timeIndex = timeIndex;
+	
+	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	{				
+		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
+
+		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		{
+			if(!updateNetworkRecency(timeIndex, parseTreeComponent->parseTreeGroupRef, layer+1))
+			{
+				result = false;
+			}
+		}
+	}
+
+	return result;
+}
+#endif
+
 #ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
-bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates1(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates1(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, int layer)
 {
 	bool result = true;
 	
-	SANIGroupNeuralNetwork* currentNeuralNetworkGroup = currentParseTreeGroup->groupRef;
-	if(currentNeuralNetworkGroup->newlyGeneratedForSentenceTemp)	//CHECKTHIS: only perform reference set candidate detection for sentence newly generated neurons
+	if(currentParseTreeGroup->groupRef->newlyGeneratedForSentenceTemp)	//CHECKTHIS: only perform reference set candidate detection for sentence newly generated neurons
 	{
+		SANIGroupNeuralNetwork* referenceSetCandidate2best = NULL;	//considered best based on some function of number of matches with candidateVector1 and recency
+		
+		SANIGroupNeuralNetwork* referenceSetCandidate1;
 		vector<SANIGroupNeuralNetwork*> referenceSetCandidateVector1;
 		createReferenceSetCandidateVector(currentParseTreeGroup, &referenceSetCandidateVector1);
 		
-		findAndLinkReferenceSetCandidates2(currentNeuralNetworkGroup, currentNeuralNetworkGroup, &referenceSetCandidateVector1, forwardPropogationSentenceData, layer);
+		findAndLinkReferenceSetCandidates2(forwardPropogationSentenceData, &referenceSetCandidate2best, currentParseTreeGroup, referenceSetCandidate1, &referenceSetCandidateVector1, layer);
+		
+		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_LINK		        	
+		if(referenceSetCandidate2best != NULL)
+		{
+			//link these nodes together
+			referenceSetCandidate1->referenceSetCandidateDuplicates.push_back(referenceSetCandidate2best);
+			referenceSetCandidate2best->referenceSetCandidateDuplicates.push_back(referenceSetCandidate1);
+		}
+		#endif
+		referenceSetCandidate1->referenceSetCandidateBestMetric = 0.0;
 	}
 		
 	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
@@ -172,7 +234,7 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates1(vecto
 
 		if(parseTreeComponent->parseTreeGroupRef != NULL)
 		{
-			if(!findAndLinkReferenceSetCandidates1(SANIGroupTypes, forwardPropogationSentenceData, parseTreeComponent->parseTreeGroupRef, layer+1))
+			if(!findAndLinkReferenceSetCandidates1(forwardPropogationSentenceData, parseTreeComponent->parseTreeGroupRef, layer+1))
 			{
 				result = false;
 			}
@@ -182,21 +244,69 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates1(vecto
 	return result;
 }
 
-bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates2(SANIGroupNeuralNetwork* neuralNetworkGroup, SANIGroupNeuralNetwork* referenceSetCandidate1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer)
+bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates2(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* referenceSetCandidate1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, int layer)
+{
+	bool result = true;
+		
+	if(currentParseTreeGroup->components.size() == 0)	//only start identifying referenceSetCandidate2 from base of referenceSetCandidate1 parse tree
+	{
+		if(!findAndLinkReferenceSetCandidates3(forwardPropogationSentenceData, referenceSetCandidate2best, currentParseTreeGroup->groupRef, referenceSetCandidate1, referenceSetCandidateVector1, layer))
+		{
+			result = false;
+		}
+	}
+	
+	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	{				
+		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
+		//printComponent(parseTreeComponent, layer);
+
+		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		{
+			if(!findAndLinkReferenceSetCandidates2(forwardPropogationSentenceData, referenceSetCandidate2best, parseTreeComponent->parseTreeGroupRef, referenceSetCandidate1, referenceSetCandidateVector1, layer+1))
+			{
+				result = false;
+			}
+		}
+	}
+
+	return result;
+}
+
+
+
+bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidates3(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate2, SANIGroupNeuralNetwork* referenceSetCandidate1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, int layer)
 {
 	bool result = true;
 
-	for(int i=0; i<neuralNetworkGroup->ANNfrontComponentConnectionList.size(); i++)
+	vector<SANIGroupNeuralNetwork*> referenceSetCandidateVector2;
+	createReferenceSetCandidateVector(referenceSetCandidate2, &referenceSetCandidateVector2);
+	findAndLinkReferenceSetCandidatesCompareVectors(referenceSetCandidate2best, referenceSetCandidate1, referenceSetCandidate2, referenceSetCandidateVector1, &referenceSetCandidateVector2);
+			
+	for(int i=0; i<referenceSetCandidate2->ANNfrontComponentConnectionList.size(); i++)
 	{
-		SANIComponentNeuralNetwork* currentComponent = (neuralNetworkGroup->ANNfrontComponentConnectionList)[i];
-		SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;	
-
-		vector<SANIGroupNeuralNetwork*> referenceSetCandidateVector2;
-		createReferenceSetCandidateVector(ownerGroup, &referenceSetCandidateVector2);
-		
-		findAndLinkReferenceSetCandidatesCompareVectors(groupTypeNeuralNetworkGroup, currentNeuralNetworkGroup, referenceSetCandidateVector1, referenceSetCandidateVector2);
-		
-		findAndLinkReferenceSetCandidates2(ownerGroup, referenceSetCandidateVector1, forwardPropogationSentenceData, layer+1);
+		SANIComponentNeuralNetwork* currentComponent = (referenceSetCandidate2->ANNfrontComponentConnectionList)[i];
+		SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;
+		if(ownerGroup != referenceSetCandidate1)	//ensure that referenceSetCandidate2 != referenceSetCandidate1
+		{
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_VERIFY_NOT_NEWLY_CREATED
+			bool ownerGroupNewlyCreated = false;
+			for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
+			{
+				SANIGroupNeuralNetwork* currentNeuron = newHiddenLayerGroupsTemp[k];
+				if(currentNeuron == ownerGroup)
+				{
+					ownerGroupNewlyCreated = true;
+				}
+			}
+			if(!ownerGroupNewlyCreated) //only consider referenceSetCandidate2 if neuron has not been newly generated for current sentence	//ownerGroup->timeIndex != forwardPropogationSentenceData->sentenceIndex
+			{
+			#endif
+				findAndLinkReferenceSetCandidates3(forwardPropogationSentenceData, referenceSetCandidate2best, ownerGroup, referenceSetCandidate1, referenceSetCandidateVector1, layer-1);
+			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1
+			}
+			#endif
+		}
 	}
 
 	return result;
@@ -223,7 +333,16 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidatesWrapper
 				vector<SANIGroupNeuralNetwork*> referenceSetCandidateVector2;
 				createReferenceSetCandidateVector(groupTypeNeuralNetworkGroup, &referenceSetCandidateVector2);
 
-				findAndLinkReferenceSetCandidatesCompareVectors(groupTypeNeuralNetworkGroup, currentNeuralNetworkGroup, referenceSetCandidateVector1, referenceSetCandidateVector2);
+				SANIGroupNeuralNetwork* referenceSetCandidate2best = NULL;
+				findAndLinkReferenceSetCandidatesCompareVectors(&referenceSetCandidate2best, groupTypeNeuralNetworkGroup, currentNeuralNetworkGroup, referenceSetCandidateVector1, referenceSetCandidateVector2);
+				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_LINK
+				if(referenceSetCandidate2best != NULL)
+				{
+					//link these nodes together
+					referenceSetCandidate1->referenceSetCandidateDuplicates.push_back(referenceSetCandidate2best);
+					referenceSetCandidate2best->referenceSetCandidateDuplicates.push_back(referenceSetCandidate1);
+				}
+				#endif
 			}
 		}
 	}
@@ -247,36 +366,63 @@ bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidatesWrapper
 }
 */
 
-bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidatesCompareVectors(SANIGroupNeuralNetwork* referenceSetCandidate1, SANIGroupNeuralNetwork* referenceSetCandidate2, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector2)
+bool SANIpropagateCompactGenerateClass::findAndLinkReferenceSetCandidatesCompareVectors(SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate1, SANIGroupNeuralNetwork* referenceSetCandidate2, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector2)
 {
-	int numberMatches = 0;
-	int numberCandidatesV1 = referenceSetCandidateVector1.size();
-	int numberCandidatesV2 = referenceSetCandidateVector2.size();
-	for(int v1=0; v1<referenceSetCandidateVector1.size(); v1++)
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY
+	int totalMatchRecencyV2 = 0;
+	int totalParseTreeRecencyV1 = 0;
+	#endif
+	int numberCandidatesV1 = referenceSetCandidateVector1->size();
+	int numberCandidatesV2 = referenceSetCandidateVector2->size();
+	int numberMatchesV2 = 0;
+	for(int v1=0; v1<referenceSetCandidateVector1->size(); v1++)
 	{
-		for(int v2=0; v2<referenceSetCandidateVector2.size(); v2++)
+		totalParseTreeRecencyV1 = totalParseTreeRecencyV1 + (*referenceSetCandidateVector1)[v1]->timeIndex;
+		
+		for(int v2=0; v2<referenceSetCandidateVector2->size(); v2++)
 		{
-			if(referenceSetCandidateVector1[v1] == referenceSetCandidateVector2[v2])
+			if((*referenceSetCandidateVector1)[v1] == (*referenceSetCandidateVector2)[v2])
 			{
 				//found a match between referenceSetCandidate1 (in original parse tree) and referenceSetCandidate2 (in entire SANI network)
-				numberMatches++;
+				numberMatchesV2++;
+				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY
+				totalMatchRecencyV2 = totalMatchRecencyV2 + (*referenceSetCandidateVector2)[v2]->timeIndex;
+				#endif
 			}
 		}
 	}
 
-	if(numberMatches > SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_MIN_MATCHES)
+	if(numberMatchesV2 > SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_MIN_MATCHES)
 	{
-		if(numberMatches > int(float(numberCandidatesV1)*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V1))
+		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY
+		double metric = double(totalMatchRecencyV2)/double(totalParseTreeRecencyV1);
+		if(metric > SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY_MATCH_PERCENTAGE_REQUISITE)
+		{	
+		#else
+		double metric = double(numberMatchesV2)/double(numberCandidatesV1);
+		if(metric > SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_MATCH_PERCENT_REQUISITE)
 		{
-			if(numberMatches > int(float(numberCandidatesV2)*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V2))
+		#endif	
+			if(metric > referenceSetCandidate1->referenceSetCandidateBestMetric)
 			{
-				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_LINK
-				//link these nodes together
-				referenceSetCandidate1->referenceSetCandidateDuplicates.push_back(referenceSetCandidate2);
-				referenceSetCandidate2->referenceSetCandidateDuplicates.push_back(referenceSetCandidate1);
-				#endif
+				*referenceSetCandidate2best = referenceSetCandidate2;
+				referenceSetCandidate1->referenceSetCandidateBestMetric = metric;
 			}
 		}
+
+		/*
+		if(numberMatchesV2 > int(double(numberCandidatesV1)*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V1))
+		{
+			if(numberMatchesV2 > int(double(numberCandidatesV2)*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V2))
+			{
+				if(metric > referenceSetCandidate1->referenceSetCandidateBestMetric)
+				{
+					*referenceSetCandidate2best = referenceSetCandidate2;
+					referenceSetCandidate1->referenceSetCandidateBestMetric = metric;
+				}
+			}
+		}
+		*/
 	}
 }
 								
@@ -314,7 +460,10 @@ bool SANIpropagateCompactGenerateClass::createReferenceSetCandidateVector(SANIGr
 		{
 			SANIGroupNeuralNetwork* componentSource = (component->ANNbackGroupConnectionList)[j];
 			
-			createReferenceSetCandidateVector(componentSource, referenceSetCandidateVector);
+			if(!createReferenceSetCandidateVector(componentSource, referenceSetCandidateVector))
+			{
+				result = false;
+			}
 		}
 	}
 
@@ -393,6 +542,8 @@ bool SANIpropagateCompactGenerateClass::findAndLinkCentralVariationCandidates(ve
 }
 bool SANIpropagateCompactGenerateClass::populateSecondComponentOfOutputNeuronSourceVector(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, vector<SANIGroupNeuralNetwork*>* secondComponentOfOutputNeuronSourceVector)
 {
+	bool result = true;
+	
 	for(int i=0; i<group->ANNfrontComponentConnectionList.size(); i++)
 	{
 		SANIComponentNeuralNetwork* currentComponent = (group->ANNfrontComponentConnectionList)[i];
@@ -415,9 +566,12 @@ bool SANIpropagateCompactGenerateClass::populateSecondComponentOfOutputNeuronSou
 			secondComponentOfOutputNeuronSourceVector->push_back(secondComponentOfOutputNeuronSource);
 		}
 	}
+	
+	return result;
 }
 #endif
-	
+#endif
+
 bool SANIpropagateCompactGenerateClass::findAndReconcileVariationWrapper(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
 {
 	bool result = true;

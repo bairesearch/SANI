@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5c 01-September-2020
+ * Project Version: 1m5d 01-September-2020
  * Requirements: requires plain text file
  * Description: Nodes
  * /

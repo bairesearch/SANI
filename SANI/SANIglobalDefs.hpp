@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5c 01-September-2020
+ * Project Version: 1m5d 01-September-2020
  * Requirements: 
  * Description: SANI specific global definitions
  * /
@@ -67,7 +67,7 @@
 	//#define GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_SENTENCES
 	//#define SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 		
-	//#define SANI_SEMANTIC_NETWORK	//SANI1m1a	//store semantic network within SANI parse tree rather than generating from SANI parse tree
+	#define SANI_SEMANTIC_NETWORK	//SANI1m1a	//store semantic network within SANI parse tree rather than generating from SANI parse tree
 	#ifdef SANI_SEMANTIC_NETWORK
 		#define SANI_SEQUENCE_GRAMMAR_INPUT_WORDS	//SANI1m1a	//input words rather than pos values into SANI
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
@@ -85,14 +85,37 @@
 				//#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PREPROCESSOR	//not yet coded - TODO: perform logic reference, reference, [and sub reference] set identification (using SANIpropagateLightOptimised) before generating SANI network, ensuring that logic/sub/reference set delimiters are assigned to top/high level neurons within SANI network
 				#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY	//SANI1m5a - perform SANI reference set identification without sequentially enforced [from start and from end of sentence]
 				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
+					
 					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_MIN_MATCHES (2)	//CHECKTHIS
-					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V1 (0.7)	//percentage matches for V1	//CHECKTHIS
-					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V2 (0.7)	//percentage matches for V2	//CHECKTHIS
+					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_MATCH_PERCENT_REQUISITE (0.7)	//percentage numberMatchesV2/numberCandidatesV1
+					//#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V1 (0.7)	//percentage matches for V1	//CHECKTHIS
+					//#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_THRESHOLD_PERCENT_TRUE_POSITIVES_V2 (0.7)	//percentage matches for V2	//CHECKTHIS
 					#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_LINK
 					#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD2		//record parse tree neurons (need to check against new neurons generated for sentence and stored by method 1)
 					#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD2
 						#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1		//store newly created sentence neurons in newHiddenLayerGroupsTemp
 						#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1B	//mark all neurons in newHiddenLayerGroupsTemp
+						
+						#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY	//SANI1m5b
+						#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY
+							#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY_MATCH_PERCENTAGE_REQUISITE (0.5)	//pecentage totalMatchRecencyV2/totalParseTreeRecencyV1 //CHECKTHIS
+							#define SANI_SEQUENCE_GRAMMAR_STORE_RECENCY
+							#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY
+								//#define SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
+								#ifndef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
+									#define SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
+									#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
+										#define SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS_BEFORE_REFERENCE_SET_IDENTIFICATION
+										#ifndef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS_BEFORE_REFERENCE_SET_IDENTIFICATION
+											#define SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS_AFTER_REFERENCE_SET_IDENTIFICATION	//consider updating recency posthoc (thereby using old network recency data during reference set identification)
+										#endif
+									#endif
+								#endif
+							#endif
+						#endif
+					#endif
+					#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1
+						#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_VERIFY_NOT_NEWLY_CREATED
 					#endif
 				#endif
 			#endif

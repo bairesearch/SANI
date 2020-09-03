@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5c 01-September-2020
+ * Project Version: 1m5d 01-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Group Class
  * /
@@ -311,6 +311,12 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_LINK
 	//referenceSetCandidateDuplicates = NULL;
 	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY
+	timeIndex = 0;
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
+	referenceSetCandidateBestMetric = 0.0;
+	#endif
 }
 SANIGroupNeuralNetwork::~SANIGroupNeuralNetwork(void)
 {
@@ -528,6 +534,10 @@ SANIForwardPropogationSentenceData::SANIForwardPropogationSentenceData(void)
 	#endif
 	
 	forwardPropogationActivationPointData = NULL;
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
+	updateNeuronRecency = false;
+	#endif
 }
 SANIForwardPropogationSentenceData::~SANIForwardPropogationSentenceData(void)
 {

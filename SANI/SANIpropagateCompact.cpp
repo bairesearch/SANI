@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5c 01-September-2020
+ * Project Version: 1m5d 01-September-2020
  * Requirements: 
  * Description: Propagate Compact - ~O(n)
  * /
@@ -865,6 +865,13 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(GIAtra
 	if(activationSequenceCompleted)
 	{			
 		ownerGroup->neuronActive = true;	//required for SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_ACTIVATION
+		
+		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
+		if(forwardPropogationSentenceData->updateNeuronRecency)
+		{
+			ownerGroup->timeIndex = translatorVariables->currentPreprocessorSentenceInList->sentenceIndexOriginal;	
+		}
+		#endif
 		
 		#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
 		//if(!(forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverage)) {
