@@ -25,10 +25,10 @@
  *
  * File Name: SANIpropagateLightUnoptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
- * Project: General Intelligence Algorithm
- * Project Version: 1m5b 01-September-2020
+ * Project: Sequentially Activated Neuronal Input neural network
+ * Project Version: 1m5c 01-September-2020
  * Requirements: 
- * Description: SANI (Sequentially Activated Neuronal Input neural network) Light Unoptimised - ~O(n^2)
+ * Description: Propagate Light Unoptimised - ~O(n^2)
  * /
  *******************************************************************************/
 
