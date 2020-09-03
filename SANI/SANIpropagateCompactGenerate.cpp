@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4b 01-September-2020
+ * Project Version: 1m4c 01-September-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Propagate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -44,20 +44,22 @@
 static vector<SANIGroupParseTree*>* parseTreeGroupListPointer;
 #endif
 
+#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_TEMP_RECORD
+static vector<SANIGroupNeuralNetwork*> newHiddenLayerGroupsTemp;
+#endif
 
 
 
-
-bool SANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, const bool createNewConnections)
+bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, const bool createNewConnections)
 {
 	SANIGroupParseTree* topLevelParseTreeGroup = NULL; 
 	bool parseIsolatedSubreferenceSets = false;
 	bool parserEnabled = false;
 	int performance = 0;
-	return executeTxtRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performance, createNewConnections);
+	return generatePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performance, createNewConnections);
 }
 
-bool SANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance, const bool createNewConnections)
+bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance, const bool createNewConnections)
 {
 	bool result = false;
 	
@@ -69,13 +71,13 @@ bool SANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork(GIA
 	forwardPropogationSentenceData.sentenceContents = sentenceContents;
 
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
-	cout << "\n\n\n\n\nSANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork 1" << endl;
+	cout << "\n\n\n\n\nSANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork 1" << endl;
 	#endif
 	
 	bool toplevelGroupActivationFound = SANIpropagateCompact.executeTxtRelTranslatorNeuralNetworkPart1(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance);
 	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
-	cout << "SANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork 2" << endl;
+	cout << "SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork 2" << endl;
 	#endif
 	
 	if(!toplevelGroupActivationFound)
@@ -111,11 +113,110 @@ bool SANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork(GIA
 		}
 	}
 	
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS
+	if(!findAndReconcileCentralVariationWrapper(SANIGroupTypes, &forwardPropogationSentenceData))
+	{
+		
+	}
+	#endif
+	
 	SANIpropagateCompact.executeTxtRelTranslatorNeuralNetworkPart2(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance);
 		
 	return toplevelGroupActivationFound;
 }
 
+#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS
+bool SANIpropagateCompactGenerateClass::findAndReconcileCentralVariationWrapper(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+{
+	//algorithm: find nodes that are connected to the same first input neuron and an output neuron in which the second input of the output neuron is the same
+	
+	SANIpropagateOperations.setParseSentenceReverse(true, forwardPropogationSentenceData);
+
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_TEMP_RECORD
+	for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
+	{
+		SANIGroupNeuralNetwork* currentNeuron = newHiddenLayerGroupsTemp[k];
+	#else
+	for(int i=0; i<SANIGroupTypes.size(); i++)
+	{
+		SANIGroupNeuralNetwork*> currentNeuron = SANIGroupTypes[k];
+	#endif	
+		int firstComponentIndex;
+		if(forwardPropogationSentenceData->parseSentenceReverse)
+		{
+			firstComponentIndex = currentNeuron->components.size()-1;
+		}
+		else
+		{
+			firstComponentIndex = 0;
+		}
+
+		vector<SANIGroupNeuralNetwork*> secondComponentOfOutputNeuronSourceVector1;
+		populateSecondComponentOfOutputNeuronSourceVector(forwardPropogationSentenceData, currentNeuron, &secondComponentOfOutputNeuronSourceVector1);
+		
+		SANIComponentNeuralNetwork* firstComponent = currentNeuron->components[firstComponentIndex];
+		for(int j=0; j<firstComponent->ANNbackGroupConnectionList.size(); j++)
+		{
+			SANIGroupNeuralNetwork* firstComponentSource = (firstComponent->ANNbackGroupConnectionList)[j];
+			
+			for(int i=0; i<firstComponentSource->ANNfrontComponentConnectionList.size(); i++)
+			{
+				SANIComponentNeuralNetwork* currentComponent = (firstComponentSource->ANNfrontComponentConnectionList)[i];
+				SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;	
+				
+				if(ownerGroup != currentNeuron)
+				{
+					vector<SANIGroupNeuralNetwork*> secondComponentOfOutputNeuronSourceVector2;
+					populateSecondComponentOfOutputNeuronSourceVector(forwardPropogationSentenceData, ownerGroup, &secondComponentOfOutputNeuronSourceVector2);
+					
+					for(int v1=0; v1<secondComponentOfOutputNeuronSourceVector1.size(); v1++)
+					{
+						for(int v2=0; v2<secondComponentOfOutputNeuronSourceVector2.size(); v2++)
+						{
+							if(secondComponentOfOutputNeuronSourceVector1[v1] == secondComponentOfOutputNeuronSourceVector2[v2])
+							{
+								//ownerGroup represents a central variation of currentNeuron (ie start and end sequences are identical)
+								
+								//TODO: link these nodes together; if one node fires (both inputs are satisfied), then second node fires
+							}
+						}
+					}
+				}
+			}
+		}	
+	}
+
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_TEMP_RECORD
+	newHiddenLayerGroupsTemp.clear();
+	#endif	
+}
+bool SANIpropagateCompactGenerateClass::populateSecondComponentOfOutputNeuronSourceVector(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, vector<SANIGroupNeuralNetwork*>* secondComponentOfOutputNeuronSourceVector)
+{
+	for(int i=0; i<group->ANNfrontComponentConnectionList.size(); i++)
+	{
+		SANIComponentNeuralNetwork* currentComponent = (group->ANNfrontComponentConnectionList)[i];
+		SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;	
+
+		int lastComponentIndex;	//ie secondComponentIndex
+		if(forwardPropogationSentenceData->parseSentenceReverse)
+		{
+			lastComponentIndex = 0;
+		}
+		else
+		{
+			lastComponentIndex = ownerGroup->components.size()-1;
+		}
+
+		SANIComponentNeuralNetwork* secondComponentOfOutputNeuron = ownerGroup->components[lastComponentIndex];
+		for(int j=0; j<secondComponentOfOutputNeuron->ANNbackGroupConnectionList.size(); j++)
+		{
+			SANIGroupNeuralNetwork* secondComponentOfOutputNeuronSource = (secondComponentOfOutputNeuron->ANNbackGroupConnectionList)[j];
+			secondComponentOfOutputNeuronSourceVector->push_back(secondComponentOfOutputNeuronSource);
+		}
+	}
+}
+#endif
+	
 bool SANIpropagateCompactGenerateClass::findAndReconcileVariationWrapper(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
 {
 	bool result = true;
@@ -944,7 +1045,7 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileVariation(GIAtranslatorV
 	#endif
 	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
-	cout << "\n\n\n\n\nSANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork 3" << endl;
+	cout << "\n\n\n\n\nSANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork 3" << endl;
 	#endif
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_VERIFICATION
@@ -960,7 +1061,7 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileVariation(GIAtranslatorV
 	#endif
 	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
-	cout << "SANIpropagateCompactGenerateClass::executeTxtRelTranslatorNeuralNetwork 4" << endl;
+	cout << "SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork 4" << endl;
 	#endif
 
 	return result;
@@ -2316,10 +2417,14 @@ SANIGroupNeuralNetwork* SANIpropagateCompactGenerateClass::createNewHiddenLayerG
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
 	cout << "SANIpropagateCompactGenerateClass::createNewHiddenLayerGroup" << endl;
 	#endif
-		
-	SANIGroupNeuralNetwork* newNeuron = createNewGroup();	
+	
+	SANIGroupNeuralNetwork* newNeuron = createNewGroup();
 	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	
 	groupType->groups.push_back(newNeuron);
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_TEMP_RECORD
+	newHiddenLayerGroupsTemp.push_back(newNeuron);
+	#endif
 
 	return newNeuron;
 }

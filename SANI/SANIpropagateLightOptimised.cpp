@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightOptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4b 01-September-2020
+ * Project Version: 1m4c 01-September-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Light Optimised - ~O(n)
  * /
@@ -55,7 +55,7 @@ static vector<SANIComponentParseTree*> parseTreeComponentListExtra;
 #endif
 
 
-bool SANIpropagateLightOptimisedClass::executeTxtRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance)
+bool SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance)
 {
 	bool result = false;
 
@@ -94,7 +94,7 @@ bool SANIpropagateLightOptimisedClass::executeTxtRelTranslatorNeuralNetwork(GIAt
 	}
 	
 	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_NEURON_COMPONENT_CONNECTION_ACTIVE); //this is required for SANI_LIGHT_OPTIMISED
-	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);	//this is required to initialise currentParseTreeGroup for every group (only required for first execution of SANIpropagateLightOptimisedClass::executeTxtRelTranslatorNeuralNetwork)
+	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);	//this is required to initialise currentParseTreeGroup for every group (only required for first execution of SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork)
 	#ifdef SANI_FREE_MEMORY
 	SANIpropagateOperations.initialiseParseTreeGroupList(SANIGroupTypes, &parseTreeGroupListLight);
 	#endif
@@ -150,7 +150,7 @@ bool SANIpropagateLightOptimisedClass::executeTxtRelTranslatorNeuralNetwork(GIAt
 		#endif
 		
 		/*
-		cout << "DEBUG: finished executing SANIpropagateLightOptimisedClass::executeTxtRelTranslatorNeuralNetwork (exiting)" << endl;
+		cout << "DEBUG: finished executing SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork (exiting)" << endl;
 		exit(EXIT_ERROR);
 		*/
 	}
@@ -186,7 +186,7 @@ bool SANIpropagateLightOptimisedClass::executeTxtRelTranslatorNeuralNetwork(GIAt
 	
 	/*
 	#ifdef SANI_DEBUG_PROPAGATE
-	cout << "DEBUG: finished executing SANIpropagateLightOptimisedClass::executeTxtRelTranslatorNeuralNetwork (exiting)" << endl;
+	cout << "DEBUG: finished executing SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork (exiting)" << endl;
 	exit(EXIT_ERROR);
 	#endif
 	*/

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightUnoptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: General Intelligence Algorithm
- * Project Version: 1m4b 01-September-2020
+ * Project Version: 1m4c 01-September-2020
  * Requirements: 
  * Description: SANI (Sequentially Activated Neuronal Input neural network) Light Unoptimised - ~O(n^2)
  * /
@@ -50,7 +50,7 @@ vector<SANIGroupParseTree*> parseTreeGroupsArray;
 #endif
 
 
-bool SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance)
+bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance)
 {
 	bool result = false;
 
@@ -88,7 +88,7 @@ bool SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork(GI
 		forwardPropogationSentenceData.forwardPropogationWordDataArray.push_back(forwardPropogationWordData);
 	}
 	
-	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);	//this is required to initialise currentParseTreeGroup for every group (only required for first execution of SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork)
+	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);	//this is required to initialise currentParseTreeGroup for every group (only required for first execution of SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork)
 	#ifdef SANI_DEBUG_PROPAGATE_EXTRA8
 	firstExecution = false;
 	#endif
@@ -113,7 +113,7 @@ bool SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork(GI
 	}
 	else
 	{
-		cerr << "SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork{} error: sentenceContents->size() == 0" << endl;
+		cerr << "SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork{} error: sentenceContents->size() == 0" << endl;
 		exit(EXIT_ERROR);		
 	}
 	
@@ -142,7 +142,7 @@ bool SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork(GI
 		#endif
 		
 		/*
-		cout << "DEBUG: finished executing SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork (exiting)" << endl;
+		cout << "DEBUG: finished executing SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork (exiting)" << endl;
 		exit(EXIT_ERROR);
 		*/
 	}
@@ -178,7 +178,7 @@ bool SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork(GI
 	
 	/*
 	#ifdef SANI_DEBUG_PROPAGATE
-	cout << "DEBUG: finished executing SANIpropagateLightUnoptimisedClass::executeTxtRelTranslatorNeuralNetwork (exiting)" << endl;
+	cout << "DEBUG: finished executing SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork (exiting)" << endl;
 	exit(EXIT_ERROR);
 	#endif
 	*/
