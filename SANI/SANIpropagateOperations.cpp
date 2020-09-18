@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5f 01-September-2020
+ * Project Version: 1m6a 09-September-2020
  * Requirements: 
  * Description: Propagate Operations - generic functions
  * /
@@ -36,7 +36,7 @@
 #include "SANIpropagateOperations.hpp"
 
 
-#ifdef SANI
+#ifdef SANI_FORWARD
 
 static bool parseSentenceReverse;
 
@@ -338,8 +338,22 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(vector<SANI
 
 					//component already activated
 					#ifdef SANI_SEQUENCE_GRAMMAR
-					#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_LAST_COMPONENTS_REMEMBER_FIRST_COMPONENT_WORD_INDEX
-					if(i != 0)
+					#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_LAST_COMPONENTS_REMEMBER_FIRST_COMPONENT_WORD_INDEX
+					int secondLastComponentIndex;
+					#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
+					secondLastComponentIndex = 0;
+					#else
+					//TODO: ensure neuron minimum number of components >= 2
+					if(forwardPropogationSentenceData->parseSentenceReverse)
+					{
+						secondLastComponentIndex = 1;
+					}
+					else
+					{
+						secondLastComponentIndex = components->size()-2;
+					}
+					#endif
+					if(i == secondLastComponentIndex)
 					{
 						if(previousActiveComponent != NULL)	//alternate test does not support !SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS: if(!(*missingStartComponentFound))
 						{
@@ -503,8 +517,27 @@ bool SANIpropagateOperationsClass::identifyMissingOrVariableEndComponentFound(ve
 	bool result = true;
 	
 	if(forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent)
-	{					
-		if(i == 0)
+	{	
+		int secondLastComponentIndex;
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
+		secondLastComponentIndex = 0;
+		#else
+		//ensure neuron minimum number of components >= 2
+		if(components->size() < 2)
+		{
+			cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS: identifyMissingOrVariableEndComponentFound error - (components->size() < 2)" << endl;
+			exit(EXIT_ERROR); 
+		}
+		if(forwardPropogationSentenceData->parseSentenceReverse)
+		{
+			secondLastComponentIndex = 1;
+		}
+		else
+		{
+			secondLastComponentIndex = components->size()-2;
+		}
+		#endif				
+		if(i == secondLastComponentIndex)
 		{
 			bool variableFirstComponentTypeRequirements = false;
 			if(!(currentComponent->neuronComponentConnectionActive))	//consider removing this requirement to allow groups identified for last variable components creation to have their activations reset
@@ -1536,16 +1569,24 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIGro
 		//group activations will be reset so assume real ownerGroupParseTreeGroup->components.size() == 0 
 		result = true;
 	}
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_LAST_COMPONENTS_REMEMBER_FIRST_COMPONENT_WORD_INDEX
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_LAST_COMPONENTS_REMEMBER_FIRST_COMPONENT_WORD_INDEX
 	else if(existingActivationFoundEndComponent)
         {
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS		
         	if(ownerGroupParseTreeGroup->components.size() == 2)	//assumes 2 active components in parsetree
+		#else
+		if(ownerGroupParseTreeGroup->components.size() == ownerGroup->components.size()-1)
+		#endif
 		{	
 			#ifdef SANI_PARSE_SAVE_PARSE_TREE
 			int lastActiveComponentInParseTreeIndex;
 			if(parseSentenceReverse)
 			{
+				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
 				lastActiveComponentInParseTreeIndex = 1;
+				#else
+				lastActiveComponentInParseTreeIndex = ownerGroup->components.size()-1;
+				#endif
 			}
 			else
 			{
@@ -1575,7 +1616,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIGro
 		}
 		else
 		{
-			cerr << "SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_LAST_COMPONENTS_REMEMBER_FIRST_COMPONENT_WORD_INDEX: SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper error: (ownerGroupParseTreeGroup->components.size() != 2)" << endl;
+			cerr << "SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_LAST_COMPONENTS_REMEMBER_FIRST_COMPONENT_WORD_INDEX: SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper error: (ownerGroupParseTreeGroup->components.size() != 2)" << endl;
 			cerr << "ownerGroupParseTreeGroup->components.size() = " << ownerGroupParseTreeGroup->components.size() << endl;
 			exit(EXIT_ERROR);
 		}	

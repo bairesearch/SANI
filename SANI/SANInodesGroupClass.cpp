@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5f 01-September-2020
+ * Project Version: 1m6a 09-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Group Class
  * /
@@ -77,7 +77,7 @@ GIAposRelTranslatorParserForwardPropogationSignalData::~GIAposRelTranslatorParse
 }
 #endif
 
-#ifdef SANI
+#ifdef SANI_FORWARD
 SANIForwardPropogationSignalData::SANIForwardPropogationSignalData(void)
 {
 	//group specific variables:
@@ -188,7 +188,7 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	//components = NULL;
 	
 	//SANIGroupNeuralNetwork variables;
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 	networkDepth = 0;
@@ -339,7 +339,7 @@ void SANIGroupNeuralNetwork::initiateANNneuron(const string groupName)
 SANIGroupActivationMemory::SANIGroupActivationMemory(void)
 {
 	//SANIGroupActivationMemory variables;
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	#ifdef SANI_HEAVY
 	#ifdef SANI_HEAVY_OPTIMISED
 	numberWordsInSet = 0;
@@ -374,12 +374,14 @@ SANIGroupActivationMemory::~SANIGroupActivationMemory(void)
 SANIGroupParseTree::SANIGroupParseTree(void)
 {	
 	//SANIGroupParseTree variables;
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	groupRef = NULL;
+	#ifndef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_SIMPLIFY2
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 	//variableStartComponentFound = false;
 	missingOrVariableStartComponentFound = false;
+	#endif
 	#endif
 	/*
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
@@ -446,7 +448,7 @@ SANIGroupType::~SANIGroupType(void)
 }
 
 
-#ifdef SANI
+#ifdef SANI_FORWARD
 
 SANIForwardPropogationActivationPointData::SANIForwardPropogationActivationPointData(void)
 {
@@ -471,15 +473,16 @@ SANIForwardPropogationSentenceData::SANIForwardPropogationSentenceData(void)
 	recordActivatedNeuronWithMaxWordIndexCoverage = false;
 	activatedNeuronWithMaxWordIndexCoverage = NULL;
 	activatedNeuronWithMaxWordIndexCoveragePartial = false;
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 	recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent = false;
+	activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = false;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 	recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableStartComponent = false;
+	activatedNeuronWithMaxWordIndexCoverageVariableStartComponent = false;
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH
 	variableFirstComponentMaxDepth = 0;
 	#endif
-	activatedNeuronWithMaxWordIndexCoverageVariableStartComponent = false;
 	#endif
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
 	//listOfHighLevelNeuronsCompleteHistory = NULL;

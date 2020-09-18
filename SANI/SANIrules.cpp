@@ -26,7 +26,7 @@
  * File Name: SANIrules.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5f 01-September-2020
+ * Project Version: 1m6a 09-September-2020
  * Requirements: requires plain text file
  * Description: Rules
  * /
@@ -629,7 +629,7 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 			
 			SANIComponentNeuralNetwork* component = new SANIComponentNeuralNetwork();
 			component->componentIndex = componentIndex;
-			#ifdef SANI
+			#ifdef SANI_FORWARD
 			component->ownerGroup = groupOwner;	//enables reverse lookup for ANN
 			if(parseSubcomponent)
 			{
@@ -702,7 +702,7 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 			
 			SANIComponentNeuralNetwork* component = new SANIComponentNeuralNetwork();
 			component->componentIndex = componentIndex;
-			#ifdef SANI
+			#ifdef SANI_FORWARD
 			component->ownerGroup = groupOwner;	//enables reverse lookup for ANN
 			#endif
 			component->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR;
@@ -734,7 +734,7 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 			
 			SANIComponentNeuralNetwork* component = new SANIComponentNeuralNetwork();
 			component->componentIndex = componentIndex;
-			#ifdef SANI
+			#ifdef SANI_FORWARD
 			component->ownerGroup = groupOwner;	//enables reverse lookup for ANN
 			#endif
 			component->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_REPEAT;

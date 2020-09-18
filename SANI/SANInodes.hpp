@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5f 01-September-2020
+ * Project Version: 1m6a 09-September-2020
  * Requirements: requires plain text file
  * Description: Nodes
  * /
@@ -174,14 +174,14 @@ class SANInodesClass
 	public: SANIGroupParseTree* copyGroup(SANIGroupParseTree* group);
 		public: bool copyComponents(vector<SANIComponentParseTree*>* components, vector<SANIComponentParseTree*>* componentsNew);
 	public: SANIGroupActivationMemory* copyGroup(SANIGroupActivationMemory* group);
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	public: bool updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, const bool isSubcomponent, SANIComponentNeuralNetwork* ownerComponent);
 	#endif
 
 
 
 	//code from SANIpropagateOperations;
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	
 	public: bool currentWordAmbiguous(GIApreprocessorPlainTextWord* currentWord);
 

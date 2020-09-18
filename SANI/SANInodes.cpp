@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5f 01-September-2020
+ * Project Version: 1m6a 09-September-2020
  * Requirements: requires plain text file
  * Description: Nodes
  * /
@@ -270,7 +270,7 @@ bool SANInodesClass::removeOptionalComponent(SANIGroupType* groupType, int* grou
 		optionalComponentsWrapperGroup = group;
 		artificialGroupOrComponent = new SANIComponentNeuralNetwork();
 		artificialGroupOrComponent->componentIndex = SANI_COMPONENT_INDEX_FIRST;
-		#ifdef SANI
+		#ifdef SANI_FORWARD
 		artificialGroupOrComponent->ownerGroup = group;	//enables reverse lookup for ANN
 		#endif
 		artificialGroupOrComponent->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR;
@@ -413,7 +413,7 @@ bool SANInodesClass::removeLastOptionalComponents(vector<SANIGroupType*>* SANIGr
 						optionalComponentsWrapperGroup = group;
 						artificialGroupOrComponent = new SANIComponentNeuralNetwork();
 						artificialGroupOrComponent->componentIndex = SANI_COMPONENT_INDEX_FIRST;
-						#ifdef SANI
+						#ifdef SANI_FORWARD
 						artificialGroupOrComponent->ownerGroup = group;	//enables reverse lookup for ANN
 						#endif
 						artificialGroupOrComponent->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR;
@@ -556,7 +556,7 @@ SANIGroupActivationMemory* SANInodesClass::copyGroup(SANIGroupActivationMemory* 
 
 
 
-#ifdef SANI
+#ifdef SANI_FORWARD
 bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, const bool isSubcomponent, SANIComponentNeuralNetwork* ownerComponent)
 {
 	bool result = true;
@@ -587,7 +587,7 @@ bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork
 
 
 
-#ifdef SANI
+#ifdef SANI_FORWARD
 
 bool SANInodesClass::currentWordAmbiguous(GIApreprocessorPlainTextWord* currentWord)
 {

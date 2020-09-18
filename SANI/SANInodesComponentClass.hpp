@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5f 01-September-2020
+ * Project Version: 1m6a 09-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Component Class
  * /
@@ -38,7 +38,7 @@
 
 #include "GIAglobalDefs.hpp"
 #include "GIApreprocessorWordClass.hpp"
-#ifdef SANI
+#ifdef SANI_FORWARD
 #include "ANNneuronClass.hpp"
 #include "ANNneuronConnectionClass.hpp"
 #endif
@@ -185,7 +185,7 @@ public:
 	#endif
 	
 		
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	bool neuronComponentConnectionActive;
 	GIApreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord;
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
@@ -209,7 +209,7 @@ public:
 	vector<SANIComponentNeuralNetwork*> subComponents;	//for componentType or/repeat only
 	#endif
 	
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	SANIGroupNeuralNetwork* ownerGroup;
 	#ifdef SANI_SUPPORT_COMPONENTS_SUB
 	bool isSubcomponent;

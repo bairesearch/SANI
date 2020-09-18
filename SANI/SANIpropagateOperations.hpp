@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m5f 01-September-2020
+ * Project Version: 1m6a 09-September-2020
  * Requirements: 
  * Description: Propagate Operations - generic functions
  * /
@@ -71,7 +71,7 @@ class SANIpropagateOperationsClass
 	//private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
 	#endif
 
-	#ifdef SANI
+	#ifdef SANI_FORWARD
 	
 	public: void setParseSentenceReverseStrict(const bool parseSentenceReverseNew, SANIForwardPropogationSentenceData* forwardPropogationSentenceData);	//set parseSentenceReverse irrespective of SANI_REVERSE_DIRECTION
 	public: void setParseSentenceReverse(const bool normalDirection, SANIForwardPropogationSentenceData* forwardPropogationSentenceData);	//determine and set parseSentenceReverse depending on SANI_REVERSE_DIRECTION	
