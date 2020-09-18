@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6d 09-September-2020
+ * Project Version: 1m6e 09-September-2020
  * Requirements: 
  * Description: Propagate Compact - ~O(n)
  * /
@@ -2098,14 +2098,31 @@ bool SANIpropagateCompactClass::verifyNeverSplitGroupBetweenTwoIdenticalComponen
 				}
 				SANIComponentNeuralNetwork* lastActivatedComponent = (activatedNeuronWithMaxWordIndexCoverage->groupRef)->components[lastActivatedIndex];		//BAD: activatedNeuronWithMaxWordIndexCoverage->components[lastActivatedIndex]->componentRef;
 				SANIComponentNeuralNetwork* firstNonActivatedComponent = (activatedNeuronWithMaxWordIndexCoverage->groupRef)->components[firstUnactivatedIndex];	//BAD: activatedNeuronWithMaxWordIndexCoverage->components[firstUnactivatedIndex]->componentRef;
-				#ifdef SANI_SEQUENCE_GRAMMAR
+				#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
+				#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS_ADVANCED
+				bool foundComponentSourceMatch = false;
+				for(int i=0; i<lastActivatedComponent->ANNbackGroupConnectionList.size(); i++)
+				{
+					SANIGroupNeuralNetwork* lastActivatedComponentSource = lastActivatedComponent->ANNbackGroupConnectionList[i];
+					for(int j=0; j<firstNonActivatedComponent->ANNbackGroupConnectionList.size(); j++)
+					{
+						SANIGroupNeuralNetwork* firstNonActivatedComponentSource = firstNonActivatedComponent->ANNbackGroupConnectionList[j];
+						if(lastActivatedComponentSource == firstNonActivatedComponentSource)
+						{
+							foundComponentSourceMatch = true;
+						}
+					}					
+				}
+				if(foundComponentSourceMatch)
+				#else
 				//assume lastActivatedComponent/firstNonActivatedComponent->groupRef == null, so cannot be compared
 				//assume !SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS (ie ANNbackGroupConnectionList contains single neurons) 
 				SANIGroupNeuralNetwork* lastActivatedComponentSource = lastActivatedComponent->ANNbackGroupConnectionList[0];
 				SANIGroupNeuralNetwork* firstNonActivatedComponentSource = firstNonActivatedComponent->ANNbackGroupConnectionList[0];
 				int lastActivatedComponentSourceSize = lastActivatedComponent->ANNbackGroupConnectionList.size();
 				int firstNonActivatedComponentSourceSize = firstNonActivatedComponent->ANNbackGroupConnectionList.size();
-				if(((lastActivatedComponentSourceSize == 1) && (firstNonActivatedComponentSourceSize == 1)) && (lastActivatedComponentSource == firstNonActivatedComponentSource))
+				if(!((lastActivatedComponentSourceSize == 1) && (firstNonActivatedComponentSourceSize == 1)) || (lastActivatedComponentSource == firstNonActivatedComponentSource))	//updated SANI1m6e, old @SANI1m2b: if(((lastActivatedComponentSourceSize == 1) && (firstNonActivatedComponentSourceSize == 1)) && (lastActivatedComponentSource == firstNonActivatedComponentSource))
+				#endif
 				#else
 				if(lastActivatedComponent->groupRef == firstNonActivatedComponent->groupRef)
 				#endif

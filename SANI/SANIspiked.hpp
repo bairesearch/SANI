@@ -26,7 +26,7 @@
  * File Name: SANIspiked.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6d 09-September-2020
+ * Project Version: 1m6e 09-September-2020
  * Requirements: 
  * Description: Spiked
  * /

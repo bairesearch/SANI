@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6d 09-September-2020
+ * Project Version: 1m6e 09-September-2020
  * Requirements: 
  * Description: SANI specific global definitions
  * /
@@ -68,7 +68,16 @@
 	//debug variables (should all be disabled by default):
 	//#define GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_SENTENCES
 	//#define SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-		
+
+	#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
+		//#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS	//not yet defined
+			//#define SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS	//SANI1m2a/b, updated SANI1m6e	//incomplete
+			#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
+				//#define SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS_ADVANCED	//SANI1m6e	//incomplete
+			#endif
+		//#endif
+	#endif
+			
 	//#define SANI_SEMANTIC_NETWORK	//SANI1m1a	//store semantic network within SANI parse tree rather than generating from SANI parse tree
 	#ifdef SANI_SEMANTIC_NETWORK
 		#define SANI_SEQUENCE_GRAMMAR_INPUT_WORDS	//SANI1m1a	//input words rather than pos values into SANI
