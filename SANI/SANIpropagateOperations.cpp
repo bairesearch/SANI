@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6c 09-September-2020
+ * Project Version: 1m6d 09-September-2020
  * Requirements: 
  * Description: Propagate Operations - generic functions
  * /
@@ -616,7 +616,7 @@ bool SANIpropagateOperationsClass::identifyMissingOrVariableStartComponentFound(
 				bool testFirstComponentSubgroupsUnique = false;
 				bool testLastComponentSubgroupsUnique = false;
 				bool testNotDualLowerLevelConnections = false;
-				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING
 				testFirstComponentNotString = true;
 				#endif
 				//testLastComponentNotString = true;
@@ -631,11 +631,20 @@ bool SANIpropagateOperationsClass::identifyMissingOrVariableStartComponentFound(
 				#endif
 				if(calculateVariableComponentPassCriteria(currentComponent, components, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, testFirstComponentNotString, testLastComponentNotString, testFirstComponentSubgroupsUnique, testLastComponentSubgroupsUnique, testNotDualLowerLevelConnections))
 				{
+				#else
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING
+				if(currentComponent->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)	//added GIA3j5aTEMP65
+				{
+				#endif
 				#endif
 					//cout << "missingOrVariableStartComponentFound = true" << endl;
 					*missingOrVariableStartComponentFound = true;
 				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS
 				}
+				#else
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING
+				}
+				#endif			
 				#endif
 			}	
 		}
@@ -663,17 +672,17 @@ bool SANIpropagateOperationsClass::identifyMissingStartComponentFound(vector<SAN
 			if(previousActiveComponent == NULL)
 			{
 				//support activation of group components with missing start components
-				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING_COMPREHENSIVE
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING_COMPREHENSIVE
 				if(currentComponent->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 				{
 				#endif
 					*missingStartComponentFound = true;
 					//cout << "2missingStartComponentFound" << endl;
-				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING_COMPREHENSIVE
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING_COMPREHENSIVE
 				}
 				else
 				{
-					//cout << "SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING_COMPREHENSIVE: (currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)" << endl;
+					//cout << "SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING_COMPREHENSIVE: (currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)" << endl;
 					*stillParsingActiveComponents = false;	
 				}
 				#endif
