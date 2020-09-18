@@ -23,53 +23,65 @@
 
 /*******************************************************************************
  *
- * File Name: SANIparser.hpp
+ * File Name: SANIposRelTranslatorVariables.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
  * Project Version: 1m7a 11-September-2020
- * Requirements: 
- * Description: Parser
+ * Requirements: requires plain text file
+ * Description: Part-of-speech Relation Translator Variables
  * /
  *******************************************************************************/
 
 
-#ifndef HEADER_SANI_PARSER
-#define HEADER_SANI_PARSER
+#ifndef HEADER_SANI_POS_REL_TRANSLATOR_VARIABLES
+#define HEADER_SANI_POS_REL_TRANSLATOR_VARIABLES
 
-#include "SHAREDglobalDefs.hpp"
 #ifdef USE_GIA
 #include "GIAglobalDefs.hpp"
 #else
 #include "SANIglobalDefs.hpp"
 #endif
+#ifdef SANI_NEURAL_NETWORK
+#include "ANNneuronClass.hpp"
+#endif
+#ifdef SANI_PARSE_SIMULTANEOUS
+#include "GIAtranslatorOperations.hpp"
+#endif
+#include "LRPpreprocessorSentenceClass.hpp"
 
-#ifdef USE_GIA
-#ifdef SANI_PARSER
+#include "SHAREDglobalDefs.hpp"
 
-//#include "GIAposRelTranslatorParser.hpp"
-#include "SANIposRelTranslatorVariables.hpp"
-#include "GIAposRelTranslatorParserOperations.hpp"
-#include "SANInodesComponentClass.hpp"
-#include "SANIrules.hpp"
-#include "LRPpreprocessorWordClass.hpp"
 
-class SANIparserClass
+class SANItranslatorVariablesClass
 {
-	private: SHAREDvarsClass SHAREDvars;
-	//private: GIAposRelTranslatorParserClass GIAposRelTranslatorParser;
-	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
-	private: SANInodesComponentClass SANInodesComponentClassObject;
-	private: SANIrulesClass SANIrules;
-	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
-	private: SANInodesGroupClass SANInodesGroupClassObject;
+public:
+
+	SANItranslatorVariablesClass(void);
+	~SANItranslatorVariablesClass(void);
+	
+	bool isQuery;
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_SENTENCE_INDEXING
+	int maxNumberSentences;
+	LRPpreprocessorSentence* currentPreprocessorSentenceInList;
+	#endif
+	
+	LRPtranslatorVariablesClass LRPpreprocessorTranslatorVariables;
+
+	#ifdef SANI_NEURAL_NETWORK
+	ANNtranslatorVariablesClass* ANNtranslatorVariables;
+	#endif
 	
 	#ifdef SANI_PARSE_SIMULTANEOUS
-	public: bool generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer);
-		public: bool generateSemanticRelationsFromTxtRelationsNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer);
+	GIAtranslatorVariablesClass* GIAtranslatorVariables;
+	#ifdef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC
+	bool parserAllowed;
+	#ifdef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC_OPTIMISED
+	bool parserDemarkateOptimumPathway;
+	#endif
+	#endif
 	#endif
 };
 
-#endif
-#endif
 
 #endif

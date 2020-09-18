@@ -26,7 +26,7 @@
  * File Name: SANIparser.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: 
  * Description: Parser
  * /
@@ -40,10 +40,11 @@
 
 //TODO: check this code
 
+#ifdef USE_GIA
 #ifdef SANI_PARSER
 
 #ifdef SANI_PARSE_SIMULTANEOUS
-bool SANIparserClass::generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer)
+bool SANIparserClass::generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer)
 {
 	bool result = true;
 	
@@ -64,7 +65,7 @@ bool SANIparserClass::generateSemanticRelationsFromTxtRelationsWrapperNeuralNetw
 	return result;
 }
 
-bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIAtranslatorVariablesClass* translatorVariables, SANIGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer)
+bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer)
 {
 	bool result = true;
 	
@@ -103,7 +104,7 @@ bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 
 				GIAposRelTranslatorParserForwardPropogationSignalData* parseTreeComponentSignalData = &(parseTreeComponentSignalDataArray[i]);
 
-				#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS2
+				#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS2
 				SANIrules.printComponent(parseTreeComponent, layer);
 				#endif
 
@@ -147,7 +148,7 @@ bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 				}
 				else if(parseTreeComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 				{
-					GIApreprocessorPlainTextWord* parseTreeComponentWord = parseTreeComponent->candidateStringMatch;
+					LRPpreprocessorPlainTextWord* parseTreeComponentWord = parseTreeComponent->candidateStringMatch;
 					parseTreeComponentSignalData->semanticRelationReturnEntity = parseTreeComponentWord->translatorEntity;
 					//cout << "parseTreeComponentWord->tagName = " << parseTreeComponentWord->tagName << endl;
 					//cout << "parseTreeComponentWord->translatorEntity->entityName = " << parseTreeComponentWord->translatorEntity->entityName << endl;
@@ -172,7 +173,7 @@ bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 			*/
 		}
 
-		if(!GIAposRelTranslatorParserOperations.generateSemanticRelationsFromTxtRelationsPart2(translatorVariables, currentParseTreeGroup, &parseTreeComponentSignalDataArray, parserForwardPropogationSignalData, layer))
+		if(!GIAposRelTranslatorParserOperations.generateSemanticRelationsFromTxtRelationsPart2(translatorVariables->GIAtranslatorVariables, currentParseTreeGroup, &parseTreeComponentSignalDataArray, parserForwardPropogationSignalData, layer))
 		{
 			result = false;
 		}
@@ -191,7 +192,7 @@ bool SANIparserClass::generateSemanticRelationsFromTxtRelationsNeuralNetwork(GIA
 	return result;
 }
 #endif
-
+#endif
 
 
 #endif

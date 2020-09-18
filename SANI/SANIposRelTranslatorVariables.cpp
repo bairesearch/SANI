@@ -23,53 +23,48 @@
 
 /*******************************************************************************
  *
- * File Name: SANIparser.hpp
+ * File Name: SANIposRelTranslatorVariables.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
  * Project Version: 1m7a 11-September-2020
- * Requirements: 
- * Description: Parser
+ * Requirements: requires plain text file
+ * Description: Part-of-speech Relation Translator Variables
  * /
  *******************************************************************************/
 
 
-#ifndef HEADER_SANI_PARSER
-#define HEADER_SANI_PARSER
-
-#include "SHAREDglobalDefs.hpp"
-#ifdef USE_GIA
-#include "GIAglobalDefs.hpp"
-#else
-#include "SANIglobalDefs.hpp"
-#endif
-
-#ifdef USE_GIA
-#ifdef SANI_PARSER
-
-//#include "GIAposRelTranslatorParser.hpp"
 #include "SANIposRelTranslatorVariables.hpp"
-#include "GIAposRelTranslatorParserOperations.hpp"
-#include "SANInodesComponentClass.hpp"
-#include "SANIrules.hpp"
-#include "LRPpreprocessorWordClass.hpp"
 
-class SANIparserClass
+
+
+
+SANItranslatorVariablesClass::SANItranslatorVariablesClass(void)
 {
-	private: SHAREDvarsClass SHAREDvars;
-	//private: GIAposRelTranslatorParserClass GIAposRelTranslatorParser;
-	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
-	private: SANInodesComponentClass SANInodesComponentClassObject;
-	private: SANIrulesClass SANIrules;
-	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
-	private: SANInodesGroupClass SANInodesGroupClassObject;
+	isQuery = false;
 	
-	#ifdef SANI_PARSE_SIMULTANEOUS
-	public: bool generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer);
-		public: bool generateSemanticRelationsFromTxtRelationsNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer);
+	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_SENTENCE_INDEXING
+	maxNumberSentences = 0;
+	currentPreprocessorSentenceInList = NULL;
 	#endif
-};
+	
+	//LRPpreprocessorTranslatorVariables = NULL;
 
-#endif
-#endif
+	#ifdef SANI_NEURAL_NETWORK
+	ANNtranslatorVariables = NULL;
+	#endif
 
-#endif
+	#ifdef SANI_PARSE_SIMULTANEOUS
+	GIAtranslatorVariables = NULL;
+	#ifdef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC
+	parserAllowed = true;
+	#ifdef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC_OPTIMISED
+	parserDemarkateOptimumPathway = false;
+	#endif
+	#endif
+	#endif
+}
+SANItranslatorVariablesClass::~SANItranslatorVariablesClass(void)
+{
+}
+
+

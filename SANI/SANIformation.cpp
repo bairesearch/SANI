@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: 
  * Description: Formation
  * /
@@ -102,7 +102,7 @@ SANIGroupNeuralNetwork* SANIformationClass::getFirstGroupInInputLayerSectionWord
 }
 #endif
 
-#ifdef GIA_NEURAL_NETWORK
+#ifdef SANI_NEURAL_NETWORK
 SANIGroupNeuralNetwork* SANIformationClass::getFirstInputGroupInNetwork()
 {
 	return firstInputGroupInNetwork;
@@ -212,7 +212,7 @@ bool SANIformationClass::createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNe
 	//initialise section as null
 	return result;
 }
-bool SANIformationClass::addInputNeuronLayerSectionWordOrig(GIApreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
+bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
 {
 	bool result = true;
 	
@@ -227,7 +227,7 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(GIApreprocessorPlain
 	
 	string wordOrig = currentWord->tagName;
 	#ifdef SANI_ANN
-	currentGroupInInputLayerSectionWordOrig->neuronReference->GIAentityName = wordOrig;
+	currentGroupInInputLayerSectionWordOrig->neuronReference->SANIneuronName = wordOrig;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	currentGroupInInputLayerSectionWordOrig->groupTypeIsString = true;
@@ -247,7 +247,7 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(GIApreprocessorPlain
 	
 	return result;
 }
-bool SANIformationClass::findInputNeuronLayerSectionWordOrig(GIApreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
+bool SANIformationClass::findInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
 {
 	bool result = false;
 	
@@ -275,10 +275,10 @@ bool SANIformationClass::createInputNeuronLayerSectionWordPOStype(SANIGroupNeura
 	numberOfInputGroupsInSectionVerbVariantType = 0;
 	#endif
 	
-	for(int i=0; i<GIA_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; i++)
+	for(int i=0; i<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; i++)
 	{
 		#ifdef SANI_CREATE_NEURONS_FOR_NOUN_VERB_VARIANTS
-		if(i == GIA_PREPROCESSOR_POS_TYPE_NOUN)
+		if(i == LRP_PREPROCESSOR_POS_TYPE_NOUN)
 		{
 			firstGroupInInputLayerSectionWordNounVariantType = new SANIGroupNeuralNetwork();
 			if(!createInputNeuronLayerSectionNounVariantType(*currentGroupInInputLayerSectionWordPOStype, &firstGroupInInputLayerSectionWordNounVariantType, &numberOfInputGroupsInSectionNounVariantType))
@@ -286,7 +286,7 @@ bool SANIformationClass::createInputNeuronLayerSectionWordPOStype(SANIGroupNeura
 				result = false;
 			}
 		}
-		if(i == GIA_PREPROCESSOR_POS_TYPE_VERB)
+		if(i == LRP_PREPROCESSOR_POS_TYPE_VERB)
 		{
 			firstGroupInInputLayerSectionWordVerbVariantType = new SANIGroupNeuralNetwork();
 			if(!createInputNeuronLayerSectionVerbVariantType(*currentGroupInInputLayerSectionWordPOStype, &firstGroupInInputLayerSectionWordVerbVariantType, &numberOfInputGroupsInSectionVerbVariantType))
@@ -296,7 +296,7 @@ bool SANIformationClass::createInputNeuronLayerSectionWordPOStype(SANIGroupNeura
 		}
 		#endif
 		#ifdef SANI_ANN
-		(*currentGroupInInputLayerSectionWordPOStype)->neuronReference->GIAentityName = GIApreprocessorPOStypeNameArray[i];
+		(*currentGroupInInputLayerSectionWordPOStype)->neuronReference->SANIneuronName = LRPpreprocessorPOStypeNameArray[i];
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR
 		(*currentGroupInInputLayerSectionWordPOStype)->groupTypeIsString = true;
@@ -321,11 +321,11 @@ bool SANIformationClass::createInputNeuronLayerSectionNounVariantType(SANIGroupN
 {	
 	bool result = true;
 	
-	for(int i=0; i<GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES; i++)
+	for(int i=0; i<LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES; i++)
 	{
 		createGroupANNconnectionIO(currentGroupInInputLayerSectionWordPOStype, *currentGroupInInputLayerSectionWordNounVariantType);	//switched GIA3h3a
 		#ifdef SANI_ANN
-		(*currentGroupInInputLayerSectionWordNounVariantType)->neuronReference->GIAentityName = GIApreprocessorMultiwordReductionNounDatabaseTagBaseTenseFormArray[i];
+		(*currentGroupInInputLayerSectionWordNounVariantType)->neuronReference->SANIneuronName = LRPpreprocessorMultiwordReductionNounDatabaseTagBaseTenseFormArray[i];
 		#endif
 		addGroupToLayer(currentGroupInInputLayerSectionWordNounVariantType, numberOfGroupsInSection);		
 	}
@@ -337,11 +337,11 @@ bool SANIformationClass::createInputNeuronLayerSectionVerbVariantType(SANIGroupN
 {
 	bool result = true;
 	
-	for(int i=0; i<GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES; i++)
+	for(int i=0; i<LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES; i++)
 	{
 		createGroupANNconnectionIO(currentGroupInInputLayerSectionWordPOStype, *currentGroupInInputLayerSectionWordVerbVariantType);	//switched GIA3h3a
 		#ifdef SANI_ANN
-		(*currentGroupInInputLayerSectionWordVerbVariantType)->neuronReference->GIAentityName = GIApreprocessorMultiwordReductionVerbDatabaseTagBaseTenseFormArray[i];
+		(*currentGroupInInputLayerSectionWordVerbVariantType)->neuronReference->SANIneuronName = LRPpreprocessorMultiwordReductionVerbDatabaseTagBaseTenseFormArray[i];
 		#endif
 		addGroupToLayer(currentGroupInInputLayerSectionWordVerbVariantType, numberOfGroupsInSection);		
 	}
@@ -376,7 +376,7 @@ bool SANIformationClass::createInputNeuronLayerSectionExplicitWord(SANIGroupNeur
 	for(int i=0; i<explicitWordList.size(); i++)
 	{
 		#ifdef SANI_ANN
-		(*currentGroupInInputLayerSection)->neuronReference->GIAentityName = explicitWordList[i];
+		(*currentGroupInInputLayerSection)->neuronReference->SANIneuronName = explicitWordList[i];
 		#endif
 		inputLayerSectionExplicitWordMap.insert(pair<string, SANIGroupNeuralNetwork*>(explicitWordList[i], *currentGroupInInputLayerSection));
 		addGroupToLayer(currentGroupInInputLayerSection, numberOfGroupsInSection);
@@ -533,7 +533,7 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 								
 								currentGroupInInputLayerSectionTokensLayerClassTypeInstance->GIAtokenLayerClassTypeInstanceName = instanceName;
 								#ifdef SANI_ANN
-								currentGroupInInputLayerSectionTokensLayerClassTypeInstance->neuronReference->GIAentityName = instanceName;
+								currentGroupInInputLayerSectionTokensLayerClassTypeInstance->neuronReference->SANIneuronName = instanceName;
 								#endif
 								createGroupANNconnectionIO(currentGroupInInputLayerSectionTokensLayerClassTypeInstance, currentGroupInInputLayerSectionTokensLayerClassType);
 								addGroupToLayer(&currentGroupInInputLayerSectionTokensLayerClassTypeInstance, &numberOfGroupsInSectionTokensLayerClassTypeInstance);
@@ -544,7 +544,7 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 							
 						currentGroupInInputLayerSectionTokensLayerClassType->GIAtokenLayerClassTypeName = classTypeName;
 						#ifdef SANI_ANN
-						currentGroupInInputLayerSectionTokensLayerClassType->neuronReference->GIAentityName = classTypeName;
+						currentGroupInInputLayerSectionTokensLayerClassType->neuronReference->SANIneuronName = classTypeName;
 						#endif
 						//cout << "classTypeName = " << classTypeName << endl;
 						createGroupANNconnectionIO(currentGroupInInputLayerSectionTokensLayerClassType, currentGroupInInputLayerSectionTokensLayerClass);
@@ -556,7 +556,7 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 				
 				currentGroupInInputLayerSectionTokensLayerClass->GIAtokenLayerClassName = className;
 				#ifdef SANI_ANN
-				currentGroupInInputLayerSectionTokensLayerClass->neuronReference->GIAentityName = className;
+				currentGroupInInputLayerSectionTokensLayerClass->neuronReference->SANIneuronName = className;
 				#endif
 				//cout << "className = " << className << endl;
 				createGroupANNconnectionIO(currentGroupInInputLayerSectionTokensLayerClass, *currentGroupInInputLayerSectionTokensLayer);
@@ -568,7 +568,7 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 		
 		(*currentGroupInInputLayerSectionTokensLayer)->GIAtokenLayerName = layerName;
 		#ifdef SANI_ANN
-		(*currentGroupInInputLayerSectionTokensLayer)->neuronReference->GIAentityName = layerName;
+		(*currentGroupInInputLayerSectionTokensLayer)->neuronReference->SANIneuronName = layerName;
 		#endif
 		//cout << "layerName = " << layerName << endl;
 		inputLayerSectionTokensLayerMap.insert(pair<string, SANIGroupNeuralNetwork*>(layerName, *currentGroupInInputLayerSectionTokensLayer));
@@ -752,7 +752,7 @@ bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* SANI
 			if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS)
 			{
 				string wordPOStypeName = component->wordPOStype;
-				int wordPOStype = GIApreprocessorWordClassObject.getPOStypeFromName(wordPOStypeName);
+				int wordPOStype = LRPpreprocessorWordClassObject.getPOStypeFromName(wordPOStypeName);
 				
 				stringGroup = getInputGroupLayerSection(firstGroupInInputLayerSectionWordPOStype, wordPOStype);
 				#ifdef SANI_DEBUG_CREATE
@@ -1018,7 +1018,7 @@ ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetw
 
 	ANNneuronConnection* newANNneuronConnection = createANNconnection(group, higherLevelGroup);
 	#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
-	newANNneuronConnection->GIAconnectionStrength = connectionStrength;
+	newANNneuronConnection->SANIconnectionStrength = connectionStrength;
 	#endif
 				
 	ANNbackNeuronConnectionList->push_back(newANNneuronConnection);
@@ -1075,7 +1075,7 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 		{
 			SANIGroupNeuralNetwork* group = (groupType->groups)[j];
 			#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
-			group->neuronReference->GIAneuronStrength = group->groupStrength;
+			group->neuronReference->SANIneuronStrength = group->groupStrength;
 			#endif
 			#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_ACTIVATION
 			bool foundActiveComponent = false;
@@ -1090,10 +1090,10 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 					#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_COMPONENT_INDEX
 					#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_COMPONENT_INDEX_EXACT
 					ANNneuronConnection* connection = createANNconnection(groupSource, component);
-					connection->GIAcomponentIndexFirst = !((bool)k);
+					connection->SANIcomponentIndexFirst = !((bool)k);
 					#else
 					ANNneuronConnection* connection = createANNconnection(groupSource, component);
-					connection->GIAcomponentIndex = k;
+					connection->SANIcomponentIndex = k;
 					#endif
 					#else
 					createANNconnection(groupSource, component);
@@ -1110,15 +1110,15 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 			#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_ACTIVATION
 			if(group->neuronActive)
 			{
-				group->neuronReference->activationLevel = ANN_ALGORITHM_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_FULL;
+				group->neuronReference->SANIactivationLevel = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_FULL;
 			}
 			else if(foundActiveComponent)
 			{
-				group->neuronReference->activationLevel = ANN_ALGORITHM_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_PARTIAL;
+				group->neuronReference->SANIactivationLevel = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_PARTIAL;
 			}
 			else
 			{
-				group->neuronReference->activationLevel = ANN_ALGORITHM_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_INACTIVE;
+				group->neuronReference->SANIactivationLevel = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_INACTIVE;
 			}
 			#endif
 		}

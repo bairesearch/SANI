@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Component Class
  * /
@@ -36,12 +36,19 @@
 #ifndef HEADER_SANI_COMPONENT_CLASS
 #define HEADER_SANI_COMPONENT_CLASS
 
+#include "SHAREDglobalDefs.hpp"
+#ifdef USE_GIA
 #include "GIAglobalDefs.hpp"
-#include "GIApreprocessorWordClass.hpp"
+#else
+#include "SANIglobalDefs.hpp"
+#endif
+#include "LRPpreprocessorWordClass.hpp"
 #ifdef SANI_FORWARD
 #include "ANNneuronClass.hpp"
 #include "ANNneuronConnectionClass.hpp"
 #endif
+
+
 
 #ifdef SANI_NODES
 
@@ -187,12 +194,12 @@ public:
 		
 	#ifdef SANI_FORWARD
 	bool neuronComponentConnectionActive;
-	GIApreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord;
+	LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord;
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
-	vector<GIApreprocessorPlainTextWord*> neuronComponentConnectionActiveWordRecordMemory;
+	vector<LRPpreprocessorPlainTextWord*> neuronComponentConnectionActiveWordRecordMemory;
 	#endif
 	#endif
-	GIApreprocessorPlainTextWord* candidateStringMatch;
+	LRPpreprocessorPlainTextWord* candidateStringMatch;
 	SANIGroupType* groupTypeRef;	
 	SANIGroupNeuralNetwork* groupRef;
 	

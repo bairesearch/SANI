@@ -26,7 +26,7 @@
  * File Name: SANIrules.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Rules
  * /
@@ -38,7 +38,7 @@
 #include "XMLrulesClass.hpp"
 
 
-#ifdef GIA_POS_REL_TRANSLATOR_RULES
+#ifdef USE_SANI	//GIA_POS_REL_TRANSLATOR_RULES
 
 
 
@@ -388,10 +388,10 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 			string isNumberOf = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_VALUE_false;
 			#endif
 			#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
-			string wordVerbVariantType = GIApreprocessorMultiwordReductionVerbDatabaseTagBaseTenseFormArray[GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN];
-			int wordVerbVariantTypeInt = GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
-			string wordNounVariantType = GIApreprocessorMultiwordReductionNounDatabaseTagBaseTenseFormArray[GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN];
-			int wordNounVariantTypeInt = GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
+			string wordVerbVariantType = LRPpreprocessorMultiwordReductionVerbDatabaseTagBaseTenseFormArray[LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN];
+			int wordVerbVariantTypeInt = LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
+			string wordNounVariantType = LRPpreprocessorMultiwordReductionNounDatabaseTagBaseTenseFormArray[LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN];
+			int wordNounVariantTypeInt = LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
 			#endif
 			#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_NUMBER_EXPLETIVES
 			string isExpletive = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_VALUE_false;
@@ -605,7 +605,7 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 			#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 			if(XMLparserClass.getAttribute(currentTagInTxtRelTranslatorGroupTag, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_wordVerbVariantType, &wordVerbVariantType))
 			{
-				if(!SHAREDvars.textInTextArray(wordVerbVariantType, GIApreprocessorMultiwordReductionVerbDatabaseTagBaseTenseFormArray, GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES, &wordVerbVariantTypeInt))
+				if(!SHAREDvars.textInTextArray(wordVerbVariantType, LRPpreprocessorMultiwordReductionVerbDatabaseTagBaseTenseFormArray, LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES, &wordVerbVariantTypeInt))
 				{
 					cerr << "SANIrules::extractSANIGroups{} error: semanticRelationReturnFunctionNameIndexType unknown; wordVerbVariantType = " << wordVerbVariantType << endl;
 					exit(EXIT_ERROR);
@@ -613,7 +613,7 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 			}
 			if(XMLparserClass.getAttribute(currentTagInTxtRelTranslatorGroupTag, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_wordNounVariantType, &wordNounVariantType))
 			{
-				if(!SHAREDvars.textInTextArray(wordNounVariantType, GIApreprocessorMultiwordReductionNounDatabaseTagBaseTenseFormArray, GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES, &wordNounVariantTypeInt))
+				if(!SHAREDvars.textInTextArray(wordNounVariantType, LRPpreprocessorMultiwordReductionNounDatabaseTagBaseTenseFormArray, LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_NUMBER_OF_TYPES, &wordNounVariantTypeInt))
 				{
 					cerr << "SANIrules::extractSANIGroups{} error: semanticRelationReturnFunctionNameIndexType unknown; wordNounVariantType = " << wordNounVariantType << endl;
 					exit(EXIT_ERROR);

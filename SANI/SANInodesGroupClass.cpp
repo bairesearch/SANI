@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Group Class
  * /
@@ -39,7 +39,7 @@
 
 
 
-GIAposRelTranslatorDebug::GIAposRelTranslatorDebug(void)
+SANIposRelTranslatorDebug::SANIposRelTranslatorDebug(void)
 {
 	#ifdef SANI_HEAVY
 	activationMemoryGroupArrayIndex = INT_DEFAULT_VALUE;
@@ -48,7 +48,7 @@ GIAposRelTranslatorDebug::GIAposRelTranslatorDebug(void)
 	firstComponentActive = false;
 	secondComponentActive = false;	
 }
-GIAposRelTranslatorDebug::~GIAposRelTranslatorDebug(void)
+SANIposRelTranslatorDebug::~SANIposRelTranslatorDebug(void)
 {
 
 }
@@ -94,8 +94,8 @@ SANIForwardPropogationSignalData::SANIForwardPropogationSignalData(void)
 	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
-	wordNounVariantType = GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
-	wordVerbVariantType = GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
+	wordNounVariantType = LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
+	wordVerbVariantType = LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
 	#endif
 	
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY
@@ -121,7 +121,7 @@ SANIForwardPropogationWordData::SANIForwardPropogationWordData(void)
 	//word specific variables:
 	wordReference = NULL;
 	#ifdef SANI_PREVIOUS_WORD_POS_TYPE_CHECKS
-	wordPOStype = GIA_PREPROCESSOR_POS_TYPE_UNDEFINED;
+	wordPOStype = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;
 	#endif
 	
 	w = INT_DEFAULT_VALUE;
@@ -172,8 +172,8 @@ SANIGroup::SANIGroup(void)
 	#ifdef SANI_INVERSE
 	numberOfConsecutiveTimesPreviousGroupType = 0;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
-	wordVerbVariantTypeDerived = GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
-	wordNounVariantTypeDerived = GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;	
+	wordVerbVariantTypeDerived = LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
+	wordNounVariantTypeDerived = LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;	
 	#endif
 	#endif
 	#endif
@@ -327,7 +327,7 @@ SANIGroupNeuralNetwork::~SANIGroupNeuralNetwork(void)
 void SANIGroupNeuralNetwork::initiateANNneuron(const string groupName)	
 {
 	neuronReference = new ANNneuron();
-	neuronReference->GIAentityName = groupName;
+	neuronReference->SANIneuronName = groupName;
 	neuronReference->spatialCoordinatesSet3D = true;	//required for draw
 	neuronReference->hasBackLayer = true;	//required for draw
 }
@@ -622,11 +622,11 @@ bool SANInodesGroupClass::isTopLevelGroupType(const string groupTypeName, const 
 
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
-bool SANInodesGroupClass::determineIsQuery(vector<GIApreprocessorPlainTextWord*>* sentenceContents)
+bool SANInodesGroupClass::determineIsQuery(vector<LRPpreprocessorPlainTextWord*>* sentenceContents)
 {
 	bool isQuery = false;
 	
-	if((*sentenceContents)[sentenceContents->size()-1]->tagName == GIA_NLP_NUMBER_OF_PUNCTUATION_MARK_CHARACTERS_END_OF_SENTENCE_QUESTIONMARK)
+	if((*sentenceContents)[sentenceContents->size()-1]->tagName == LRP_NLP_NUMBER_OF_PUNCTUATION_MARK_CHARACTERS_END_OF_SENTENCE_QUESTIONMARK)
 	{
 		isQuery = true;
 	}

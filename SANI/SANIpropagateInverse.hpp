@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Propagate Inverse
  * /
@@ -36,19 +36,26 @@
 #ifndef HEADER_SANI_PROPAGATE_INVERSE
 #define HEADER_SANI_PROPAGATE_INVERSE
 
+#include "SHAREDglobalDefs.hpp"
+#ifdef USE_GIA
 #include "GIAglobalDefs.hpp"
+#else
+#include "SANIglobalDefs.hpp"
+#endif
 
-#ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3	//or USE_SANI
 #ifdef SANI_INVERSE
 
-#include "GIAtranslatorOperations.hpp"
+#ifdef USE_GIA
+//#include "GIAtranslatorOperations.hpp"
+#endif
 #include "SANInodes.hpp"
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
 #include "SANIpropagateOperations.hpp"
-#include "GIApreprocessorPOStagger.hpp"
-#include "GIApreprocessorWordClass.hpp"
-#include "GIApreprocessorSentenceClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
+#include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorSentenceClass.hpp"
 #include "SHAREDvars.hpp"
 
 class SANIpropagateInverseClass
@@ -58,29 +65,29 @@ class SANIpropagateInverseClass
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANIpropagateOperationsClass SANIpropagateOperations;	//required for printComponent/printParseTreeDebugIndentation
-	private: GIApreprocessorPOStaggerClass GIApreprocessorPOStagger;
-	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
-	private: GIApreprocessorSentenceClass GIApreprocessorSentenceClassObject;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
+	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
+	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
 	private: SHAREDvarsClass SHAREDvars;
 
-	public: bool generateParseTreeIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets);
-		private: bool generateParseTreeGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupType* groupType, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent);
-			private: bool generateParseTreeGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType);
-				private: bool generateRulesGroupTreeComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, bool subcomponents, int subcomponentsType, bool subcomponentsOptional, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType);
-					private: bool generateRulesGroupTreeComponent(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType);
+	public: bool generateParseTreeIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets);
+		private: bool generateParseTreeGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupType* groupType, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent);
+			private: bool generateParseTreeGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType);
+				private: bool generateRulesGroupTreeComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, bool subcomponents, int subcomponentsType, bool subcomponentsOptional, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType);
+					private: bool generateRulesGroupTreeComponent(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType);
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 		private: bool forwardNounVerbVariantRequirementsComponentToGroup(SANIComponentParseTree* component, SANIGroupParseTree* newParseGroup);
 		private: bool forwardNounVerbVariantRequirementsGroupToComponent(SANIGroupParseTree* currentParseGroup, SANIComponentParseTree* currentComponent);
 		#endif
-		private: bool findStringMatch(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, GIApreprocessorPlainTextWord* currentWord, SANIComponentParseTree* currentParseTreeComponent);
-		private: bool verifyPOStype(GIApreprocessorPlainTextWord* currentWord, unsigned char wordPOStype);
-		public: bool updatePerformance(const int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent);
+		private: bool findStringMatch(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, LRPpreprocessorPlainTextWord* currentWord, SANIComponentParseTree* currentParseTreeComponent);
+		private: bool verifyPOStype(LRPpreprocessorPlainTextWord* currentWord, unsigned char wordPOStype);
+		public: bool updatePerformance(const int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent);
 			private: bool deleteAllSubgroupsRecurse(SANIGroupParseTree* currentParseTreeGroup, int layer);
 			private: bool deleteParseComponent(SANIComponentParseTree* currentParseTreeComponent);
-		public: void clearAllWordsAlreadyFoundMatchInComponent(vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup);
-		public: void restoreAllWordsAlreadyFoundMatchInComponent(vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundNew);
-	private: void defineSubstancesBasedOnNetworkAndDeterminerInfo(GIAtranslatorVariablesClass* translatorVariables);
-	private: int getEntityArrayMaxIndex(GIAtranslatorVariablesClass* translatorVariables);
+		public: void clearAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup);
+		public: void restoreAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundNew);
+	private: void defineSubstancesBasedOnNetworkAndDeterminerInfo(SANItranslatorVariablesClass* translatorVariables);
+	private: int getEntityArrayMaxIndex(SANItranslatorVariablesClass* translatorVariables);
 
 	private: bool printParseTreeDebugIndentation(int layer);
 

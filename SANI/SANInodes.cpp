@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Nodes
  * /
@@ -37,6 +37,7 @@
 
 
 #ifdef SANI_NODES
+
 
 #ifdef SANI_SEQUENCE_GRAMMAR
 static int newNeuronIndex;
@@ -589,14 +590,14 @@ bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork
 
 #ifdef SANI_FORWARD
 
-bool SANInodesClass::currentWordAmbiguous(GIApreprocessorPlainTextWord* currentWord)
+bool SANInodesClass::currentWordAmbiguous(LRPpreprocessorPlainTextWord* currentWord)
 {
 	bool result = false;
 	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-	if(currentWord->unambiguousPOSindex == GIA_PREPROCESSOR_POS_TYPE_UNDEFINED)
+	if(currentWord->unambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_UNDEFINED)
 	#else
-	if(currentWord->POSambiguityInfo == GIA_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN)
+	if(currentWord->POSambiguityInfo == LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN)
 	#endif
 	{
 		result = true;
@@ -623,46 +624,46 @@ bool SANInodesClass::isWordPOStypeNoun(int wordPOStype)
 {
 	bool result = false;
 	
-	if(wordPOStype == GIA_SHARED_POS_TYPE_NOUN)	//what about GIA_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE etc from GIAsemRelTranslatorDefs.hpp?
+	if(wordPOStype == LRP_SHARED_POS_TYPE_NOUN)	//what about LRP_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE etc from GIAsemRelTranslatorDefs.hpp?
 	{
 		result = true;
 	}
 	//sync with (ie based on) <group groupName="nounMultiwordPropernoun"> [includes: <group groupName="nounMultiwordName">]
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PROPERNOUN_FIRST_MALE)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PROPERNOUN_FIRST_MALE)
 	{
 		result = true;
 	}
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PROPERNOUN_FIRST_FEMALE)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PROPERNOUN_FIRST_FEMALE)
 	{
 		result = true;
 	}
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PROPERNOUN_FAMILY)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PROPERNOUN_FAMILY)
 	{
 		result = true;
 	}
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PROPERNOUN_PLACE)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PROPERNOUN_PLACE)
 	{
 		result = true;
 	}	
 	//sync with (ie based on) <group groupName="pronoun">		
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PRONOUN_INDEFINITE)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PRONOUN_INDEFINITE)
 	{
 		result = true;
 	}
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT)
 	{
 		result = true;
 	}
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT)
 	{
 		result = true;
 	}
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_PRONOUN_REFLEXIVE)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_PRONOUN_REFLEXIVE)
 	{
 		result = true;
 	}	
 	
-	else if(wordPOStype == GIA_SHARED_POS_TYPE_VERB)
+	else if(wordPOStype == LRP_SHARED_POS_TYPE_VERB)
 	{
 		result = true;
 	}
@@ -1164,12 +1165,12 @@ bool SANInodesClass::printParseTreeDebugIndentation(int layer)
 	return result;
 }
 
-int SANInodesClass::calculateMinIndexOfMatchesFound(vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset)
+int SANInodesClass::calculateMinIndexOfMatchesFound(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset)
 {	
 	int minIndexOfMatchesFound = -1;
 	for(int w=0; w<sentenceContentsSubset->size(); w++)
 	{
-		GIApreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
+		LRPpreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
 		if(currentWord->alreadyFoundMatch)
 		{	
 			minIndexOfMatchesFound = w;
@@ -1348,21 +1349,21 @@ bool SANInodesClass::isNeuronString(SANIGroupNeuralNetwork* currentNeuron)
 	return result;
 }
 
-bool SANInodesClass::getWordPOStypeFromAmbiguousWord(GIApreprocessorPlainTextWord* currentWord, int* wordPOStype)
+bool SANInodesClass::getWordPOStypeFromAmbiguousWord(LRPpreprocessorPlainTextWord* currentWord, int* wordPOStype)
 {
 	bool result = false;
 	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES_MID_SENTENCE_CAPITALISED_WORDS_AS_PROPERNOUNS_METHOD2
-	if(GIApreprocessorWordClassObject.isMidSentenceUppercaseWordLikelyProperNoun(currentWord))
+	if(LRPpreprocessorWordClassObject.isMidSentenceUppercaseWordLikelyProperNoun(currentWord))
 	{	
-		*wordPOStype = GIA_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT;
+		*wordPOStype = LRP_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT;
 		result = true;
 	}
 	else
 	{
 	#endif
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES_AS_NOUNS
-		*wordPOStype = GIA_PREPROCESSOR_POS_TYPE_NOUN;
+		*wordPOStype = LRP_PREPROCESSOR_POS_TYPE_NOUN;
 		result = true;		
 		#endif
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES_MID_SENTENCE_CAPITALISED_WORDS_AS_PROPERNOUNS_METHOD2

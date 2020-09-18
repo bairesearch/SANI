@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Group Class
  * /
@@ -36,8 +36,13 @@
 #ifndef HEADER_SANI_GROUP_CLASS
 #define HEADER_SANI_GROUP_CLASS
 
+#include "SHAREDglobalDefs.hpp"
+#ifdef USE_GIA
 #include "GIAglobalDefs.hpp"
-#include "GIApreprocessorWordClass.hpp"
+#else
+#include "SANIglobalDefs.hpp"
+#endif
+#include "LRPpreprocessorWordClass.hpp"
 #ifdef SANI_FORWARD
 #include "ANNneuronClass.hpp"
 #include "ANNneuronConnectionClass.hpp"
@@ -93,11 +98,11 @@ static string SANIGroupsTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_TYPE_NUMBER_OF
 
 
 
-class GIAposRelTranslatorDebug
+class SANIposRelTranslatorDebug
 {
 public:
-	GIAposRelTranslatorDebug(void);
-	~GIAposRelTranslatorDebug(void);
+	SANIposRelTranslatorDebug(void);
+	~SANIposRelTranslatorDebug(void);
 	
 	#ifdef SANI_HEAVY
 	int activationMemoryGroupArrayIndex;
@@ -177,7 +182,7 @@ public:
 	~SANIForwardPropogationWordData(void);
 		
 	 //word specific variables:
-	GIApreprocessorPlainTextWord* wordReference;
+	LRPpreprocessorPlainTextWord* wordReference;
 	#ifdef SANI_PREVIOUS_WORD_POS_TYPE_CHECKS
 	int wordPOStype;	
 	#endif
@@ -584,7 +589,7 @@ public:
 	#ifdef SANI_PARSE_PERFORMANCE
 	int performance;
 	#endif
-	vector<GIApreprocessorPlainTextWord*>* sentenceContents;
+	vector<LRPpreprocessorPlainTextWord*>* sentenceContents;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
 	bool isQuery;
@@ -627,7 +632,7 @@ class SANInodesGroupClass
 	#endif
 	public: bool isTopLevelGroupType(const string groupTypeName, const int groupTypeReferenceSetType, const bool isQuery, const bool parseIsolatedSubreferenceSets);	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
-	public: bool determineIsQuery(vector<GIApreprocessorPlainTextWord*>* sentenceContents);
+	public: bool determineIsQuery(vector<LRPpreprocessorPlainTextWord*>* sentenceContents);
 	#endif
 	#endif
 };

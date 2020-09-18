@@ -26,20 +26,25 @@
  * File Name: SANIrules.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Rules
  * /
  *******************************************************************************/
 
 
-#ifndef HEADER_GIA_POS_REL_TRANSLATOR_RULES
-#define HEADER_GIA_POS_REL_TRANSLATOR_RULES
+#ifndef HEADER_SANI_RULES
+#define HEADER_SANI_RULES
 
 
+#include "SHAREDglobalDefs.hpp"
+#ifdef USE_GIA
 #include "GIAglobalDefs.hpp"
+#else
+#include "SANIglobalDefs.hpp"
+#endif
 
-#ifdef GIA_POS_REL_TRANSLATOR_RULES
+#ifdef USE_SANI	//GIA_POS_REL_TRANSLATOR_RULES
 
 #include "XMLparserClass.hpp"
 #include "SANInodes.hpp"
@@ -48,6 +53,9 @@
 #ifdef SANI_SEQUENCE_GRAMMAR
 //#include "SANIpropagateCompactGenerate.hpp"
 #endif
+
+
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 
 #define GIA_POS_REL_TRANSLATOR_RULES_GROUPS_WITH_NO_EXTERNAL_PROCESSING_NUMBER_OF_TYPES (2)
 static string GIAtxtRelWithNoExternalProcessingGroupNameArray[GIA_POS_REL_TRANSLATOR_RULES_GROUPS_WITH_NO_EXTERNAL_PROCESSING_NUMBER_OF_TYPES] = {"definitionAlias1-withNoExternalProcessing", "definitionAlias2-withNoExternalProcessing"};
@@ -284,9 +292,10 @@ static string GIAposRelTranslatorHybridLogicReferenceClassConjunctionTypes[GIA_P
 static string GIAposRelTranslatorHybridLogicReferenceClassVerbTypes[GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_VERB_TYPE_NUM] = {GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_VERB_TYPE_proposition};
 static string GIAposRelTranslatorHybridLogicReferenceClassPrepositionTypes[GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_NUM] = {GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_regarding, GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_stance, GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_qualifier, GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_time, GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_meansOfAchievingAction, GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_purpose, GIA_POS_REL_TRANSLATOR_RULES_TOKENS_LOGIC_REFERENCE_CLASS_PREPOSITION_TYPE_with};
 
-
-
 #define BOOL_NA (false)
+
+#endif
+
 
 
 

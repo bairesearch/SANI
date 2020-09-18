@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Propagate Inverse
  * /
@@ -35,10 +35,10 @@
 
 #include "SANIpropagateInverse.hpp"
 
-#ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3	//or USE_SANI
 #ifdef SANI_INVERSE
 
-bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<GIApreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets)
+bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets)
 {
 	bool result = false;
 
@@ -51,7 +51,7 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SA
 	
 	for(int i=0; i<SANIGroupTypes->size(); i++)
 	{
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 		cout << "i = " << i << endl;
 		#endif
 		
@@ -62,14 +62,14 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SA
 		bool passGroupTests = SANInodesGroupClassObject.isTopLevelGroupType(groupType->groupTypeName, groupType->referenceSetType, isQuery, parseIsolatedSubreferenceSets);	
 		if(passGroupTests)
 		{
-			#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+			#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 			cout << "groupType->referenceSetType = " << groupType->referenceSetType << endl;
 			#endif
 
 			SANIGroupParseTree* firstParseTreeGroupTemp = new SANIGroupParseTree();
 			int performanceTemp = 0;
 			bool passedTemp = false;
-			int layer = GIA_POS_REL_TRANSLATOR_RULES_LAYER_START;
+			int layer = SANI_POS_REL_TRANSLATOR_RULES_LAYER_START;
 			string previousGroupType = "";
 			int numberOfConsecutiveTimesPreviousGroupType = 0;
 			if(generateParseTreeGroupType(SANIrulesTokenLayers, groupType, sentenceContents, firstParseTreeGroupTemp, &performanceTemp, layer, previousGroupType, numberOfConsecutiveTimesPreviousGroupType, NULL))
@@ -89,7 +89,7 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SA
 	if(result)
 	{
 		//cout << "performance = " << performance << endl;
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS3
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS3
 		cout << "SANIpropagateInverseClass::generateParseTreeIntro FOUND result" << endl;
 		#endif
 		//exit(EXIT_ERROR);
@@ -122,20 +122,20 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SA
 	return result;
 }
 
-bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupType* groupType, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent)
+bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupType* groupType, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent)
 {
 	bool result = false;
 	
 	int minIndexOfMatchesFoundBackupOptimum = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 
-	#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+	#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 	SANInodes.printParseTreeDebugIndentation(layer);
 	cout << "groupType->groupTypeName = " << groupType->groupTypeName << endl;
 	SANInodes.printParseTreeDebugIndentation(layer);
 	cout << "minIndexOfMatchesFoundBackupOptimum = " << minIndexOfMatchesFoundBackupOptimum << endl;
 	#endif
 
-	#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS3
+	#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS3
 	if(groupType->groupTypeName == "logicReferenceSets")
 	{
 		SANInodes.printParseTreeDebugIndentation(layer);
@@ -155,7 +155,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 
 		int minIndexOfMatchesFoundBackup2 = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 		SANInodes.printParseTreeDebugIndentation(layer);
 		cout << "group->groupName = " << group->groupName << endl;
 		#endif
@@ -181,7 +181,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 	{
 		restoreAllWordsAlreadyFoundMatchInComponent(sentenceContentsSubset, *performance);
 		
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS3
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS3
 		//cout << "layer = " << layer << endl;
 		if(groupType->groupTypeName == "logicReferenceSets")
 		{
@@ -199,7 +199,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 	{
 		clearAllWordsAlreadyFoundMatchInComponent(sentenceContentsSubset, minIndexOfMatchesFoundBackupOptimum);	//redundant?
 		
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS3
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS3
 		if(groupType->groupTypeName == "logicReferenceSets")
 		{
 			SANInodes.printParseTreeDebugIndentation(layer);
@@ -216,7 +216,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 	return result;
 }
 
-bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = true;
 
@@ -228,8 +228,8 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SA
 	if(group->previousWordPOStype != "")
 	{
 		pass = false;
-		if((minIndexOfMatchesFoundBackup2 >= 0 && (sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2)->wordPOStypeInferred == GIApreprocessorWordClassObject.getPOStypeFromName(group->previousWordPOStype))))
-		//OLD: verifyPOStype(sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2), GIApreprocessorWordClassObject.getPOStypeFromName(group->previousWordPOStype))))
+		if((minIndexOfMatchesFoundBackup2 >= 0 && (sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2)->wordPOStypeInferred == LRPpreprocessorWordClassObject.getPOStypeFromName(group->previousWordPOStype))))
+		//OLD: verifyPOStype(sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2), LRPpreprocessorWordClassObject.getPOStypeFromName(group->previousWordPOStype))))
 		{
 			pass = true;
 		}
@@ -241,7 +241,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SA
 		pass = false;
 		for(int j=0; j<=minIndexOfMatchesFoundBackup2; j++)
 		{
-			if(sentenceContentsSubset->at(j)->wordPOStypeInferred == GIApreprocessorWordClassObject.getPOStypeFromName(group->existsPreceedingWordPOStype))
+			if(sentenceContentsSubset->at(j)->wordPOStypeInferred == LRPpreprocessorWordClassObject.getPOStypeFromName(group->existsPreceedingWordPOStype))
 			{
 				//cout << "group->existsPreceedingWordPOStype = " << group->existsPreceedingWordPOStype << endl;
 				pass = true;
@@ -251,7 +251,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SA
 	#endif
 	if(pass)
 	{	
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS3
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS3
 		if(group->groupName == "referenceSetsOrLogicReferenceSets")
 		{
 			SANInodes.printParseTreeDebugIndentation(layer);
@@ -273,7 +273,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SA
 	return foundWordMatch;
 }
 
-bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, bool subcomponents, int subcomponentsType, bool subcomponentsOptional, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, bool subcomponents, int subcomponentsType, bool subcomponentsOptional, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = true;
 	
@@ -315,11 +315,11 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 			{//only continue while foundWordMatch:
 			
 				int minIndexOfMatchesFoundBackup2 = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
-				vector<GIApreprocessorPlainTextWord*> sentenceContentsBackup2;
+				vector<LRPpreprocessorPlainTextWord*> sentenceContentsBackup2;
 				
 				if(minIndexOfMatchesFoundBackup2 < int(sentenceContentsSubset->size()))
 				{
-					#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+					#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 					SANInodes.printComponent(component, layer);
 					#endif
 					
@@ -331,15 +331,15 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 						{
 							if(minIndexOfMatchesFoundBackup2 < int(sentenceContentsSubset->size()-1))
 							{
-								GIApreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2+1);
-								GIApreprocessorPlainTextWord* previousWord = sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2);
-								if(verifyPOStype(currentWord, GIA_PREPROCESSOR_POS_TYPE_NOUN) && verifyPOStype(previousWord, GIA_PREPROCESSOR_POS_TYPE_NOUN))
+								LRPpreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2+1);
+								LRPpreprocessorPlainTextWord* previousWord = sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2);
+								if(verifyPOStype(currentWord, LRP_PREPROCESSOR_POS_TYPE_NOUN) && verifyPOStype(previousWord, LRP_PREPROCESSOR_POS_TYPE_NOUN))
 								{
 									#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_REPEAT_IGNORE_CONSECUTIVE_PLURAL_NOUNS_DETECT_IRREGULAR_NOUN_FORMS
-									if(((currentWord->wordNounVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL) || (currentWord->wordNounVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)) && 
-									((previousWord->wordNounVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL) || (previousWord->wordNounVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)))
+									if(((currentWord->wordNounVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL) || (currentWord->wordNounVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)) && 
+									((previousWord->wordNounVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL) || (previousWord->wordNounVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)))
 									#else
-									if((currentWord->wordNounVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL) && (previousWord->wordNounVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL))
+									if((currentWord->wordNounVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL) && (previousWord->wordNounVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_PLURAL))
 									#endif
 									{
 										subcomponentsRepeatStillFindingRepeats = false;
@@ -364,7 +364,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 							SANIComponentParseTree* newParseComponent = NULL;
 							#endif
 							
-							GIApreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2+1);
+							LRPpreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(minIndexOfMatchesFoundBackup2+1);
 							if(findStringMatch(SANIrulesTokenLayers, component, currentWord, newParseComponent))
 							{
 								foundWordMatch = false;	//component should be missing but was found
@@ -575,7 +575,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 		currentParseTreeGroup->components.clear();
 		clearAllWordsAlreadyFoundMatchInComponent(sentenceContentsSubset, minIndexOfMatchesFoundBackup1);
 		
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 		SANInodes.printParseTreeDebugIndentation(layer);
 		cout << "FAIL" << endl;
 		#endif
@@ -583,7 +583,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 	}
 	else
 	{
-		#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 		SANInodes.printParseTreeDebugIndentation(layer);
 		cout << "PASS" << endl;
 		#endif
@@ -592,7 +592,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 	return foundWordMatch;
 }
 
-bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = false;
 
@@ -621,19 +621,19 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparser
 		int w = minIndexOfMatchesFound+1;
 		if(w < sentenceContentsSubset->size())
 		{	
-			GIApreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
+			LRPpreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
 
 			//cout << "minIndexOfMatchesFound = " << minIndexOfMatchesFound << endl;
 			//cout << "currentWord = " << currentWord->tagName << endl;
 			if(findStringMatch(SANIrulesTokenLayers, component, currentWord, currentParseTreeComponent))
 			{
-				#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+				#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 				cout << "findStringMatch: currentWord = " << currentWord->tagName << endl;
 				#endif
 				foundWordMatch = true;
 				currentWord->alreadyFoundMatch = true;
-				#ifndef GIA_POS_REL_TRANSLATOR_RULES_DEFINE_WORD_TRANSLATOR_SENTENCE_ENTITY_INDEX_AT_START
-				currentWord->translatorSentenceEntityIndex = GIAtranslatorOperations.convertSentenceContentsIndexToEntityIndex(w);
+				#ifndef LRP_DEFINE_WORD_TRANSLATOR_SENTENCE_ENTITY_INDEX_AT_START
+				currentWord->translatorSentenceEntityIndex = LRPpreprocessorWordClassObject.convertSentenceContentsIndexToEntityIndex(w);
 				//currentWord->translatorSentenceWordIndex = w;	//CHECKTHIS: NOTREQUIRED
 				#endif
 				*performance = *performance + 1;
@@ -677,7 +677,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparser
 			//special case for logicReferenceSets - check referenceSetType instead of groupType; as logicReferenceSets groupTypes include recursive generalised (not groupName specific) referencing: <groupType groupTypeName="logicReferenceSets" -> <groupType groupTypeName="logicReferenceSetsOptional" ->  <groupType groupTypeName="logicReferenceSets"
 			if((component->groupTypeRef->referenceSetType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_REFERENCE_SET_TYPE_LOGICREFERENCESET) && (layer > GIA_POS_REL_TRANSLATOR_GROUP_TYPE_MAX_NUMBER_CONSECUTIVE_LAYERS_LOGIC_REFERENCES))
 			{
-				#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS3
+				#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS3
 				cout << "false pass 2" << endl;
 				#endif
 				pass = false;
@@ -753,12 +753,12 @@ bool SANIpropagateInverseClass::forwardNounVerbVariantRequirementsComponentToGro
 {
 	bool result = true;
 	//cout << "1 SANIpropagateInverseClass::forwardNounVerbVariantRequirementsComponentToGroup: currentComponent->semanticRelationReturnEntity" << endl;
-	if(component->wordVerbVariantType != GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+	if(component->wordVerbVariantType != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 	{
 		newParseGroup->wordVerbVariantTypeDerived = component->wordVerbVariantType;
 		//cout << "1 newParseGroup->wordVerbVariantTypeDerived = " << newParseGroup->wordVerbVariantTypeDerived << endl;
 	}
-	if(component->wordNounVariantType != GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+	if(component->wordNounVariantType != LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 	{
 		newParseGroup->wordNounVariantTypeDerived = component->wordNounVariantType;		
 		//cout << "1 newParseGroup->wordNounVariantTypeDerived = " << newParseGroup->wordNounVariantTypeDerived << endl;
@@ -771,12 +771,12 @@ bool SANIpropagateInverseClass::forwardNounVerbVariantRequirementsGroupToCompone
 	if(currentComponent->semanticRelationReturnEntity)
 	{
 		//cout << "2 SANIpropagateInverseClass::forwardNounVerbVariantRequirementsGroupToComponent: currentComponent->semanticRelationReturnEntity" << endl;
-		if(currentParseGroup->wordVerbVariantTypeDerived != GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+		if(currentParseGroup->wordVerbVariantTypeDerived != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 		{
 			currentComponent->wordVerbVariantType = currentParseGroup->wordVerbVariantTypeDerived;
 			//cout << "2 currentComponent->wordVerbVariantType = " << currentComponent->wordVerbVariantType << endl;
 		}
-		if(currentParseGroup->wordNounVariantTypeDerived != GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+		if(currentParseGroup->wordNounVariantTypeDerived != LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 		{
 			currentComponent->wordNounVariantType = currentParseGroup->wordNounVariantTypeDerived;	
 			//cout << "2 currentComponent->wordNounVariantType = " << currentComponent->wordNounVariantType << endl;	
@@ -787,19 +787,19 @@ bool SANIpropagateInverseClass::forwardNounVerbVariantRequirementsGroupToCompone
 #endif
 			
 
-bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, GIApreprocessorPlainTextWord* currentWord, SANIComponentParseTree* currentParseTreeComponent)
+bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, LRPpreprocessorPlainTextWord* currentWord, SANIComponentParseTree* currentParseTreeComponent)
 {
 	bool foundWordMatchTemp = false;
 	if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS)
 	{
 		string wordPOStypeName = component->wordPOStype;
-		int wordPOStype = GIApreprocessorWordClassObject.getPOStypeFromName(wordPOStypeName);
+		int wordPOStype = LRPpreprocessorWordClassObject.getPOStypeFromName(wordPOStypeName);
 		
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-		if(currentWord->unambiguousPOSindex == GIA_PREPROCESSOR_POS_TYPE_UNDEFINED)
+		if(currentWord->unambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_UNDEFINED)
 		#else
-		if(currentWord->POSambiguityInfo == GIA_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN)
+		if(currentWord->POSambiguityInfo == LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN)
 		#endif
 		{
 			#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES_AS_WILDCARDS
@@ -815,21 +815,21 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 			#endif
 			#else
 			#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES_AS_NOUNS
-			if(wordPOStype == GIA_PREPROCESSOR_POS_TYPE_NOUN)
+			if(wordPOStype == LRP_PREPROCESSOR_POS_TYPE_NOUN)
 			{
 				foundWordMatchTemp = true;
 				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
 				currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
-				//cout << "(wordPOStype == GIA_PREPROCESSOR_POS_TYPE_NOUN): currentWord = " << currentWord->tagName << endl;
+				//cout << "(wordPOStype == LRP_PREPROCESSOR_POS_TYPE_NOUN): currentWord = " << currentWord->tagName << endl;
 			}
 			#endif
 			#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES_MID_SENTENCE_CAPITALISED_WORDS_AS_PROPERNOUNS_METHOD2
-			if((wordPOStype == GIA_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT) && GIApreprocessorWordClassObject.isMidSentenceUppercaseWordLikelyProperNoun(currentWord))
+			if((wordPOStype == LRP_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT) && LRPpreprocessorWordClassObject.isMidSentenceUppercaseWordLikelyProperNoun(currentWord))
 			{
 				foundWordMatchTemp = true;
 				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
 				currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
-				//cout << "(wordPOStype == GIA_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT): currentWord = " << currentWord->tagName << endl;
+				//cout << "(wordPOStype == LRP_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT): currentWord = " << currentWord->tagName << endl;
 			}
 			#endif
 			#endif
@@ -844,20 +844,20 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 			{
 				#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 				bool pass = true;
-				if(currentParseTreeComponent->wordVerbVariantType != GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+				if(currentParseTreeComponent->wordVerbVariantType != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 				{
-					//cout << "currentParseTreeComponent->wordVerbVariantType != GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN = " << currentParseTreeComponent->wordVerbVariantType << endl;
+					//cout << "currentParseTreeComponent->wordVerbVariantType != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN = " << currentParseTreeComponent->wordVerbVariantType << endl;
 					bool verbVariantMatchFound = false;
 					if(currentWord->wordVerbVariantGrammaticalTenseForm == currentParseTreeComponent->wordVerbVariantType)
 					{
 						verbVariantMatchFound = true;
 					}
 					#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT_INTERPRET_PAST_AND_PAST_PARTICIPLE_THE_SAME
-					else if((currentParseTreeComponent->wordVerbVariantType == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST) && (currentWord->wordVerbVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE))
+					else if((currentParseTreeComponent->wordVerbVariantType == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST) && (currentWord->wordVerbVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE))
 					{
 						verbVariantMatchFound = true;
 					}
-					else if((currentParseTreeComponent->wordVerbVariantType == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE) && (currentWord->wordVerbVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST))
+					else if((currentParseTreeComponent->wordVerbVariantType == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE) && (currentWord->wordVerbVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST))
 					{
 						verbVariantMatchFound = true;
 					}
@@ -869,13 +869,13 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 						//cout << "\tcurrentWord = " << currentWord->tagName << endl;
 					}
 				}
-				if(currentParseTreeComponent->wordNounVariantType != GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+				if(currentParseTreeComponent->wordNounVariantType != LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 				{
-					//cout << "currentParseTreeComponent->wordVerbVariantType != GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN = " << currentParseTreeComponent->wordVerbVariantType << endl;
+					//cout << "currentParseTreeComponent->wordVerbVariantType != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN = " << currentParseTreeComponent->wordVerbVariantType << endl;
 					//cout << "currentWord->tagName = " << currentWord->tagName << endl;
 					bool nounVariantMatchFound = false;
 					#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT_DETECT_IRREGULAR_NOUN_FORMS
-					if(currentWord->wordNounVariantGrammaticalTenseForm == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)
+					if(currentWord->wordNounVariantGrammaticalTenseForm == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)
 					{
 						nounVariantMatchFound = true;
 						//cout << "nounVariantMatchFound; currentWord->tagName = " << currentWord->tagName << endl;
@@ -933,8 +933,8 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 		if(foundExplicitWord)
 		{
 			foundWordMatchTemp = true;
-			currentWord->wordPOStypeInferred = GIA_PREPROCESSOR_POS_TYPE_UNDEFINED;		//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 	//component->wordPOStype;  -need to add wordPOStype attribute to <component>? Not required at present as all stringType explicit tagged words are currently disgarded by semantic network
-			currentParseTreeComponent->wordPOStypeInferred = GIA_PREPROCESSOR_POS_TYPE_UNDEFINED;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
+			currentWord->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;		//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 	//component->wordPOStype;  -need to add wordPOStype attribute to <component>? Not required at present as all stringType explicit tagged words are currently disgarded by semantic network
+			currentParseTreeComponent->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
 		}
 	}
 	else if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_TOKENS)
@@ -942,15 +942,15 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 		if(SANIrules.isClassTagWrapper(currentWord->tagName, component->tokenLayer, component->tokenClass, component->tokenType, SANIrulesTokenLayers))
 		{
 			foundWordMatchTemp = true;
-			int wordPOStype = GIA_PREPROCESSOR_POS_TYPE_UNDEFINED;
-			if(SHAREDvars.textInTextArray(component->tokenClass, GIApreprocessorPOStypeNameArray, GIA_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES, &wordPOStype))
+			int wordPOStype = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;
+			if(SHAREDvars.textInTextArray(component->tokenClass, LRPpreprocessorPOStypeNameArray, LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES, &wordPOStype))
 			{
 				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
 				currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)	
 			}
 			else
 			{
-				cerr << "SANIpropagateInverseClass::generateRulesGroupTreeComponent{} error: !if(textInTextArray(component->tokenClass, GIApreprocessorPOStypeNameArray, GIA_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES, &wordPOStype)" << endl;
+				cerr << "SANIpropagateInverseClass::generateRulesGroupTreeComponent{} error: !if(textInTextArray(component->tokenClass, LRPpreprocessorPOStypeNameArray, LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES, &wordPOStype)" << endl;
 				cerr << "currentWord->tagName = " << currentWord->tagName << endl;
 				cerr << "component->tokenLayer = " << component->tokenLayer << endl;
 				cerr << "component->tokenClass = " << component->tokenClass << endl;
@@ -967,7 +967,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 	return foundWordMatchTemp;
 }
 
-bool SANIpropagateInverseClass::verifyPOStype(GIApreprocessorPlainTextWord* currentWord, unsigned char wordPOStype)
+bool SANIpropagateInverseClass::verifyPOStype(LRPpreprocessorPlainTextWord* currentWord, unsigned char wordPOStype)
 {
 	bool result = false;
 							
@@ -988,7 +988,7 @@ bool SANIpropagateInverseClass::verifyPOStype(GIApreprocessorPlainTextWord* curr
 
 
 							
-bool SANIpropagateInverseClass::updatePerformance(const int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent)
+bool SANIpropagateInverseClass::updatePerformance(const int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent)
 {
 	bool result = false;
 	
@@ -1034,7 +1034,7 @@ bool SANIpropagateInverseClass::deleteAllSubgroupsRecurse(SANIGroupParseTree* cu
 		SANIComponentParseTree* currentParseTreeComponent = (currentParseTreeGroup->components)[i];
 		if(currentParseTreeComponent->parseTreeGroupRef != NULL)
 		{
-			#ifdef GIA_DEBUG_POS_REL_TRANSLATOR_RULES_PRINT_PARSE_PROCESS
+			#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 			SANInodes.printParseTreeDebugIndentation(layer);
 			cout << "deleteAllSubgroupsRecurse" << endl;
 			#endif
@@ -1072,11 +1072,11 @@ bool SANIpropagateInverseClass::deleteParseComponent(SANIComponentParseTree* cur
 
 
 
-void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup)
+void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup)
 {	
 	for(int w=0; w<sentenceContentsSubset->size(); w++)
 	{
-		GIApreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
+		LRPpreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
 		if(w > minIndexOfMatchesFoundBackup)
 		{
 			currentWord->alreadyFoundMatch = false;
@@ -1084,14 +1084,14 @@ void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector
 	}
 }
 
-void SANIpropagateInverseClass::restoreAllWordsAlreadyFoundMatchInComponent(vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundNew)
+void SANIpropagateInverseClass::restoreAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundNew)
 {	
 	//cout << "restoreAllWordsAlreadyFoundMatchInComponent: minIndexOfMatchesFoundNew = " << minIndexOfMatchesFoundNew << endl;
 	//exit(EXIT_ERROR);
 	
 	for(int w=0; w<sentenceContentsSubset->size(); w++)
 	{
-		GIApreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
+		LRPpreprocessorPlainTextWord* currentWord = sentenceContentsSubset->at(w);
 		if(w < minIndexOfMatchesFoundNew)
 		{
 			currentWord->alreadyFoundMatch = true;

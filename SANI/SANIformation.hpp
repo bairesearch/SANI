@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: 
  * Description: Formation
  * /
@@ -36,7 +36,12 @@
 #ifndef HEADER_SANI_FORMATION
 #define HEADER_SANI_FORMATION
 
+#include "SHAREDglobalDefs.hpp"
+#ifdef USE_GIA
 #include "GIAglobalDefs.hpp"
+#else
+#include "SANIglobalDefs.hpp"
+#endif
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
@@ -45,8 +50,8 @@
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
 #include "SANInodes.hpp"
-#include "GIApreprocessorSentenceClass.hpp"
-#include "GIApreprocessorWordClass.hpp"
+#include "LRPpreprocessorSentenceClass.hpp"
+#include "LRPpreprocessorWordClass.hpp"
 #include "ANNdisplay.hpp"
 
 #ifdef SANI_FORWARD
@@ -55,7 +60,7 @@ class SANIformationClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
-	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
+	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	private: SANIrulesClass SANIrules;
@@ -73,7 +78,7 @@ class SANIformationClass
 	public: unordered_map<string, SANIGroupNeuralNetwork*>* getInputLayerSectionTokensLayerMap();
 	public: SANIGroupNeuralNetwork* getFirstGroupInInputLayerSectionWordPOStype();
 	#endif
-	#ifdef GIA_NEURAL_NETWORK
+	#ifdef SANI_NEURAL_NETWORK
 	public: SANIGroupNeuralNetwork* getFirstInputGroupInNetwork();
 	#endif
 
@@ -81,8 +86,8 @@ class SANIformationClass
 		private: bool createInputNeuronLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 			private: bool createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, int* numberOfGroupsInSection);
-			public: bool addInputNeuronLayerSectionWordOrig(GIApreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
-			public: bool findInputNeuronLayerSectionWordOrig(GIApreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
+			public: bool addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
+			public: bool findInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
 			#else
 			private: bool createInputNeuronLayerSectionWordPOStype(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordPOStype, int* numberOfGroupsInSection);
 			#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY	

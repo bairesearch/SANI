@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Component Class
  * /
@@ -105,8 +105,8 @@ SANIComponent::SANIComponent(void)
 	isNumberOf = false;
 	#endif
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
-	wordVerbVariantType = GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
-	wordNounVariantType = GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
+	wordVerbVariantType = LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
+	wordNounVariantType = LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN;
 	#endif		
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_NUMBER_EXPLETIVES
 	isExpletive = false;
@@ -167,7 +167,7 @@ SANIComponentParseTree::SANIComponentParseTree(void)
 	parseTreeGroupRef = NULL;
 	#endif
 	componentRef = NULL;
-	wordPOStypeInferred = GIA_PREPROCESSOR_POS_TYPE_UNDEFINED;
+	wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;
 	#ifdef SANI_LIGHT_BIO2
 	groupFrontComponentConnectionListIndex = INT_DEFAULT_VALUE;
 	numberOfWordsCurrentlyParsed = INT_DEFAULT_VALUE;

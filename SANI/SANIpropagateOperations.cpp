@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: 
  * Description: Propagate Operations - generic functions
  * /
@@ -644,7 +644,7 @@ bool SANIpropagateOperationsClass::identifyMissingOrVariableStartComponentFound(
 				#else
 				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING
 				}
-				#endif			
+				#endif
 				#endif
 			}	
 		}
@@ -829,7 +829,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 #endif
 
 #ifdef SANI_SEQUENCE_GRAMMAR
-bool SANIpropagateOperationsClass::upperNeuronContainsWordIndexOfProspectiveComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, GIApreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord, SANIComponentNeuralNetwork* component, SANIGroupNeuralNetwork* group)
+bool SANIpropagateOperationsClass::upperNeuronContainsWordIndexOfProspectiveComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord, SANIComponentNeuralNetwork* component, SANIGroupNeuralNetwork* group)
 {
 	bool result = false;
 	
@@ -926,8 +926,8 @@ bool SANIpropagateOperationsClass::repeatedSequenceDetected(SANIForwardPropogati
 		componentWordIndexCoverage = 1;	//groupType=string
 	}
 
-	vector<GIApreprocessorPlainTextWord*> componentWordArray1;
-	vector<GIApreprocessorPlainTextWord*> componentWordArray2;
+	vector<LRPpreprocessorPlainTextWord*> componentWordArray1;
+	vector<LRPpreprocessorPlainTextWord*> componentWordArray2;
 
 	int componentWmin1 = INT_DEFAULT_VALUE;
 	int componentWmax1 = INT_DEFAULT_VALUE;
@@ -954,12 +954,12 @@ bool SANIpropagateOperationsClass::repeatedSequenceDetected(SANIForwardPropogati
 		
 		for(int w = componentWmin1; w<=componentWmax1; w++)
 		{
-			GIApreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[w];	
+			LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[w];	
 			componentWordArray1.push_back(currentWord);
 		}
 		for(int w = componentWmin2; w<=componentWmax2; w++)
 		{
-			GIApreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[w];	
+			LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[w];	
 			componentWordArray2.push_back(currentWord);
 		}
 		for(int i=0; i<componentWmax1-componentWmin1+1; i++)
@@ -1902,7 +1902,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsCompareToMemory
 	}
 	
 	int ownerGroupParseTreeGroupMemorySize = ownerGroup->parseTreeGroupMemory.size();	//OR: lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory.size()
-	GIApreprocessorPlainTextWord* lastActiveComponentNeuronComponentConnectionActiveWordRecordOrig = lastActiveComponent->neuronComponentConnectionActiveWordRecord;
+	LRPpreprocessorPlainTextWord* lastActiveComponentNeuronComponentConnectionActiveWordRecordOrig = lastActiveComponent->neuronComponentConnectionActiveWordRecord;
 	
 	for(int m=0; m<ownerGroupParseTreeGroupMemorySize; m++)
 	{
@@ -1910,7 +1910,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsCompareToMemory
 		
 		int wordIndexMin;
 		int wordIndexMax;
-		GIApreprocessorPlainTextWord* neuronComponentConnectionActiveWordOption = lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory[m];
+		LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordOption = lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory[m];
 		
 		if(parseSentenceReverse)
 		{
@@ -2048,7 +2048,7 @@ bool SANIpropagateOperationsClass::updatePerformanceGroup(SANIGroupParseTree* cu
 	forwardPropogationSentenceData->performance = 0;
 	for(int i=0; i<forwardPropogationSentenceData->sentenceContents->size(); i++)
 	{
-		GIApreprocessorPlainTextWord* currentWord = (forwardPropogationSentenceData->sentenceContents)->at(i);
+		LRPpreprocessorPlainTextWord* currentWord = (forwardPropogationSentenceData->sentenceContents)->at(i);
 		if(currentWord->alreadyFoundMatch)
 		{
 			forwardPropogationSentenceData->performance = forwardPropogationSentenceData->performance + 1;
@@ -2076,14 +2076,14 @@ bool SANIpropagateOperationsClass::updatePerformanceGroup(SANIGroupParseTree* cu
 }
 #endif
 
-bool SANIpropagateOperationsClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<GIApreprocessorPlainTextWord*>* sentenceContents)
+bool SANIpropagateOperationsClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents)
 {
 	bool calculateMaxWeight = false;
 	int maxWeightNOTUSED = 0;
 	return traceBackpropParseTree(currentParseTreeGroup, level, print, performancePreprocess, performance, sentenceContents, calculateMaxWeight, &maxWeightNOTUSED);
 
 }
-bool SANIpropagateOperationsClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<GIApreprocessorPlainTextWord*>* sentenceContents, const bool calculateMaxWeight, int* maxWeight)
+bool SANIpropagateOperationsClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool calculateMaxWeight, int* maxWeight)
 {
 	bool result = true;
 	
@@ -2114,7 +2114,7 @@ bool SANIpropagateOperationsClass::traceBackpropParseTree(SANIGroupParseTree* cu
 			//won't calculate performance perfectly because some groups are reused
 			#else
 			/*
-			if(GIApreprocessorWordClassObject.isWordInWordlist(sentenceContents, currentParseTreeGroup->semanticRelationReturnEntityForwardPropogationSignalData->wordReference))
+			if(LRPpreprocessorWordClassObject.isWordInWordlist(sentenceContents, currentParseTreeGroup->semanticRelationReturnEntityForwardPropogationSignalData->wordReference))
 			{
 				//nb this method won't work if subReferenceSets are syntactically identical (and neural net groups are therefore reused); eg the red dog eats a blue apple.
 					//"dog" and "apple" will use identical neural groups and so will only count to +1 performance total
@@ -2152,7 +2152,7 @@ bool SANIpropagateOperationsClass::traceBackpropParseTree(SANIGroupParseTree* cu
 				#ifndef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE_METHOD_OLD_INCREMENT_FOR_EVERY_GROUP_REF_RECURSE
 				if(performancePreprocess)
 				{	
-					if(GIApreprocessorWordClassObject.isWordInWordlist(sentenceContents, currentComponent->candidateStringMatch))
+					if(LRPpreprocessorWordClassObject.isWordInWordlist(sentenceContents, currentComponent->candidateStringMatch))
 					{	
 						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT_MUTUALLY_EXCLUSIVE
 						if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)	//redundant?
@@ -2268,7 +2268,7 @@ bool SANIpropagateOperationsClass::componentTests1(SANIComponentNeuralNetwork* c
 {
 	bool componentTests = true;
 	
-	if(currentComponent->wordNounVariantType != GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+	if(currentComponent->wordNounVariantType != LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 	{
 		componentTests = false;
 		if(forwardPropogationSignalData->wordNounVariantType == currentComponent->wordNounVariantType)
@@ -2276,13 +2276,13 @@ bool SANIpropagateOperationsClass::componentTests1(SANIComponentNeuralNetwork* c
 			componentTests = true;
 		}
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT_DETECT_IRREGULAR_NOUN_FORMS
-		else if(forwardPropogationSignalData->wordNounVariantType == GIA_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)	
+		else if(forwardPropogationSignalData->wordNounVariantType == LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_SINGULAR_OR_PLURAL)	
 		{
 			componentTests = true;
 		}
 		#endif
 	}
-	if(currentComponent->wordVerbVariantType != GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+	if(currentComponent->wordVerbVariantType != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 	{
 		componentTests = false;
 		if(forwardPropogationSignalData->wordVerbVariantType == currentComponent->wordVerbVariantType)
@@ -2290,11 +2290,11 @@ bool SANIpropagateOperationsClass::componentTests1(SANIComponentNeuralNetwork* c
 			componentTests = true;
 		}
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT_INTERPRET_PAST_AND_PAST_PARTICIPLE_THE_SAME
-		else if((forwardPropogationSignalData->wordVerbVariantType == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST) && (currentComponent->wordVerbVariantType == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE))
+		else if((forwardPropogationSignalData->wordVerbVariantType == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST) && (currentComponent->wordVerbVariantType == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE))
 		{
 			componentTests = true;
 		}
-		else if((forwardPropogationSignalData->wordVerbVariantType == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE) && (currentComponent->wordVerbVariantType == GIA_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST))
+		else if((forwardPropogationSignalData->wordVerbVariantType == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PASTPARTICIPLE) && (currentComponent->wordVerbVariantType == LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_PAST))
 		{
 			componentTests = true;
 		}
@@ -2327,9 +2327,9 @@ bool SANIpropagateOperationsClass::componentTests2(SANIGroupNeuralNetwork* group
 	if(group->previousWordPOStype != "")
 	{
 		componentTests = false;
-		int previousWordPOStype = GIApreprocessorWordClassObject.getPOStypeFromName(group->previousWordPOStype);
+		int previousWordPOStype = LRPpreprocessorWordClassObject.getPOStypeFromName(group->previousWordPOStype);
 		int translatorSentenceWordIndexMin = REALLY_LARGE_INT;
-		GIApreprocessorPlainTextWord* firstWordInCurrentParseTreeGroupParseTree = NULL;
+		LRPpreprocessorPlainTextWord* firstWordInCurrentParseTreeGroupParseTree = NULL;
 		int numComponentsFound = 0;
 		bool pass = false;
 		if(!getFirstWordInParseTree(currentParseTreeGroup, &firstWordInCurrentParseTreeGroupParseTree, &translatorSentenceWordIndexMin, &numComponentsFound))
@@ -2349,9 +2349,9 @@ bool SANIpropagateOperationsClass::componentTests2(SANIGroupNeuralNetwork* group
 	if(group->existsPreceedingWordPOStype != "")
 	{
 		componentTests = false;
-		int existsPreceedingWordPOStype = GIApreprocessorWordClassObject.getPOStypeFromName(group->existsPreceedingWordPOStype);
+		int existsPreceedingWordPOStype = LRPpreprocessorWordClassObject.getPOStypeFromName(group->existsPreceedingWordPOStype);
 		int translatorSentenceWordIndexMin = REALLY_LARGE_INT;
-		GIApreprocessorPlainTextWord* firstWordInCurrentParseTreeGroupParseTree = NULL;
+		LRPpreprocessorPlainTextWord* firstWordInCurrentParseTreeGroupParseTree = NULL;
 		int numComponentsFound = 0;
 		if(!getFirstWordInParseTree(currentParseTreeGroup, &firstWordInCurrentParseTreeGroupParseTree, &translatorSentenceWordIndexMin, &numComponentsFound))
 		{
@@ -2371,7 +2371,7 @@ bool SANIpropagateOperationsClass::componentTests2(SANIGroupNeuralNetwork* group
 	return componentTests;
 }
 
-bool SANIpropagateOperationsClass::getFirstWordInParseTree(SANIGroupParseTree* currentParseTreeGroup, GIApreprocessorPlainTextWord** firstWordInCurrentParseTreeGroupParseTree, int* translatorSentenceWordIndexMin, int* numComponentsFound)
+bool SANIpropagateOperationsClass::getFirstWordInParseTree(SANIGroupParseTree* currentParseTreeGroup, LRPpreprocessorPlainTextWord** firstWordInCurrentParseTreeGroupParseTree, int* translatorSentenceWordIndexMin, int* numComponentsFound)
 {
 	bool result = false;
 		
@@ -2404,15 +2404,15 @@ bool SANIpropagateOperationsClass::getFirstWordInParseTree(SANIGroupParseTree* c
 	return result;
 }
 
-bool SANIpropagateOperationsClass::findPreviousWordInSentence(vector<GIApreprocessorPlainTextWord*>* sentenceContents, GIApreprocessorPlainTextWord* currentWord, int previousWordPOStype)
+bool SANIpropagateOperationsClass::findPreviousWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, LRPpreprocessorPlainTextWord* currentWord, int previousWordPOStype)
 {
 	bool result = false;
 	
 	bool stillReadingActivatedWords = true;
-	GIApreprocessorPlainTextWord* previousComponentWord = NULL;
+	LRPpreprocessorPlainTextWord* previousComponentWord = NULL;
 	for(int w=0; w<sentenceContents->size(); w++)
 	{
-		GIApreprocessorPlainTextWord* contextWord = sentenceContents->at(w);
+		LRPpreprocessorPlainTextWord* contextWord = sentenceContents->at(w);
 		if(stillReadingActivatedWords)
 		{
 			if(contextWord == currentWord)
@@ -2435,14 +2435,14 @@ bool SANIpropagateOperationsClass::findPreviousWordInSentence(vector<GIApreproce
 			
 	return result;
 }
-bool SANIpropagateOperationsClass::findPreceedingWordInSentence(vector<GIApreprocessorPlainTextWord*>* sentenceContents, GIApreprocessorPlainTextWord* currentWord, int existsPreceedingWordPOStype)
+bool SANIpropagateOperationsClass::findPreceedingWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, LRPpreprocessorPlainTextWord* currentWord, int existsPreceedingWordPOStype)
 {
 	bool result = false;
 	
 	bool stillReadingActivatedWords = true;
 	for(int w=0; w<sentenceContents->size(); w++)
 	{
-		GIApreprocessorPlainTextWord* contextWord = sentenceContents->at(w);
+		LRPpreprocessorPlainTextWord* contextWord = sentenceContents->at(w);
 		if(stillReadingActivatedWords)
 		{
 			if(contextWord == currentWord)
@@ -2462,7 +2462,7 @@ bool SANIpropagateOperationsClass::findPreceedingWordInSentence(vector<GIAprepro
 	return result;
 }
 
-bool SANIpropagateOperationsClass::checkWordPOStype(GIApreprocessorPlainTextWord* currentWord, int unambiguousPOSindex)
+bool SANIpropagateOperationsClass::checkWordPOStype(LRPpreprocessorPlainTextWord* currentWord, int unambiguousPOSindex)
 {
 	bool result = false;	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START

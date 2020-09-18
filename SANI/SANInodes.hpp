@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6e 09-September-2020
+ * Project Version: 1m7a 11-September-2020
  * Requirements: requires plain text file
  * Description: Nodes
  * /
@@ -36,7 +36,12 @@
 #ifndef HEADER_SANI_NODES
 #define HEADER_SANI_NODES
 
+#include "SHAREDglobalDefs.hpp"
+#ifdef USE_GIA
 #include "GIAglobalDefs.hpp"
+#else
+#include "SANIglobalDefs.hpp"
+#endif
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
 #include "SANInodesGroupClass.hpp"
@@ -138,11 +143,12 @@
 			
 					
 
+
 class SANInodesClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
-	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
+	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	
@@ -183,7 +189,7 @@ class SANInodesClass
 	//code from SANIpropagateOperations;
 	#ifdef SANI_FORWARD
 	
-	public: bool currentWordAmbiguous(GIApreprocessorPlainTextWord* currentWord);
+	public: bool currentWordAmbiguous(LRPpreprocessorPlainTextWord* currentWord);
 
 	public: int convertWordIndexToSentenceEntityIndex(int wordIndex);
 	public: int convertSentenceEntityIndexToWordIndex(int sentenceEntityIndex);
@@ -236,7 +242,7 @@ class SANInodesClass
 		public: bool printComponent(SANIComponentNeuralNetwork* component, int layer);
 	public: bool printParseTreeDebugIndentation(int layer);
 	
-	public: int calculateMinIndexOfMatchesFound(vector<GIApreprocessorPlainTextWord*>* sentenceContentsSubset);
+	public: int calculateMinIndexOfMatchesFound(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset);
 
 	public: void deleteParseTree(SANIGroupParseTree* parseTreeGroupToDelete, int level);
 	public: SANIGroupParseTree* replicateParseTree(SANIGroupParseTree* parseTreeGroupToReplicate, int level);
@@ -257,7 +263,7 @@ class SANInodesClass
 	public: int calculateCoverage(SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage);
 	public: bool traceBackpropNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int level, int previousComponentIndex, int previousComponentType);
 	public: bool isNeuronString(SANIGroupNeuralNetwork* currentNeuron);
-	public: bool getWordPOStypeFromAmbiguousWord(GIApreprocessorPlainTextWord* currentWord, int* wordPOStype);
+	public: bool getWordPOStypeFromAmbiguousWord(LRPpreprocessorPlainTextWord* currentWord, int* wordPOStype);
 	#endif
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR

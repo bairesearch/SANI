@@ -23,18 +23,18 @@
 
 /*******************************************************************************
  *
- * File Name: SANIparser.hpp
+ * File Name: SANIposRelTranslator.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
  * Project Version: 1m7a 11-September-2020
- * Requirements: 
- * Description: Parser
+ * Requirements: requires plain text file
+ * Description: Part-of-speech Relation Translator
  * /
  *******************************************************************************/
 
 
-#ifndef HEADER_SANI_PARSER
-#define HEADER_SANI_PARSER
+#ifndef HEADER_SANI_POS_REL_TRANSLATOR
+#define HEADER_SANI_POS_REL_TRANSLATOR
 
 #include "SHAREDglobalDefs.hpp"
 #ifdef USE_GIA
@@ -43,33 +43,52 @@
 #include "SANIglobalDefs.hpp"
 #endif
 
-#ifdef USE_GIA
-#ifdef SANI_PARSER
-
-//#include "GIAposRelTranslatorParser.hpp"
-#include "SANIposRelTranslatorVariables.hpp"
-#include "GIAposRelTranslatorParserOperations.hpp"
-#include "SANInodesComponentClass.hpp"
 #include "SANIrules.hpp"
+#ifdef SANI_FORWARD
+#include "SANIformation.hpp"
+#include "SANIpropagateOperations.hpp"
+#endif
+#ifdef SANI_SEQUENCE_GRAMMAR
+#include "SANIpropagateCompact.hpp"
+#endif
+//#ifndef SANI_PARSE_SIMULTANEOUS
+#include "SANIposRelTranslatorPermutations.hpp"
+//#endif
+#ifdef LRP_PREPROCESSOR_INITIALISE_WORD_INDEX_LIST_FROM_LRP_FILES
+#include "LRPpreprocessorWordIdentification.hpp"
+#endif
 #include "LRPpreprocessorWordClass.hpp"
+#include "SHAREDvars.hpp"
 
-class SANIparserClass
+class SANIposRelTranslatorClass
 {
-	private: SHAREDvarsClass SHAREDvars;
-	//private: GIAposRelTranslatorParserClass GIAposRelTranslatorParser;
-	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
-	private: SANInodesComponentClass SANInodesComponentClassObject;
-	private: SANIrulesClass SANIrules;
-	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
-	private: SANInodesGroupClass SANInodesGroupClassObject;
-	
-	#ifdef SANI_PARSE_SIMULTANEOUS
-	public: bool generateSemanticRelationsFromTxtRelationsWrapperNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* firstParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, int layer);
-		public: bool generateSemanticRelationsFromTxtRelationsNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, SANIGroupParseTree* currentParseTreeGroup, GIAposRelTranslatorParserForwardPropogationSignalData* parserForwardPropogationSignalData, int layer);
+	//private: SHAREDvarsClass SHAREDvars;
+	#ifdef GIA_POS_REL_TRANSLATOR_HYBRID
+	private: GIAposRelTranslatorHybridClass GIAposRelTranslatorHybrid;
 	#endif
+	#ifdef SANI_FORWARD
+	private: SANIformationClass SANIformation;
+	private: SANIpropagateOperationsClass SANIpropagateOperations;	//required for printComponent/printParseTreeDebugIndentation	
+	#endif
+	//#ifndef SANI_PARSE_SIMULTANEOUS
+	private: SANIposRelTranslatorPermutationsClass SANIposRelTranslatorPermutations;
+	//#endif
+	private: SANIrulesClass SANIrules;
+	#ifdef LRP_PREPROCESSOR_INITIALISE_WORD_INDEX_LIST_FROM_LRP_FILES
+	private: LRPpreprocessorWordIdentificationClass LRPpreprocessorWordIdentification;
+	#endif
+	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
+	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
+	#ifdef GIA_OUTPUT_INTERNAL_RELATIONS_IN_RELEX_FORMAT
+	private: GIAnlpClass GIAnlp;
+	#endif
+	private: SHAREDvarsClass SHAREDvars;
+
+	public: bool parseTxtfileAndCreateSemanticNetworkBasedUponSemanticDependencyParsedSentences(SANItranslatorVariablesClass* translatorVariables);
+
 };
 
-#endif
-#endif
+
+
 
 #endif
