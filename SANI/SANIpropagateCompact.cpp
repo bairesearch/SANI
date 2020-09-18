@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6b 09-September-2020
+ * Project Version: 1m6c 09-September-2020
  * Requirements: 
  * Description: Propagate Compact - ~O(n)
  * /
@@ -1527,7 +1527,7 @@ bool SANIpropagateCompactClass::updateActivatedNeuronWithMaxWordIndexCoverage(SA
 			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS_LAST_COMP_REQUIRE
 			}
 			#endif
-		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
+		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 		}
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS

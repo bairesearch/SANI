@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m6b 09-September-2020
+ * Project Version: 1m6c 09-September-2020
  * Requirements: 
  * Description: SANI specific global definitions
  * /
@@ -46,7 +46,7 @@
 			#define SANI_SEQUENCE_GRAMMAR	//SANI1j2a
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR	
-			#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS	//SANI1k1a
+			//#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS	//SANI1k1a
 			#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS	//SANI1j5a
 			//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS	//SANI1l8e
 			//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS	//SANI1m4a
