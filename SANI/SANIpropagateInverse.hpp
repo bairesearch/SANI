@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7a 11-September-2020
+ * Project Version: 1m7c 11-September-2020
  * Requirements: requires plain text file
  * Description: Propagate Inverse
  * /
@@ -53,6 +53,8 @@
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
 #include "SANIpropagateOperations.hpp"
+#include "SANIposRelTranslatorVariables.hpp"
+#include "SANIrules.hpp"
 #include "LRPpreprocessorPOStagger.hpp"
 #include "LRPpreprocessorWordClass.hpp"
 #include "LRPpreprocessorSentenceClass.hpp"
@@ -65,6 +67,7 @@ class SANIpropagateInverseClass
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANIpropagateOperationsClass SANIpropagateOperations;	//required for printComponent/printParseTreeDebugIndentation
+	private: SANIrulesClass SANIrules;
 	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;

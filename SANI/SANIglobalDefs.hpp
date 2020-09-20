@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7a 11-September-2020
+ * Project Version: 1m7c 11-September-2020
  * Requirements: 
  * Description: SANI specific global definitions
  * /
@@ -41,18 +41,19 @@
 #define SANI_POS_REL_TRANSLATOR_RULES_LAYER_START (1)
 
 #ifdef USE_SANI
-	#define SANI_FORWARD	//SANI1g1a
-	#ifdef SANI_FORWARD
-		#define SANI_NODES	//identified SANI1m3b
-		#ifdef COMPILE_SANI
-			#define SANI_SEQUENCE_GRAMMAR	//SANI1j2a
-		#endif
+	#define SANI_NODES	//identified SANI1m3b
+
+	#ifdef COMPILE_SANI
+		#define SANI_FORWARD	//mandatory
+		#define SANI_SEQUENCE_GRAMMAR	//SANI1j2a
 		#ifdef SANI_SEQUENCE_GRAMMAR	
-			#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS	//SANI1k1a
-			#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS	//SANI1j5a
+			//#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS	//SANI1k1a
+			//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS	//SANI1j5a
 			//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS	//SANI1l8e
 			//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS	//SANI1m4a
 		#endif
+	#else
+		#define SANI_FORWARD	//optional	//SANI1g1a
 	#endif
 #endif
 #ifndef SANI_SEQUENCE_GRAMMAR

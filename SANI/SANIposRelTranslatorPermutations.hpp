@@ -48,8 +48,8 @@
 //#include "SHAREDvars.hpp"
 #include "SANIposRelTranslatorVariables.hpp"
 //#include "SANIrules.hpp"
-#ifdef SANI_FORWARD
 #include "SANInodes.hpp"
+#ifdef SANI_FORWARD
 #include "SANIformation.hpp"
 #ifdef SANI_SEQUENCE_GRAMMAR
 #include "SANIpropagateCompactGenerate.hpp"
@@ -75,19 +75,15 @@
 #include "LRPpreprocessorPOStagger.hpp"
 #include "LRPpreprocessorPOStaggerDatabase.hpp"
 #include "LRPpreprocessorWordClass.hpp"
-#ifdef USE_GIA
-#ifdef GIA_OUTPUT_INTERNAL_RELATIONS_IN_RELEX_FORMAT
-//#include "GIAnlp.hpp"
-#endif
-#endif
+
 //#include "GIAtranslator.hpp"
 #include "SHAREDvars.hpp"
 
 class SANIposRelTranslatorPermutationsClass
 {
 	//private: SHAREDvarsClass SHAREDvars;
-	#ifdef SANI_FORWARD
 	private: SANInodesClass SANInodes;
+	#ifdef SANI_FORWARD
 	private: SANIformationClass SANIformation;
 #ifdef SANI_SEQUENCE_GRAMMAR
 	private: SANIpropagateCompactGenerateClass SANIpropagateCompactGenerate;
@@ -117,9 +113,7 @@ class SANIposRelTranslatorPermutationsClass
 	private: LRPpreprocessorPOStaggerDatabaseClass LRPpreprocessorPOStaggerDatabase;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
-	#ifdef GIA_OUTPUT_INTERNAL_RELATIONS_IN_RELEX_FORMAT
-	private: GIAnlpClass GIAnlp;
-	#endif
+	
 	private: SHAREDvarsClass SHAREDvars;
 
 

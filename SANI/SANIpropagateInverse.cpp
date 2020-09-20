@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7a 11-September-2020
+ * Project Version: 1m7c 11-September-2020
  * Requirements: requires plain text file
  * Description: Propagate Inverse
  * /
@@ -47,7 +47,7 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SA
 	#endif
 
 	//generate firstParseTreeGroup (firstTxtRelTranslatorRulesGroupInSentence) tree
-	int minIndexOfMatchesFoundBackupOptimum = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContents);
+	int minIndexOfMatchesFoundBackupOptimum = SANInodes.calculateMinIndexOfMatchesFound(sentenceContents);
 	
 	for(int i=0; i<SANIGroupTypes->size(); i++)
 	{
@@ -57,7 +57,7 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SA
 		
 		SANIGroupType* groupType = SANIGroupTypes->at(i);
 		
-		int minIndexOfMatchesFoundBackup2 = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContents);
+		int minIndexOfMatchesFoundBackup2 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContents);
 
 		bool passGroupTests = SANInodesGroupClassObject.isTopLevelGroupType(groupType->groupTypeName, groupType->referenceSetType, isQuery, parseIsolatedSubreferenceSets);	
 		if(passGroupTests)
@@ -102,7 +102,7 @@ bool SANIpropagateInverseClass::generateParseTreeIntro(vector<XMLparserTag*>* SA
 	}
 
 	//check parser has reached end of sentence
-	int minIndexOfMatchesFound = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContents);
+	int minIndexOfMatchesFound = SANInodes.calculateMinIndexOfMatchesFound(sentenceContents);
 	int numberOfTokensInSentence = sentenceContents->size();
 	//cout << "minIndexOfMatchesFound = " << minIndexOfMatchesFound << endl;	
 	//cout << "numberOfTokensInSentence = " << numberOfTokensInSentence << endl;
@@ -126,7 +126,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 {
 	bool result = false;
 	
-	int minIndexOfMatchesFoundBackupOptimum = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
+	int minIndexOfMatchesFoundBackupOptimum = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 
 	#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 	SANInodes.printParseTreeDebugIndentation(layer);
@@ -153,7 +153,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 	{
 		SANIGroupNeuralNetwork* group = (groupType->groups)[i];
 
-		int minIndexOfMatchesFoundBackup2 = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
+		int minIndexOfMatchesFoundBackup2 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 
 		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
 		SANInodes.printParseTreeDebugIndentation(layer);
@@ -220,7 +220,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SA
 {
 	bool foundWordMatch = true;
 
-	int minIndexOfMatchesFoundBackup2 = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
+	int minIndexOfMatchesFoundBackup2 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 
 	bool pass = true;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_GROUP_PREVIOUS_WORD_POS_TYPE
@@ -277,12 +277,12 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 {
 	bool foundWordMatch = true;
 	
-	int minIndexOfMatchesFoundBackup1 = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
+	int minIndexOfMatchesFoundBackup1 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 
 	//cout << "layer = " << layer << endl;
 	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_OR
-	int minIndexOfMatchesFoundBackupOptimum = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
+	int minIndexOfMatchesFoundBackupOptimum = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 	bool subcomponentsOr = false;
 	bool subcomponentsOrFoundMatch = false;	
 	if(subcomponents && (subcomponentsType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR))
@@ -314,7 +314,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 			if(foundWordMatch || (subcomponentsOr && !subcomponentsOrFoundMatch))
 			{//only continue while foundWordMatch:
 			
-				int minIndexOfMatchesFoundBackup2 = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
+				int minIndexOfMatchesFoundBackup2 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 				vector<LRPpreprocessorPlainTextWord*> sentenceContentsBackup2;
 				
 				if(minIndexOfMatchesFoundBackup2 < int(sentenceContentsSubset->size()))
@@ -617,7 +617,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparser
 
 	if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 	{
-		int minIndexOfMatchesFound = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
+		int minIndexOfMatchesFound = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);
 		int w = minIndexOfMatchesFound+1;
 		if(w < sentenceContentsSubset->size())
 		{	
@@ -1009,7 +1009,7 @@ bool SANIpropagateInverseClass::updatePerformance(const int performanceTemp, int
 			}
 			#endif
 			
-			*minIndexOfMatchesFoundBackupOptimum = SANIpropagateOperations.calculateMinIndexOfMatchesFound(sentenceContentsSubset);	//moved to higher level nesting in 3f8e
+			*minIndexOfMatchesFoundBackupOptimum = SANInodes.calculateMinIndexOfMatchesFound(sentenceContentsSubset);	//moved to higher level nesting in 3f8e
 		}
 		
 	}

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7a 11-September-2020
+ * Project Version: 1m7c 11-September-2020
  * Requirements: 
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -1557,8 +1557,10 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariation(SAN
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent = false;
-	SANIGroupNeuralNetwork* highLevelNeuronExpectingVariableLastComponent = NULL;
 	#endif
+	//#ifdef #ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
+	SANIGroupNeuralNetwork* highLevelNeuronExpectingVariableLastComponent = NULL;
+	//#endif
 		
 	while(stillIdentifyingHighLevelNeurons)
 	{

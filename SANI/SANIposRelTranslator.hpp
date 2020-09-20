@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslator.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7a 11-September-2020
+ * Project Version: 1m7c 11-September-2020
  * Requirements: requires plain text file
  * Description: Part-of-speech Relation Translator
  * /
@@ -79,9 +79,7 @@ class SANIposRelTranslatorClass
 	#endif
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
-	#ifdef GIA_OUTPUT_INTERNAL_RELATIONS_IN_RELEX_FORMAT
-	private: GIAnlpClass GIAnlp;
-	#endif
+
 	private: SHAREDvarsClass SHAREDvars;
 
 	public: bool parseTxtfileAndCreateSemanticNetworkBasedUponSemanticDependencyParsedSentences(SANItranslatorVariablesClass* translatorVariables);
