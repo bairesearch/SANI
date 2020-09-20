@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7c 11-September-2020
+ * Project Version: 1m7d 11-September-2020
  * Requirements: 
  * Description: Propagate Operations - generic functions
  * /
@@ -353,7 +353,7 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(vector<SANI
 						secondLastComponentIndex = components->size()-2;
 					}
 					#endif
-					if(i == secondLastComponentIndex)
+					if(i != secondLastComponentIndex)
 					{
 						if(previousActiveComponent != NULL)	//alternate test does not support !SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS: if(!(*missingStartComponentFound))
 						{

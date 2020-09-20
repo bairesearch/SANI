@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7c 11-September-2020
+ * Project Version: 1m7d 11-September-2020
  * Requirements: 
  * Description: Propagate Compact - ~O(n)
  * /
@@ -740,7 +740,8 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponentWrapper
 						}
 					}
 				}
-				#endif	
+				#endif
+				
 				#ifndef SANI_SEQUENCE_GRAMMAR_IGNORE_PARTIAL_DETECTIONS
 				bool candidateCoveragePartial = true;
 				updateActivatedNeuronWithMaxWordIndexCoverage(ownerGroup, ownerGroup->currentParseTreeGroupTemp, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, missingStartComponentFound, false, false, candidateCoveragePartial);

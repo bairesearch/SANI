@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyUnoptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7c 11-September-2020
+ * Project Version: 1m7d 11-September-2020
  * Requirements: 
  * Description: Propagate Heavy Unoptimised - ~O(n^2)
  * /
@@ -49,6 +49,7 @@
 #include "SANInodesComponentClass.hpp"
 #include "SANIpropagateOperations.hpp"
 #include "SANIformation.hpp"
+#include "SANIposRelTranslatorVariables.hpp"
 #ifdef USE_GIA
 #ifdef SANI_PARSE
 #include "GIAposRelTranslatorParserOperations.hpp"
