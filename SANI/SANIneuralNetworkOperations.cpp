@@ -26,7 +26,7 @@
  * File Name: SANIneuralNetworkOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m8a 20-September-2020
+ * Project Version: 1n1a 20-September-2020
  * Description: Neural Network Operations
  * /
  *******************************************************************************/
@@ -216,9 +216,9 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfInputNeurons(int64_t* 
 		
 		#ifdef SANI_CREATE_NEURONS_FOR_NOUN_VERB_VARIANTS
 		int x2 = 0;
-		for(int i2=0; i2<group->ANNfrontGroupConnectionList.size(); i2++)
+		for(int i2=0; i2<group->SANIfrontGroupConnectionList.size(); i2++)
 		{			
-			SANIGroupNeuralNetwork* higherLevelGroup = (group->ANNfrontGroupConnectionList)[i2];
+			SANIGroupNeuralNetwork* higherLevelGroup = (group->SANIfrontGroupConnectionList)[i2];
 			SANIGroupNeuralNetwork* group = higherLevelGroup;
 			currentGroupNeuronInLayer2 = group->neuronReference;
 			if(x2flatAbsolute != 0)
@@ -335,9 +335,9 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfInputNeurons(int64_t* 
 		id++;
 		
 		int x2 = 0;
-		for(int i=0; i<currentGroupInInputLayerSectionTokensLayer->ANNbackGroupConnectionList.size(); i++)
+		for(int i=0; i<currentGroupInInputLayerSectionTokensLayer->SANIbackGroupConnectionList.size(); i++)
 		{
-			SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClass = (currentGroupInInputLayerSectionTokensLayer->ANNbackGroupConnectionList)[i];
+			SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClass = (currentGroupInInputLayerSectionTokensLayer->SANIbackGroupConnectionList)[i];
 			SANIGroupNeuralNetwork* group = currentGroupInInputLayerSectionTokensLayerClass;
 			currentGroupNeuronInLayer3 = group->neuronReference;
 			if(x3flatAbsolute != 0)
@@ -363,9 +363,9 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfInputNeurons(int64_t* 
 			id++;
 		
 			int x3 = 0;
-			for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClass->ANNbackGroupConnectionList.size(); i++)
+			for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClass->SANIbackGroupConnectionList.size(); i++)
 			{
-				SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassType = (currentGroupInInputLayerSectionTokensLayerClass->ANNbackGroupConnectionList)[i];
+				SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassType = (currentGroupInInputLayerSectionTokensLayerClass->SANIbackGroupConnectionList)[i];
 				SANIGroupNeuralNetwork* group = currentGroupInInputLayerSectionTokensLayerClassType;
 				currentGroupNeuronInLayer2 = group->neuronReference;
 				if(x2flatAbsolute != 0)
@@ -393,9 +393,9 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfInputNeurons(int64_t* 
 				id++;
 		
 				int x4 = 0;
-				for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClassType->ANNbackGroupConnectionList.size(); i++)
+				for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClassType->SANIbackGroupConnectionList.size(); i++)
 				{
-					SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassTypeInstance = (currentGroupInInputLayerSectionTokensLayerClassType->ANNbackGroupConnectionList)[i];
+					SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassTypeInstance = (currentGroupInInputLayerSectionTokensLayerClassType->SANIbackGroupConnectionList)[i];
 					SANIGroupNeuralNetwork* group = currentGroupInInputLayerSectionTokensLayerClassTypeInstance;
 					currentGroupNeuronInLayer1 = group->neuronReference;
 					if(x1flatAbsolute != 0)
@@ -523,9 +523,9 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfNeurons(vector<SANIGro
 							SANIGroupNeuralNetwork* group = (groupType->groups)[i2];
 							if(!(group->neuronDisplayPositionSet) || (group->neuronDisplayPositionY == y))	//OLD: if(!(group->neuronDisplayPositionSet))
 							{
-								for(int i3=0; i3<group->ANNfrontComponentConnectionList.size(); i3++)
+								for(int i3=0; i3<group->SANIfrontComponentConnectionList.size(); i3++)
 								{
-									SANIComponentNeuralNetwork* currentComponent = (group->ANNfrontComponentConnectionList)[i3];
+									SANIComponentNeuralNetwork* currentComponent = (group->SANIfrontComponentConnectionList)[i3];
 			 						SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;	
 									if(group->groupTypeName == groupBase->groupTypeName)		//added GIA3h3aTEMP33
 									{
@@ -669,9 +669,9 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfNeurons(vector<SANIGro
 									for(int i2=0; i2<groupType->groups.size(); i2++)
 									{
 										SANIGroupNeuralNetwork* group = (groupType->groups)[i2];
-										for(int i3=0; i3<group->ANNfrontComponentConnectionList.size(); i3++)
+										for(int i3=0; i3<group->SANIfrontComponentConnectionList.size(); i3++)
 										{
-											SANIComponentNeuralNetwork* currentComponent = (group->ANNfrontComponentConnectionList)[i3];
+											SANIComponentNeuralNetwork* currentComponent = (group->SANIfrontComponentConnectionList)[i3];
 			 								SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;
 											if(ownerGroup->groupTypeName == groupTypeBase->groupTypeName)
 											{

@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m8a 20-September-2020
+ * Project Version: 1n1a 20-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Component Class
  * /
@@ -116,7 +116,7 @@ public:
 	~SANIComponent(void);
 
 	#ifdef SANI_SEQUENCE_GRAMMAR
-	vector<SANIGroupNeuralNetwork*> ANNbackGroupConnectionList;
+	vector<SANIGroupNeuralNetwork*> SANIbackGroupConnectionList;
 	#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
 	double componentStrength;
 	#endif

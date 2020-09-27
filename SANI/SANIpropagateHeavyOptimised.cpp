@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyOptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m8a 20-September-2020
+ * Project Version: 1n1a 20-September-2020
  * Requirements: 
  * Description: Propagate Heavy Optimised - ~O(nlogn)
  * /
@@ -366,15 +366,15 @@ bool SANIpropagateHeavyOptimisedClass::propagateWordThroughNetworkWordGroupIntro
 	for(unordered_map<string, SANIGroupNeuralNetwork*>::iterator iter1 = SANIformation.getInputLayerSectionTokensLayerMap()->begin(); iter1 != SANIformation.getInputLayerSectionTokensLayerMap()->end(); iter1++)
 	{
 		SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayer = iter1->second;
-		for(int i=0; i<currentGroupInInputLayerSectionTokensLayer->ANNbackGroupConnectionList.size(); i++)
+		for(int i=0; i<currentGroupInInputLayerSectionTokensLayer->SANIbackGroupConnectionList.size(); i++)
 		{
-			SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClass = (currentGroupInInputLayerSectionTokensLayer->ANNbackGroupConnectionList)[i];
-			for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClass->ANNbackGroupConnectionList.size(); i++)
+			SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClass = (currentGroupInInputLayerSectionTokensLayer->SANIbackGroupConnectionList)[i];
+			for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClass->SANIbackGroupConnectionList.size(); i++)
 			{
-				SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassType = (currentGroupInInputLayerSectionTokensLayerClass->ANNbackGroupConnectionList)[i];
-				for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClassType->ANNbackGroupConnectionList.size(); i++)
+				SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassType = (currentGroupInInputLayerSectionTokensLayerClass->SANIbackGroupConnectionList)[i];
+				for(int i=0; i<currentGroupInInputLayerSectionTokensLayerClassType->SANIbackGroupConnectionList.size(); i++)
 				{
-					SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassTypeInstance = (currentGroupInInputLayerSectionTokensLayerClassType->ANNbackGroupConnectionList)[i];
+					SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayerClassTypeInstance = (currentGroupInInputLayerSectionTokensLayerClassType->SANIbackGroupConnectionList)[i];
 					if(currentGroupInInputLayerSectionTokensLayerClassTypeInstance->GIAtokenLayerClassTypeInstanceName == wordLowerCase)	//NB this implementation is synced with SANIrulesClass::isClassTag: assume tokens always comprise wordLowerCase
 					{
 						string GIAtokenLayerClassName = currentGroupInInputLayerSectionTokensLayerClass->GIAtokenLayerClassName;
@@ -743,9 +743,9 @@ bool SANIpropagateHeavyOptimisedClass::connectToPreviousActivationGroup(SANItran
 
 		if(activationPathWordFirstActivationMemoryGroupNextPoint->neuronActive)	//added 3g8aTEMP22
 		{			
-			for(int i2=0; i2<activationPathWordFirstActivationMemoryGroupNextPoint->ANNfrontComponentConnectionList.size(); i2++)
+			for(int i2=0; i2<activationPathWordFirstActivationMemoryGroupNextPoint->SANIfrontComponentConnectionList.size(); i2++)
 			{
-				SANIComponentNeuralNetwork* currentComponentNext = (activationPathWordFirstActivationMemoryGroupNextPoint->ANNfrontComponentConnectionList)[i2];
+				SANIComponentNeuralNetwork* currentComponentNext = (activationPathWordFirstActivationMemoryGroupNextPoint->SANIfrontComponentConnectionList)[i2];
 				SANIGroupNeuralNetwork* ownerGroupNext = currentComponentNext->ownerGroup;
 				
 				for(int i3=0; i3<forwardPropogationActivationPointData->activationPathWordFirstActivationMemoryGroupActivationPointArray->size(); i3++)
@@ -841,11 +841,11 @@ bool SANIpropagateHeavyOptimisedClass::propagateWordThroughNetworkGroup(SANItran
 		group->neuronPropagated = true;
 	#endif
 		
-		for(int i=0; i<group->ANNfrontComponentConnectionList.size(); i++)
+		for(int i=0; i<group->SANIfrontComponentConnectionList.size(); i++)
 		{
 			if(!(forwardPropogationSentenceData->finishedPassingSentenceWords))
 			{
-				SANIComponentNeuralNetwork* currentComponent = (group->ANNfrontComponentConnectionList)[i];
+				SANIComponentNeuralNetwork* currentComponent = (group->SANIfrontComponentConnectionList)[i];
 				SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;
 				SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner = SANInodes.convertNeuralNetworkGroupToParseTreeGroupNew(ownerGroup);
 				activationPathWordCurrentParseTreeGroupOwner->components.clear();	//dont wish to copy subcomponents into currentParseTreeGroupNew;

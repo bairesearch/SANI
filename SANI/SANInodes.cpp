@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m8a 20-September-2020
+ * Project Version: 1n1a 20-September-2020
  * Requirements: requires plain text file
  * Description: Nodes
  * /
@@ -88,7 +88,7 @@ int SANInodesClass::assignGroupIndex(SANIGroupNeuralNetwork* group)
 	int* newNeuronIndex = getNewGroupIndex();
 	group->groupIndex = *newNeuronIndex;
 	*newNeuronIndex = *newNeuronIndex + 1;
-	return *newNeuronIndex;
+	return group->groupIndex;
 }
 #endif
 
@@ -745,9 +745,9 @@ bool SANInodesClass::adjustNetworkDepth(SANIGroupNeuralNetwork* group)
 		group->counted = true;
 	#endif
 
-		for(int l=0; l<group->ANNfrontComponentConnectionList.size(); l++)
+		for(int l=0; l<group->SANIfrontComponentConnectionList.size(); l++)
 		{
-			SANIComponentNeuralNetwork* currentComponent = (group->ANNfrontComponentConnectionList)[l];
+			SANIComponentNeuralNetwork* currentComponent = (group->SANIfrontComponentConnectionList)[l];
 			SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;
 
 			ownerGroup->networkDepth = max(ownerGroup->networkDepth, maxDepth);
@@ -770,9 +770,9 @@ bool SANInodesClass::adjustNetworkDepthReset(SANIGroupNeuralNetwork* group)
 	{
 		group->counted = false;
 
-		for(int l=0; l<group->ANNfrontComponentConnectionList.size(); l++)
+		for(int l=0; l<group->SANIfrontComponentConnectionList.size(); l++)
 		{
-			SANIComponentNeuralNetwork* currentComponent = (group->ANNfrontComponentConnectionList)[l];
+			SANIComponentNeuralNetwork* currentComponent = (group->SANIfrontComponentConnectionList)[l];
 			SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;
 
 			adjustNetworkDepthReset(ownerGroup);
@@ -799,9 +799,9 @@ bool SANInodesClass::getNeuralNetworkDepth(SANIComponentNeuralNetwork* component
 				
 	int componentMaxDepth = 0;	
 	
-	for(int l=0; l<component->ANNbackGroupConnectionList.size(); l++)
+	for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 	{
-		SANIGroupNeuralNetwork* groupSource = component->ANNbackGroupConnectionList[l];
+		SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 		componentMaxDepth = max(componentMaxDepth, groupSource->networkDepth);
 	}
 	*maxDepth = componentMaxDepth;
@@ -855,9 +855,9 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepth(SANIComponentNeuralNe
 	int componentMaxDepth = *maxDepth;	
 	int maxDepthStart = *maxDepth;
 		
-	for(int l=0; l<component->ANNbackGroupConnectionList.size(); l++)
+	for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 	{
-		SANIGroupNeuralNetwork* groupSource = component->ANNbackGroupConnectionList[l];
+		SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 		int leafSize = 0;
 		int depth = maxDepthStart; 
 		countNeuralNetworkMaxLeafSizeAndDepth(groupSource, &leafSize, &depth);
@@ -899,9 +899,9 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepthReset(SANIComponentNeu
 {
 	bool result = true;
 				
-	for(int l=0; l<component->ANNbackGroupConnectionList.size(); l++)
+	for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 	{
-		SANIGroupNeuralNetwork* groupSource = component->ANNbackGroupConnectionList[l];
+		SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 		countNeuralNetworkMaxLeafSizeAndDepthReset(groupSource);
 	}
 	
@@ -1325,9 +1325,9 @@ bool SANInodesClass::traceBackpropNeuralNetwork(SANIGroupNeuralNetwork* currentN
 		
 		SANIComponentNeuralNetwork* component = (currentNeuron->components)[c];
 					
-		for(int l=0; l<component->ANNbackGroupConnectionList.size(); l++)
+		for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 		{
-			SANIGroupNeuralNetwork* groupSource = component->ANNbackGroupConnectionList[l];
+			SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 			traceBackpropNeuralNetwork(groupSource, level+1, i, component->componentType);
 		}	
 	}
@@ -1475,9 +1475,9 @@ bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, i
 		
 		printComponent(component, layer);
 		
-		for(int j=0; j<component->ANNbackGroupConnectionList.size(); j++)
+		for(int j=0; j<component->SANIbackGroupConnectionList.size(); j++)
 		{
-			SANIGroupNeuralNetwork* componentSource = (component->ANNbackGroupConnectionList)[j];
+			SANIGroupNeuralNetwork* componentSource = (component->SANIbackGroupConnectionList)[j];
 			
 			if(!(componentSource->inputLayerNeuron))	//optional
 			{

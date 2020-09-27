@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m8a 20-September-2020
+ * Project Version: 1n1a 20-September-2020
  * Requirements: 
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -49,10 +49,10 @@
 #include "SANInodesComponentClass.hpp"
 #include "SANIpropagateOperations.hpp"
 #include "SANIpropagateCompact.hpp"
+#include "SANIpropagateCompactIdentify.hpp"
 #include "SANIformation.hpp"
 #include "LRPpreprocessorSentenceClass.hpp"
 #include "LRPpreprocessorWordClass.hpp"
-#include "ANNdisplay.hpp"
 
 
 
@@ -70,29 +70,15 @@ class SANIpropagateCompactGenerateClass
 	private: SANIpropagateOperationsClass SANIpropagateOperations;
 	private: SANIpropagateCompactClass SANIpropagateCompact;
 	private: SANIformationClass SANIformation;
+	private: SANIpropagateCompactIdentifyClass SANIpropagateCompactIdentify;
 
 	private: ANNdisplayClass ANNdisplay;
 
 	public: bool generatePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool createNewConnections);
 		public: bool generatePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance, const bool createNewConnection);
-			#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
-			private: bool linkSimiliarSubnets(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* topLevelParseTreeGroup);
-				#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
-				private: bool updateNetworkRecency(const int timeIndex, SANIGroupParseTree* currentParseTreeGroup, int layer);
-				#endif
-				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
-				private: bool findAndLinkReferenceSetCandidates1(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, int layer);
-					private: bool findAndLinkReferenceSetCandidates2(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* referenceSetCandidate1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, int layer);
-						private: bool findAndLinkReferenceSetCandidates3(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate2, SANIGroupNeuralNetwork* referenceSetCandidate1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, int layer);
-							private: bool findAndLinkReferenceSetCandidatesCompareVectors(SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate1, SANIGroupNeuralNetwork* referenceSetCandidate2, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector2);
-							private: bool createReferenceSetCandidateVector(SANIGroupParseTree* currentParseTreeGroup, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector);
-							private: bool createReferenceSetCandidateVector(SANIGroupNeuralNetwork* currentNeuron, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector);			
-				#endif
-				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_CENTRAL_COMPONENTS
-				private: bool findAndLinkCentralVariationCandidates(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
-					private: bool populateSecondComponentOfOutputNeuronSourceVector(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, vector<SANIGroupNeuralNetwork*>* secondComponentOfOutputNeuronSourceVector);
-				#endif
-				#endif
+			bool generateSentenceNetworkNodes(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
+			bool testSentenceNetworkNodes(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree** topLevelParseTreeGroup);			
+
 			private: bool findAndReconcileVariationWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents);
 				#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_INCREMENTALLY_SECTIONED
 				#ifndef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE

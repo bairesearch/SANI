@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m8a 20-September-2020
+ * Project Version: 1n1a 20-September-2020
  * Requirements: requires plain text file
  * Description: Nodes Group Class
  * /
@@ -242,7 +242,6 @@ public:
 	#endif
 	#endif	
 	#endif
-	
 };
 
 
@@ -311,10 +310,10 @@ public:
 	#endif
 	#endif
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	//ie #ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
-	vector<SANIGroupNeuralNetwork*> ANNfrontGroupConnectionList;	//for IO only
-	vector<SANIGroupNeuralNetwork*> ANNbackGroupConnectionList;	//for IO only
+	vector<SANIGroupNeuralNetwork*> SANIfrontGroupConnectionList;	//for IO only
+	vector<SANIGroupNeuralNetwork*> SANIbackGroupConnectionList;	//for IO only
 	#endif
-	vector<SANIComponentNeuralNetwork*> ANNfrontComponentConnectionList;
+	vector<SANIComponentNeuralNetwork*> SANIfrontComponentConnectionList;
 	SANIGroupNeuralNetwork* next;
 	#ifdef SANI_ANN
 	ANNneuron* neuronReference;
@@ -373,7 +372,7 @@ public:
 	#endif
 	#endif	
 
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_TEMP_RECORD_METHOD1B
+	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONSB
 	bool newlyGeneratedForSentenceTemp;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_CENTRAL_COMPONENTS_LINK
@@ -387,6 +386,12 @@ public:
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
 	double referenceSetCandidateBestMetric;
+	#endif
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS
+	bool startOfSentenceWordDetected;
+	bool endOfSentenceWordDetected;
+	bool markToErase;
 	#endif
 };
 

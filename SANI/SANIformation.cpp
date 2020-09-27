@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m8a 20-September-2020
+ * Project Version: 1n1a 20-September-2020
  * Requirements: 
  * Description: Formation
  * /
@@ -871,9 +871,9 @@ bool SANIformationClass::findTokensLayerClassType(string layerName, string layer
 	{
 		if(layerClassTypeName != "")
 		{
-			for(int i=0; i<layerClassGroupFound->ANNbackGroupConnectionList.size(); i++)
+			for(int i=0; i<layerClassGroupFound->SANIbackGroupConnectionList.size(); i++)
 			{
-				SANIGroupNeuralNetwork* layerClassTypeGroup = ((layerClassGroupFound->ANNbackGroupConnectionList)[i]);
+				SANIGroupNeuralNetwork* layerClassTypeGroup = ((layerClassGroupFound->SANIbackGroupConnectionList)[i]);
 				if(layerClassTypeGroup->GIAtokenLayerClassTypeName == layerClassTypeName)
 				{
 					result = true;
@@ -899,9 +899,9 @@ bool SANIformationClass::findTokensLayerClass(string layerName, string layerClas
 		//cout << "layerName = " << layerName << endl;
 		if(layerGroup->GIAtokenLayerName == layerName)
 		{
-			for(int i=0; i<layerGroup->ANNbackGroupConnectionList.size(); i++)
+			for(int i=0; i<layerGroup->SANIbackGroupConnectionList.size(); i++)
 			{
-				SANIGroupNeuralNetwork* layerClassGroup = ((layerGroup->ANNbackGroupConnectionList)[i]);
+				SANIGroupNeuralNetwork* layerClassGroup = ((layerGroup->SANIbackGroupConnectionList)[i]);
 				//cout << "layerClassGroup->GIAtokenLayerClassName = " << layerClassGroup->GIAtokenLayerClassName << endl;
 				//cout << "layerClassName = " << layerClassName << endl;
 				if(layerClassGroup->GIAtokenLayerClassName == layerClassName)
@@ -965,8 +965,8 @@ void SANIformationClass::addGroupToLayer(SANIGroupNeuralNetwork** currentGroupIn
 bool SANIformationClass::createGroupANNconnectionIO(SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelGroup)
 {
 	//this creates an artificial group connection for SANI only (not used by GIAposRelTranslatorParser)
-	group->ANNfrontGroupConnectionList.push_back(higherLevelGroup);
-	higherLevelGroup->ANNbackGroupConnectionList.push_back(group);
+	group->SANIfrontGroupConnectionList.push_back(higherLevelGroup);
+	higherLevelGroup->SANIbackGroupConnectionList.push_back(group);
 	
 	#ifdef SANI_ANN
 	createANNconnection(group, higherLevelGroup);
@@ -976,8 +976,8 @@ bool SANIformationClass::createGroupANNconnectionIO(SANIGroupNeuralNetwork* grou
 bool SANIformationClass::createGroupANNconnectionIObasic(SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelGroup)
 {
 	//this creates an artificial group connection for SANI only (not used by GIAposRelTranslatorParser)
-	group->ANNfrontGroupConnectionList.push_back(higherLevelGroup);
-	higherLevelGroup->ANNbackGroupConnectionList.push_back(group);
+	group->SANIfrontGroupConnectionList.push_back(higherLevelGroup);
+	higherLevelGroup->SANIbackGroupConnectionList.push_back(group);
 }
 #endif
 
@@ -989,9 +989,9 @@ bool SANIformationClass::createGroupANNconnection(SANIGroupNeuralNetwork* group,
 	cout << "SANIformationClass::createGroupANNconnection, group->groupIndex = " << group->groupIndex << ", higherLevelComponent->ownerGroup = " << higherLevelComponent->ownerGroup->groupName << endl;
 	#endif
 	
-	group->ANNfrontComponentConnectionList.push_back(higherLevelComponent);
+	group->SANIfrontComponentConnectionList.push_back(higherLevelComponent);
 	#ifdef SANI_SEQUENCE_GRAMMAR
-	higherLevelComponent->ANNbackGroupConnectionList.push_back(group);
+	higherLevelComponent->SANIbackGroupConnectionList.push_back(group);
 	#endif
 	
 	#ifdef SANI_ANN
@@ -1039,15 +1039,15 @@ ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetw
 	return newANNneuronConnection;
 }
 
-#ifdef SANI_SEQUENCE_GRAMMAR	//requires component->ANNbackGroupConnectionList
+#ifdef SANI_SEQUENCE_GRAMMAR	//requires component->SANIbackGroupConnectionList
 void SANIformationClass::deleteANNconnections(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* component)
 {				
 	SANIGroupNeuralNetwork* groupTarget = component->ownerGroup;
 
 	//code derived from SANIformationClass::createANNconnection;
-	for(int l=0; l<component->ANNbackGroupConnectionList.size(); l++)
+	for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 	{
-		SANIGroupNeuralNetwork* groupSource = component->ANNbackGroupConnectionList[l];
+		SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 		(groupSource->neuronReference->frontANNneuronConnectionList).clear();
 	}
 	(groupTarget->neuronReference->backANNneuronConnectionList).clear();
@@ -1083,9 +1083,9 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 			for(int k=0; k<group->components.size(); k++)
 			{
 				SANIComponentNeuralNetwork* component = (group->components).at(k);
-				for(int l=0; l<component->ANNbackGroupConnectionList.size(); l++)
+				for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 				{
-					SANIGroupNeuralNetwork* groupSource = component->ANNbackGroupConnectionList[l];
+					SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 					//cout << "createANNconnection" << endl;
 					#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_COMPONENT_INDEX
 					#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_COMPONENT_INDEX_EXACT
