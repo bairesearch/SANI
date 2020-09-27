@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1m7d 11-September-2020
+ * Project Version: 1m8a 20-September-2020
  * Requirements: 
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -173,7 +173,7 @@ bool SANIpropagateCompactGenerateClass::linkSimiliarSubnets(SANItranslatorVariab
 		result = false;
 	}	
 	#endif
-	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_CENTRAL_COMPONENTS
 	if(!findAndLinkCentralVariationCandidates(SANIGroupTypes, forwardPropogationSentenceData))
 	{	
 		result = false;
@@ -535,7 +535,7 @@ bool SANIpropagateCompactGenerateClass::createReferenceSetCandidateVector(SANIGr
 
 #endif
 
-#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS
+#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_CENTRAL_COMPONENTS
 bool SANIpropagateCompactGenerateClass::findAndLinkCentralVariationCandidates(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	//algorithm: find nodes that are connected to the same first input neuron and an output neuron in which the second input of the output neuron is the same
@@ -590,7 +590,7 @@ bool SANIpropagateCompactGenerateClass::findAndLinkCentralVariationCandidates(ve
 							{
 								//ownerGroup represents a central variation of currentNeuron (ie start and end sequences are identical)
 								
-								#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_CENTRAL_COMPONENTS_LINK
+								#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_CENTRAL_COMPONENTS_LINK
 								//link these nodes together
 								secondComponentOfOutputNeuronSourceVector1[v1]->phraseCandidateSynonyms.push_back(secondComponentOfOutputNeuronSourceVector2[v2]);
 								secondComponentOfOutputNeuronSourceVector2[v2]->phraseCandidateSynonyms.push_back(secondComponentOfOutputNeuronSourceVector1[v1]);
