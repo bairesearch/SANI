@@ -26,8 +26,8 @@
  * File Name: SANImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n1a 20-September-2020
- * Requirements: 
+ * Project Version: 1n1b 20-September-2020
+ * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Main
  * /
  *******************************************************************************/
@@ -304,7 +304,7 @@ int main(const int argc, const char** argv)
 
 	if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 	{
-		cout << "SANI.exe - Project Version: 3n1a 09-September-2020" << endl;
+		cout << "SANI.exe - Project Version: 1n1b 20-September-2020" << endl;
 		exit(EXIT_OK);
 	}
 
