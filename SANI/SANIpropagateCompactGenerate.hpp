@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n4a 28-October-2020
+ * Project Version: 1n4b 28-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -145,11 +145,7 @@ class SANIpropagateCompactGenerateClass
 	private: bool verifyLastWordIndex(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* parseTreeGroup, int lastWordIndex, bool* adjacent);
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
-	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
-	private: bool markSubNeurons(SANIGroupNeuralNetwork* currentNeuron);
-	private: bool markSubNeuronsReset(SANIGroupNeuralNetwork* currentNeuron);
-	#endif
-	
+
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_BASIC
 	private: bool addSubNeuronsToList(vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeuronsCompleteHistory, SANIGroupNeuralNetwork* currentNeuron);
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS

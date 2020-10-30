@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n4a 28-October-2020
+ * Project Version: 1n4b 28-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - identify and connect regions
  * /
@@ -57,6 +57,17 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableComponentsAndReferenceSe
 {
 	bool result = true;
 	
+	/*
+	//required for SANIpropagateOperationsClass::identifyMissingOrVariableStart/EndComponentFound:calculateVariableComponentPassCriteria;
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT	//assumes SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
+	for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
+	{
+		SANIGroupNeuralNetwork* currentNeuron = newHiddenLayerGroupsTemp[k];	
+		markSubNeurons(currentNeuron);
+	}
+	#endif
+	*/
+	
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_DETECTED_EDGE_OF_SENTENCE
 	identifyStartEndOfSentenceWordDetected(forwardPropogationSentenceData, topLevelParseTreeGroup);
 	#endif
@@ -86,6 +97,16 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableComponentsAndReferenceSe
 	#endif
 	newHiddenLayerGroupsTemp.clear();
 	#endif
+	
+	/*
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+	for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
+	{
+		SANIGroupNeuralNetwork* currentNeuron = newHiddenLayerGroupsTemp[k];	
+		markSubNeuronsReset(currentNeuron);
+	}
+	#endif
+	*/
 	
 	return result;
 }
@@ -224,7 +245,7 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableComponents(vector<SANIGr
 
 			bool identifyVariableFirstComponent = false;
 			bool identifyVariableLastComponent = false;
-
+	
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_FIRST_COMPONENTS_NON_STRING
 			if(!SANInodes.hasComponentTypeString(firstComponentOfGeneratedNeuron))	//firstComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
@@ -284,7 +305,11 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableComponents(vector<SANIGr
 bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool identifyVariableFirstOrLastComponent, SANIGroupNeuralNetwork* generatedNeuron, SANIComponentNeuralNetwork* variableComponentOfGeneratedNeuron, SANIComponentNeuralNetwork* nonvariableComponentOfGeneratedNeuron, SANIGroupNeuralNetwork* variableComponentOfGeneratedNeuronSource, SANIGroupNeuralNetwork* nonvariableComponentOfGeneratedNeuronSource)
 {
 	bool result = false;
-				
+	
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+	markSubNeurons(generatedNeuron);	//required for SANIpropagateOperationsClass::identifyMissingOrVariableStart/EndComponentFound:calculateVariableComponentPassCriteria;
+	#endif
+						
 	bool passEdgeRequirements = true;
 	if(identifyVariableFirstOrLastComponent)
 	{
@@ -527,19 +552,27 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 				}
 			}
 		}
-		
+	}
+	
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+	markSubNeuronsReset(generatedNeuron);
+	#endif
+	
+	if(passEdgeRequirements)
+	{			
 		if(generatedNeuron->markToErase)
 		{
+			//cout << "SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents" << endl;
+
 			result = true;
-			
+
 			SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	
 			groupType->groups.erase(remove(groupType->groups.begin(), groupType->groups.end(), generatedNeuron), groupType->groups.end());	//find and erase element
-				
+
 			delete generatedNeuron->neuronReference;
 			delete generatedNeuron;
 		}
 	}
-	
 
 	return result;
 }
@@ -996,6 +1029,73 @@ bool SANIpropagateCompactIdentifyClass::createReferenceSetCandidateVector(SANIGr
 	return result;
 }
 
+#endif
+#endif
+
+
+#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
+#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+bool SANIpropagateCompactIdentifyClass::markSubNeurons(SANIGroupNeuralNetwork* currentNeuron)
+{
+	bool result = true;
+	
+	if(!currentNeuron->marked)
+	{
+		if(!SANInodes.isNeuronString(currentNeuron))	//CHECKTHIS
+		{
+			currentNeuron->marked = true;
+
+			#ifdef SANI_SEQUENCE_GRAMMAR_VERIFY_NO_CIRCULAR
+			if(currentNeuron->verified)
+			{
+				cout << "SANIpropagateCompactGenerateClass::addSubNeuronsToList error: currentNeuron has already been parsed (circular loop detected)" << endl;
+				exit(EXIT_ERROR);
+			}
+			currentNeuron->verified = true;
+			#endif
+
+			for(int i=0; i<currentNeuron->components.size(); i++)
+			{
+				SANIComponentNeuralNetwork* currentComponent = currentNeuron->components[i];
+				for(int j=0; j<currentComponent->SANIbackGroupConnectionList.size(); j++)
+				{
+					SANIGroupNeuralNetwork* subGroup = (currentComponent->SANIbackGroupConnectionList)[j];
+					markSubNeurons(subGroup);
+				}
+			}
+
+			#ifdef SANI_SEQUENCE_GRAMMAR_VERIFY_NO_CIRCULAR
+			currentNeuron->verified = false;
+			#endif
+		}
+	}
+	
+	return result;
+}
+bool SANIpropagateCompactIdentifyClass::markSubNeuronsReset(SANIGroupNeuralNetwork* currentNeuron)
+{
+	bool result = true;
+	
+	if(currentNeuron->marked)
+	{
+		if(!SANInodes.isNeuronString(currentNeuron))	//CHECKTHIS
+		{
+			currentNeuron->marked = false;
+
+			for(int i=0; i<currentNeuron->components.size(); i++)
+			{
+				SANIComponentNeuralNetwork* currentComponent = currentNeuron->components[i];
+				for(int j=0; j<currentComponent->SANIbackGroupConnectionList.size(); j++)
+				{
+					SANIGroupNeuralNetwork* subGroup = (currentComponent->SANIbackGroupConnectionList)[j];
+					markSubNeuronsReset(subGroup);
+				}
+			}
+		}
+	}
+	
+	return result;
+}
 #endif
 #endif
 

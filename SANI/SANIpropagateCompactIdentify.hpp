@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactIdentify.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n4a 28-October-2020
+ * Project Version: 1n4b 28-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Identify - identify and connect regions
  * /
@@ -96,6 +96,13 @@ class SANIpropagateCompactIdentifyClass
 					private: bool createReferenceSetCandidateVector(SANIGroupParseTree* currentParseTreeGroup, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector);
 					private: bool createReferenceSetCandidateVector(SANIGroupNeuralNetwork* currentNeuron, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector);			
 		#endif
+	#endif
+	
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+	public: bool markSubNeurons(SANIGroupNeuralNetwork* currentNeuron);
+	public: bool markSubNeuronsReset(SANIGroupNeuralNetwork* currentNeuron);
+	#endif
 	#endif
 };
 
