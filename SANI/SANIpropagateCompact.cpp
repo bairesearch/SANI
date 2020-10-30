@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n2a 19-October-2020
+ * Project Version: 1n3a 21-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -551,7 +551,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupSelect(SANItrans
 				cout << "2a: propagateWordThroughNetworkGroup: ownerGroup->groupIndex = " <<  ownerGroup->groupIndex << ", currentComponent->componentIndex = " << currentComponent->componentIndex << endl;
 				#endif
 				
-				if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+				if(group->inputLayerNeuron)	//if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 				{
 					currentComponent->candidateStringMatch = forwardPropogationWordData->wordReference;
 				}
@@ -800,7 +800,12 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 	//create new parseTreeGroup
 	//copied from SANIpropagateInverseClass::generateRulesGroupTreeComponents;	
 	SANIComponentParseTree* newParseComponent = SANInodes.convertNeuralNetworkComponentToParseTreeComponentNew(currentComponent);	//new SANIComponentParseTree(*SANInodes.convertNeuralNetworkComponentToParseTreeComponent(currentComponent));	//copy rules component
-
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+	if(SANInodes.hasComponentTypeString(currentComponent))	//OR if(group->inputLayerNeuron)
+	{
+		newParseComponent->parseTreeComponentTypeString = true;
+	}
+	#endif
 	newParseComponent->componentRef = currentComponent;
 	newParseComponent->neuronComponentConnectionActive = true;	//implied
 	newParseComponent->neuronComponentConnectionActiveWordRecord = currentComponent->neuronComponentConnectionActiveWordRecord;
@@ -1454,12 +1459,14 @@ bool SANIpropagateCompactClass::updateActivatedNeuronWithMaxWordIndexCoverage(SA
 			if(missingOrVariableStartComponentFound)
 			{
 				SANIComponentNeuralNetwork* startComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, ownerGroup, true);
+				/*
 				if(startComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 				{
 					cerr << "SANIpropagateCompactClass::updateActivatedNeuronWithMaxWordIndexCoverage error: (startComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)" << endl;
 					//cout << "missingOrVariableEndComponentFound = " << missingOrVariableEndComponentFound << endl;
 					exit(EXIT_ERROR);
 				}
+				*/
 				#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 				SANInodes.getNeuralNetworkDepth(startComponent, &variableComponentMaxDepth);
 				#else

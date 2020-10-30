@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n2a 19-October-2020
+ * Project Version: 1n3a 21-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -79,16 +79,22 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 	bool existingActivationFoundNOTUSED = false;
 	return propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(testComponent, components, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, activationSequenceCompleted, firstActiveComponentInGroup, previousActiveComponent, finalActiveComponent, &existingActivationFoundNOTUSED);
 }
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
+#ifdef SANI_SUPPORT_COMPONENTS_OR
 bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components)
 {
 	bool existingActivationFoundNOTUSED = false;
 	return propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(testComponent, components, &existingActivationFoundNOTUSED);
 }
+#endif
+#ifdef SANI_SUPPORT_COMPONENTS_REPEAT
 bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, SANIForwardPropogationWordData* forwardPropogationWordData, bool* repeatDetected)
 {
 	bool existingActivationFoundNOTUSED = false;
 	return propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(testComponent, components, forwardPropogationWordData, repeatDetected, &existingActivationFoundNOTUSED);
 }
+#endif
+#endif
 
 bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool* activationSequenceCompleted, bool* firstActiveComponentInGroup, SANIComponentNeuralNetwork** previousActiveComponent, SANIComponentNeuralNetwork** finalActiveComponent, bool* existingActivationFoundStartComponent)
 {
@@ -710,14 +716,14 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 			
 	if(testFirstComponentNotString)
 	{
-		if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)	//added GIA3j5aTEMP65
+		if(SANInodes.hasComponentTypeString(component))	//added GIA3j5aTEMP65
 		{
 			passCriteria = false;
 		}
 	}
 	if(testLastComponentNotString)
 	{
-		if(secondComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+		if(SANInodes.hasComponentTypeString(secondComponent))
 		{
 			passCriteria = false;
 		}
@@ -794,7 +800,7 @@ bool SANIpropagateOperationsClass::identifyMissingStartComponentFound(vector<SAN
 			{
 				//support activation of group components with missing start components
 				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING_COMPREHENSIVE
-				if(currentComponent->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+				if(!SANInodes.hasComponentTypeString(currentComponent)) //(currentComponent->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 				{
 				#endif
 					*missingStartComponentFound = true;
@@ -811,7 +817,7 @@ bool SANIpropagateOperationsClass::identifyMissingStartComponentFound(vector<SAN
 			}
 			else
 			{	
-				if((i == 0) && (currentComponent->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING))
+				if((i == 0) && (!SANInodes.hasComponentTypeString(currentComponent)))	//(currentComponent->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 				{
 					//ie (*missingOrVariableStartComponentFound)
 				}
@@ -1439,7 +1445,9 @@ bool SANIpropagateOperationsClass::findGroup2InForwardConnectionBranchOfGroup1(S
 #endif
 #endif
 
-							
+
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
+#ifdef SANI_SUPPORT_COMPONENTS_OR					
 bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* existingActivationFoundStartComponent)
 {
 	bool sequentialActivationFound = false;
@@ -1477,7 +1485,8 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 	
 	return sequentialActivationFound;
 }
-
+#endif
+#ifdef SANI_SUPPORT_COMPONENTS_REPEAT
 //precondition: repeat sequences can contain only 1 component
 bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, SANIForwardPropogationWordData* forwardPropogationWordData, bool* repeatDetected, bool* existingActivationFoundStartComponent)
 {
@@ -1551,6 +1560,8 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 	
 	return sequentialActivationFound;
 }
+#endif
+#endif
 
 
 
@@ -2182,31 +2193,27 @@ bool SANIpropagateOperationsClass::traceBackpropParseTree(SANIGroupParseTree* cu
 			}
 			//#endif
 		
-			if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+			if(SANInodes.hasComponentTypeString(currentComponent))
 			{
-			
 				#ifndef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE_METHOD_OLD_INCREMENT_FOR_EVERY_GROUP_REF_RECURSE
 				if(performancePreprocess)
 				{	
 					if(LRPpreprocessorWordClassObject.isWordInWordlist(sentenceContents, currentComponent->candidateStringMatch))
 					{	
 						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT_MUTUALLY_EXCLUSIVE
-						if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)	//redundant?
+						if(currentComponent->candidateStringMatch->alreadyFoundMatch)
 						{
-							if(currentComponent->candidateStringMatch->alreadyFoundMatch)
-							{
-								result = false;
-								//cout << "duplicate instance of word detected in parsetree - fail to parse sentence" << endl;
-								//duplicate instance of word detected in parsetree - fail to parse sentence
-							}
-							else
-							{
+							result = false;
+							//cout << "duplicate instance of word detected in parsetree - fail to parse sentence" << endl;
+							//duplicate instance of word detected in parsetree - fail to parse sentence
+						}
+						else
+						{
 						#endif		
 								currentComponent->candidateStringMatch->alreadyFoundMatch = true;
 								//nb this method won't work if subReferenceSets are syntactically identical (and neural net groups are therefore reused); eg the red dog eats a blue apple.
 									//"the" and "a" will use identical neural groups and so will only count to +1 performance total
 						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT_MUTUALLY_EXCLUSIVE
-							}
 						}
 						#endif
 					}

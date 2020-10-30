@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n2a 19-October-2020
+ * Project Version: 1n3a 21-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -272,9 +272,15 @@ class SANInodesClass
 
 	public: bool printParseTree(SANIGroupParseTree* currentParseTreeGroup, int layer);
 	public: bool printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int layer);
+	#ifndef GIA_POS_REL_TRANSLATOR_RULES_USE	
+	public: bool printNeuralNetworkInputNeuron(SANIGroupNeuralNetwork* inputNeuron, int layer);
+	#endif
 	#endif
 
-		
+	public: bool hasComponentTypeString(SANIComponentNeuralNetwork* component);
+	public: bool hasComponentTypeString(SANIComponentParseTree* component);
+	public: bool calculateComponentTypeString(SANIGroupNeuralNetwork* componentSource);
+	
 };
 
 #endif

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n2a 19-October-2020
+ * Project Version: 1n3a 21-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -1879,12 +1879,8 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 				cout << currentHighLevelNeuron->groupIndex << " ";
 				#endif
 
-				int componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP;
-				if(currentHighLevelNeuron->inputLayerNeuron)
-				{
-					componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
-				}
-				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, componentType, false);
+				bool componentTypeString = SANInodes.calculateComponentTypeString(currentHighLevelNeuron);
+				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, componentTypeString, false);
 
 				#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 				grammaticalSentenceNeuronSub->networkDepth = max(grammaticalSentenceNeuronSub->networkDepth, currentHighLevelNeuron->networkDepth + 1);
@@ -1921,18 +1917,14 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 				#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 				cout << grammaticalSentenceNeuronSubHigher->groupIndex << " ";
 				#endif
-				addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP, false);
+				addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, false, false);
 
 				#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 				grammaticalSentenceNeuronSubHigher->networkDepth = max(grammaticalSentenceNeuronSubHigher->networkDepth, grammaticalSentenceNeuronSub->networkDepth + 1);
 				#endif
-
-				int componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP;
-				if(currentHighLevelNeuron->inputLayerNeuron)
-				{
-					componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
-				}
-				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSubHigher, componentType, false);
+	
+				bool componentTypeString = SANInodes.calculateComponentTypeString(currentHighLevelNeuron);
+				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSubHigher, componentTypeString, false);
 
 				#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 				grammaticalSentenceNeuronSubHigher->networkDepth = max(grammaticalSentenceNeuronSubHigher->networkDepth, currentHighLevelNeuron->networkDepth + 1);
@@ -2061,12 +2053,8 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 			{
 			#endif
 			*/
-				int componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP;
-				if(currentHighLevelNeuron->inputLayerNeuron)
-				{
-					componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
-				}
-				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, componentType, false);
+				bool componentTypeString = SANInodes.calculateComponentTypeString(currentHighLevelNeuron);
+				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, componentTypeString, false);
 			/*
 			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
 			}
@@ -2091,7 +2079,7 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 					#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 					cout << grammaticalSentenceNeuronSubHigher->groupIndex << " ";
 					#endif
-					addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP, false);
+					addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, false, false);
 				/*
 				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
 				}
@@ -2128,7 +2116,7 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 			if(!directWireLowLevelPOSneuronToGrammaticalSentenceNeuron(SANIGroupTypes, forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub))
 			{
 			#endif
-				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP, false);
+				addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, false, false);
 			#ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS_ENFORCE_DURING_FIRST_HIDDEN_LAYER_GENERATION
 			}
 			#endif
@@ -2442,7 +2430,7 @@ bool SANIpropagateCompactGenerateClass::directWireLowLevelPOSneuronToGrammatical
 					}
 				}
 
-				addComponentToGroup(forwardPropogationSentenceData, lowerLevelPOSgroup, grammaticalSentenceNeuron, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING, false);	//fixed GIA3j5aTEMP61 
+				addComponentToGroup(forwardPropogationSentenceData, lowerLevelPOSgroup, grammaticalSentenceNeuron, true, false);	//fixed GIA3j5aTEMP61 
 			}
 
 			SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);
@@ -2481,7 +2469,7 @@ bool SANIpropagateCompactGenerateClass::addComponentToFirstLevelHiddenLayerGroup
 {
 	bool result = true;
 
-	addComponentToGroup(forwardPropogationSentenceData, inputLayerPOSneuron, newNeuronSequenceGroup, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING, false);
+	addComponentToGroup(forwardPropogationSentenceData, inputLayerPOSneuron, newNeuronSequenceGroup, true, false);
 	//SANIformation.createGroupANNconnection(group, higherLevelComponent);
 
 	return result;
@@ -2526,7 +2514,7 @@ SANIGroupNeuralNetwork* SANIpropagateCompactGenerateClass::splitGroupAtLastActiv
 	SANInodes.updateComponentsOwnerGroupAndIndexes(newHiddenLayerNeuron, &(newHiddenLayerNeuron->components), false, NULL);
 	SANInodes.updateComponentsOwnerGroupAndIndexes(neuronToSplit, &(neuronToSplit->components), false, NULL);	
 	
-	addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP, true);	//CHECKTHIS	
+	addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, true);	//CHECKTHIS	
 		
 	return newHiddenLayerNeuron;
 }
@@ -2562,7 +2550,7 @@ SANIGroupNeuralNetwork* SANIpropagateCompactGenerateClass::splitGroupAtLastActiv
 		{
 			insertAtStart = false;	//compensate for addComponentToGroup specification limitation
 		}
-		addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP, insertAtStart);	//CHECKTHIS
+		addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
 	}
 	else if(indexToSplitVector2 == components->size()-1)
 	{
@@ -2584,7 +2572,7 @@ SANIGroupNeuralNetwork* SANIpropagateCompactGenerateClass::splitGroupAtLastActiv
 		{
 			insertAtStart = true;	//compensate for addComponentToGroup specification limitation
 		}
-		addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP, insertAtStart);	//CHECKTHIS
+		addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
 	}
 	else
 	{
@@ -2609,7 +2597,7 @@ SANIGroupNeuralNetwork* SANIpropagateCompactGenerateClass::splitGroupAtLastActiv
 		{
 			insertAtStart = true;	//compensate for addComponentToGroup specification limitation
 		}
-		addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP, insertAtStart);	//CHECKTHIS
+		addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
 		
 		neuronToSplit->components.insert(neuronToSplit->components.end(), componentsPart3.begin(), componentsPart3.end());
 		SANInodes.updateComponentsOwnerGroupAndIndexes(neuronToSplit, &(neuronToSplit->components), false, NULL);
@@ -2628,10 +2616,10 @@ bool SANIpropagateCompactGenerateClass::addVariableComponentToGroup(SANIForwardP
 	bool result = true;
 
 	SANIComponentNeuralNetwork* variableComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, higherLevelComponentGroupOwner, addToStart);
-
-	if(variableComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+	
+	if(SANInodes.hasComponentTypeString(variableComponent))	//(variableComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 	{
-		cerr << "SANIpropagateCompactGenerateClass::addVariableComponentToGroup error: (variableComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)" << endl;
+		cerr << "SANIpropagateCompactGenerateClass::addVariableComponentToGroup error: SANInodes.hasComponentTypeString(variableComponent)" << endl;
 		exit(EXIT_ERROR);
 	}
 					
@@ -2657,7 +2645,7 @@ bool SANIpropagateCompactGenerateClass::addVariableComponentToGroup(SANIForwardP
 }
 
 
-bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, int componentType, bool insertAtStart)
+bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, bool componentTypeString, bool insertAtStart)
 {
 	bool result = true;
 
@@ -2694,7 +2682,6 @@ bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogati
 		higherLevelComponentGroupOwner->components.push_back(newComponent);
 	}
 			
-	newComponent->componentType = componentType;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	//should never be true
 	newComponent->groupRefName = group->groupName;
 	newComponent->groupTypeRefName = group->groupTypeName;
@@ -2705,19 +2692,24 @@ bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogati
 	newComponent->groupRef = group;	//newComponent->ownerGroup instead
 	newComponent->groupTypeRef = group->groupType;
 	*/
-	if(componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP)
+	if(componentTypeString)
 	{
-	
-	}
-	else if(componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
-	{
+		#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+		newComponent->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_NEURON;
+		newComponent->neuralNetworkComponentHasTypeString = true;
+		#else
+		newComponent->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
 		newComponent->stringType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS;
 		newComponent->wordPOStype = group->wordPOStype;	
+		#endif
 	}
 	else
 	{
-		cerr << "SANIpropagateCompactGenerateClass::addComponentToGroup error: componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP/STRING" << endl;
-		exit(EXIT_ERROR);
+		#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+		newComponent->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_NEURON;
+		#else
+		newComponent->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP;
+		#endif
 	}
 
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
@@ -2733,6 +2725,13 @@ bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogati
 {
 	bool result = true;
 
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+	if(group->inputLayerNeuron)
+	{
+		higherLevelComponent->neuralNetworkComponentHasTypeString = true;
+	}
+	#endif
+	
 	SANIformation.createGroupANNconnection(group, higherLevelComponent);
 	
 	return result;
@@ -3151,12 +3150,8 @@ bool SANIpropagateCompactGenerateClass::updateHighLevelNeuronHierachy(vector<SAN
 			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 			cout << grammaticalSentenceNeuronSubHigher->groupIndex << " ";
 			#endif
-			int componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP;
-			if(highLevelNeuronPriorCurrent->inputLayerNeuron)
-			{
-				componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
-			}
-			addComponentToGroup(forwardPropogationSentenceData, highLevelNeuronPriorCurrent, grammaticalSentenceNeuronSubHigher, componentType, false);
+			bool componentTypeString = SANInodes.calculateComponentTypeString(highLevelNeuronPriorCurrent);
+			addComponentToGroup(forwardPropogationSentenceData, highLevelNeuronPriorCurrent, grammaticalSentenceNeuronSubHigher, componentTypeString, false);
 
 			#ifdef SANI_DEBUG_FORMATION2
 			SANInodes.printParseTreeDebugIndentation(i);
@@ -3169,12 +3164,8 @@ bool SANIpropagateCompactGenerateClass::updateHighLevelNeuronHierachy(vector<SAN
 			grammaticalSentenceNeuronSubHigher->networkDepth = max(grammaticalSentenceNeuronSubHigher->networkDepth, highLevelNeuronPriorCurrent->networkDepth + 1);
 			#endif
 
-			componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP;
-			if(grammaticalSentenceNeuronSub->inputLayerNeuron)
-			{
-				componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
-			}
-			addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, componentType, false);
+			componentTypeString = SANInodes.calculateComponentTypeString(grammaticalSentenceNeuronSub);
+			addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, componentTypeString, false);
 
 			#ifdef SANI_DEBUG_FORMATION2
 			SANInodes.printParseTreeDebugIndentation(i);

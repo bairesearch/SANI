@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n2a 19-October-2020
+ * Project Version: 1n3a 21-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -1051,13 +1051,13 @@ bool SANInodesClass::printComponent(SANIComponentParseTree* component, int layer
 	
 	printParseTreeDebugIndentation(layer);
 	string componentTagRegenerated = "";
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
 	if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 	{
 		if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS)
 		{
 			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_wordPOStype + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SHAREDvars.convertIntToString(component->wordPOStypeInferred) + CHAR_TAG_CLOSE;
 		}
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 		else if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_EXPLICIT)
 		{
 			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_word + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->word + CHAR_TAG_CLOSE;
@@ -1066,7 +1066,6 @@ bool SANInodesClass::printComponent(SANIComponentParseTree* component, int layer
 		{
 			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_tokenLayer + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->tokenLayer + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_tokenClass + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->tokenClass + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_tokenType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->tokenType + CHAR_TAG_CLOSE;
 		}
-		#endif
 		
 		if(component->candidateStringMatch != NULL)
 		{
@@ -1076,13 +1075,27 @@ bool SANInodesClass::printComponent(SANIComponentParseTree* component, int layer
 	}
 	else if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP)
 	{
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 		componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_groupTypeNameRef + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->groupTypeRefName + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_groupNameRef + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->groupRefName + STRING_SPACE + CHAR_TAG_CLOSE;	
-		#else
-		componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + CHAR_TAG_CLOSE;		
-		#endif
 		cout << componentTagRegenerated << endl;
 	}
+	#else
+	if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_NEURON)
+	{
+		if(hasComponentTypeString(component))
+		{
+			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_wordPOStype + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SHAREDvars.convertIntToString(component->wordPOStypeInferred) + CHAR_TAG_CLOSE;
+			if(component->candidateStringMatch != NULL)
+			{
+				componentTagRegenerated = componentTagRegenerated + ", candidateStringMatch = " + component->candidateStringMatch->tagName;
+			}		
+		}
+		else
+		{
+			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + CHAR_TAG_CLOSE;		
+		}
+		cout << componentTagRegenerated << endl;
+	}	
+	#endif
 	
 	return result;
 }
@@ -1093,13 +1106,13 @@ bool SANInodesClass::printComponent(SANIComponentNeuralNetwork* component, int l
 	
 	printParseTreeDebugIndentation(layer);
 	string componentTagRegenerated = "";
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
 	if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
 	{
 		if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS)
 		{
 			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_wordPOStype + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->wordPOStype + CHAR_TAG_CLOSE;
 		}
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 		else if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_EXPLICIT)
 		{
 			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_word + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->word + CHAR_TAG_CLOSE;
@@ -1108,8 +1121,7 @@ bool SANInodesClass::printComponent(SANIComponentNeuralNetwork* component, int l
 		{
 			componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_tokenLayer + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->tokenLayer + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_tokenClass + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->tokenClass + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_tokenType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->tokenType + CHAR_TAG_CLOSE;
 		}
-		#endif
-		
+
 		if(component->candidateStringMatch != NULL)
 		{
 			componentTagRegenerated = componentTagRegenerated + ", candidateStringMatch = " + component->candidateStringMatch->tagName;
@@ -1118,11 +1130,7 @@ bool SANInodesClass::printComponent(SANIComponentNeuralNetwork* component, int l
 	}
 	else if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP)
 	{
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 		componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_groupTypeNameRef + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->groupTypeRefName + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_groupNameRef + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->groupRefName + STRING_SPACE + CHAR_TAG_CLOSE;	
-		#else
-		componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + CHAR_TAG_CLOSE;	
-		#endif
 		cout << componentTagRegenerated << endl;
 	}
 	#ifdef SANI_SUPPORT_COMPONENTS_OR
@@ -1148,6 +1156,13 @@ bool SANInodesClass::printComponent(SANIComponentNeuralNetwork* component, int l
 			printComponent(subcomponent, layer+1);
 		}
 	}
+	#endif
+	#else
+	if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_NEURON)
+	{
+		componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + CHAR_TAG_CLOSE;	
+		cout << componentTagRegenerated << endl;
+	}	
 	#endif
 	
 	return result;
@@ -1388,7 +1403,7 @@ bool SANInodesClass::printParseTreeGroupIndices(SANIGroupParseTree* currentParse
 	{
 		SANIComponentParseTree* currentComponent = (currentParseTreeGroup->components)[i];
 
-		if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+		if(hasComponentTypeString(currentComponent))
 		{
 			printParseTreeDebugIndentation(layer+1);
 			cout << "componentIndex = " << currentComponent->componentIndex << ", i" << currentComponent->componentRef->ownerGroup->groupIndex << endl;
@@ -1415,7 +1430,7 @@ string SANInodesClass::printParseTreeGroupIndicesFlat(SANIGroupParseTree* curren
 	{
 		SANIComponentParseTree* currentComponent = (currentParseTreeGroup->components)[i];
 
-		if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+		if(hasComponentTypeString(currentComponent))
 		{
 			groupIndicesString = groupIndicesString + "i" + SHAREDvars.convertIntToString(currentComponent->componentRef->ownerGroup->groupIndex) + " ";
 		}
@@ -1430,6 +1445,7 @@ string SANInodesClass::printParseTreeGroupIndicesFlat(SANIGroupParseTree* curren
 
 	return groupIndicesString;
 }
+
 
 bool SANInodesClass::printParseTree(SANIGroupParseTree* currentParseTreeGroup, int layer)
 {
@@ -1462,6 +1478,7 @@ bool SANInodesClass::printParseTree(SANIGroupParseTree* currentParseTreeGroup, i
 	return result;
 }
 
+#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
 bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int layer)
 {
 	bool result = true;
@@ -1492,10 +1509,125 @@ bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, i
 
 	return result;
 }
+#else
+bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int layer)
+{
+	bool result = true;
+
+	if(currentNeuron->inputLayerNeuron)
+	{
+		printNeuralNetworkInputNeuron(currentNeuron, layer);	
+	}
+	else
+	{
+		printParseTreeDebugIndentation(layer);
+		cout << "currentNeuron->groupIndex = " << currentNeuron->groupIndex << endl;
+
+		for(int i=0; i<currentNeuron->components.size(); i++)
+		{				
+			SANIComponentNeuralNetwork* component = (currentNeuron->components)[i];
+
+			printComponent(component, layer);
+
+			for(int j=0; j<component->SANIbackGroupConnectionList.size(); j++)
+			{
+				SANIGroupNeuralNetwork* componentSource = (component->SANIbackGroupConnectionList)[j];
+				if(!printNeuralNetwork(componentSource, layer+1))
+				{
+					result = false;
+				}
+			}
+		}
+	}	
+
+	return result;
+}
+#endif
+#ifndef GIA_POS_REL_TRANSLATOR_RULES_USE	
+bool SANInodesClass::printNeuralNetworkInputNeuron(SANIGroupNeuralNetwork* inputNeuron, int layer)
+{
+	//CHECKTHIS
+	/*
+	printParseTreeDebugIndentation(layer);
+
+	string componentTagRegenerated = "";
+	componentTagRegenerated = componentTagRegenerated + CHAR_TAG_OPEN + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_GROUP_TAG_component + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_componentType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentTypes[component->componentType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_stringType + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + SANIGroupsComponentStringTypes[component->stringType] + STRING_SPACE + GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_ATTRIBUTE_wordPOStype + CHAR_TAG_ATTRIBUTE_VAL_EQUALS_STR + component->wordPOStype + CHAR_TAG_CLOSE;
+	if(component->candidateStringMatch != NULL)
+	{
+		componentTagRegenerated = componentTagRegenerated + ", candidateStringMatch = " + component->candidateStringMatch->tagName;
+	}
+	cout << componentTagRegenerated << endl;
+	*/
+}
+#endif
+
 
 #endif
 
 
 
+bool SANInodesClass::hasComponentTypeString(SANIComponentNeuralNetwork* component)
+{
+	bool result = false;
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+	if(component->neuralNetworkComponentHasTypeString)
+	{
+		result = true;
+	}
+	/*
+	for(int j=0; j<component->SANIbackGroupConnectionList.size(); j++)
+	{
+		SANIGroupNeuralNetwork* componentSource = (component->SANIbackGroupConnectionList)[j];
+		if(componentSource->inputLayerNeuron)
+		{
+			result = true;
+		}
+	}
+	*/
+	#else	
+	if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+	{
+		result = true;
+	}
+	#endif
+	return result;
+}
+
+bool SANInodesClass::hasComponentTypeString(SANIComponentParseTree* component)
+{
+	bool result = false;
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+	if(component->parseTreeComponentTypeString)
+	#else
+	if(component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+	#endif
+	{
+		result = true;
+	}
+	return result;
+}		
+
+bool SANInodesClass::calculateComponentTypeString(SANIGroupNeuralNetwork* componentSource)
+{
+	bool componentTypeString = false;
+	if(componentSource->inputLayerNeuron)
+	{
+		componentTypeString = true;
+	}
+	return componentTypeString;
+	/*
+	int componentType;
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+	componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_NEURON;
+	#else
+	componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_GROUP;
+	if(componentSource->inputLayerNeuron)
+	{
+		componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
+	}
+	#endif
+	return componentType;
+	*/
+}
 
 #endif

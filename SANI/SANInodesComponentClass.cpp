@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n2a 19-October-2020
+ * Project Version: 1n3a 21-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -154,6 +154,9 @@ SANIComponentNeuralNetwork::SANIComponentNeuralNetwork(void)
 	//optimumPathwayWordList = NULL;
 	#endif
 	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	
+	neuralNetworkComponentHasTypeString = false;
+	#endif
 }
 SANIComponentNeuralNetwork::~SANIComponentNeuralNetwork(void)
 {
@@ -173,7 +176,10 @@ SANIComponentParseTree::SANIComponentParseTree(void)
 	numberOfWordsCurrentlyParsed = INT_DEFAULT_VALUE;
 	#endif
 	#ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
-	int wordIndex;
+	wordIndex = INT_DEFAULT_VALUE;	//CHECKTHIS
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	
+	parseTreeComponentTypeString = false;
 	#endif
 }
 SANIComponentParseTree::~SANIComponentParseTree(void)
