@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n3a 21-October-2020
+ * Project Version: 1n3b 21-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -2617,11 +2617,26 @@ bool SANIpropagateCompactGenerateClass::addVariableComponentToGroup(SANIForwardP
 
 	SANIComponentNeuralNetwork* variableComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, higherLevelComponentGroupOwner, addToStart);
 	
-	if(SANInodes.hasComponentTypeString(variableComponent))	//(variableComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING
+	if(addToStart)
 	{
-		cerr << "SANIpropagateCompactGenerateClass::addVariableComponentToGroup error: SANInodes.hasComponentTypeString(variableComponent)" << endl;
-		exit(EXIT_ERROR);
+		if(SANInodes.hasComponentTypeString(variableComponent))	//(variableComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+		{
+			cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_NON_STRING: SANIpropagateCompactGenerateClass::addVariableComponentToGroup error: SANInodes.hasComponentTypeString(variableComponent)" << endl;
+			exit(EXIT_ERROR);
+		}
 	}
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS_NON_STRING
+	if(!addToStart)
+	{
+		if(SANInodes.hasComponentTypeString(variableComponent))	//(variableComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+		{
+			cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS_NON_STRING: SANIpropagateCompactGenerateClass::addVariableComponentToGroup error: SANInodes.hasComponentTypeString(variableComponent)" << endl;
+			exit(EXIT_ERROR);
+		}
+	}
+	#endif
 					
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_PREVENT_DUPLICATE_CONNECTIONS
 	bool duplicateConnectionFound = false;
