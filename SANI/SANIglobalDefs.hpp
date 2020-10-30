@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5a 29-October-2020
+ * Project Version: 1n5b 29-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -62,16 +62,25 @@
 	
 	//#define SANI_DEBUG_RULES_PRINT_SENTENCES
 	//#define SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
+
+	#ifdef COMPILE_SANI
+		#define SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
+	#endif
 	
+	
+	//#define SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS	//SANI1n5c
+	#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS
+		//#define SANI_SEQUENCE_GRAMMAR_ENSURE_TOP_LEVEL_NEURON_FOUND	//SANI1n5b	//inactive
+		#ifdef SANI_SEQUENCE_GRAMMAR_ENSURE_TOP_LEVEL_NEURON_FOUND
+			#define SANI_SEQUENCE_GRAMMAR_RECORD_TOP_LEVEL_NEURONS
+		#endif
+	#endif
+		
 	#ifdef SANI_SEQUENCE_GRAMMAR	//#ifndef GIA_POS_REL_TRANSLATOR_RULES_USE
 		//#define SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	//SANI1n3a	//inactive
 		#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
 			//#define SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING	//SANI1n3b	//incomplete
 		#endif
-	#endif
-	
-	#ifdef COMPILE_SANI
-		#define SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
 	#endif
 	
 	//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_COMPONENTS	//SANI1j-1m (generates variable first/last components when generating network)
@@ -784,6 +793,7 @@
 			#define SANI_ANN_CENTRE_NEURONS_X_AXIS
 			#define SANI_ANN_SEGREGATE_TOP_LAYER_NEURONS
 			#ifdef SANI_ANN_SEGREGATE_TOP_LAYER_NEURONS
+				#define SANI_SEQUENCE_GRAMMAR_RECORD_TOP_LEVEL_NEURONS	//SANI1n5b
 				#define SANI_ANN_SEGREGATE_TOP_LAYER_NEURONS_Y_SEPARATION (10)
 			#endif
 		#endif

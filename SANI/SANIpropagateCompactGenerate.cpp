@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5a 29-October-2020
+ * Project Version: 1n5b 29-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -874,6 +874,12 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimi
 		else
 		{			
 			completedIdentifyingSentenceHighLevelNeurons = true;
+			
+			if(*indexInSequenceStart == 0)
+			{
+				cerr << "SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimitNumComponentsSection error: (*indexInSequenceStart == 0) && indexInSequence == forwardPropogationSentenceData->sentenceContents->size(); SANIpropagateCompact.executeTxtRelTranslatorNeuralNetworkPart1 should have passed" << endl;
+				exit(EXIT_ERROR);
+			}
 		}
 		
 		loopIndex++;
@@ -1800,7 +1806,7 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 		bool foundLowestLayerNeuron = findHighestLayerNeuron(highLevelNeuronPriorArray, &highestLayerNeuron, &highestLayerNeuronIndex);
 	
 		(*grammaticalSentenceNeuron) = highestLayerNeuron;
-		#ifdef SANI_ANN_SEGREGATE_TOP_LAYER_NEURONS
+		#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_TOP_LEVEL_NEURONS
 		if(createTopLevelNeuron)
 		{
 			(*grammaticalSentenceNeuron)->topLevelSentenceNeuron = true;
@@ -1977,7 +1983,7 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 		cout << "SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron - assigning top level sentence neuron;" << endl;
 		#endif
 		(*grammaticalSentenceNeuron) = grammaticalSentenceNeuronSub;
-		#ifdef SANI_ANN_SEGREGATE_TOP_LAYER_NEURONS
+		#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_TOP_LEVEL_NEURONS
 		if(createTopLevelNeuron)
 		{
 			(*grammaticalSentenceNeuron)->topLevelSentenceNeuron = true;
@@ -2127,7 +2133,7 @@ bool SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron
 		cout << "SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron - assigning top level sentence neuron;" << endl;
 		#endif
 		(*grammaticalSentenceNeuron) = grammaticalSentenceNeuronSub;
-		#ifdef SANI_ANN_SEGREGATE_TOP_LAYER_NEURONS
+		#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_TOP_LEVEL_NEURONS
 		if(createTopLevelNeuron)
 		{
 			(*grammaticalSentenceNeuron)->topLevelSentenceNeuron = true;

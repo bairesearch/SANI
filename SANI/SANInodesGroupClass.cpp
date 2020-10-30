@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5a 29-October-2020
+ * Project Version: 1n5b 29-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -226,7 +226,7 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
 	groupStrength = 0;
 	#endif
-	#ifdef SANI_ANN_SEGREGATE_TOP_LAYER_NEURONS
+	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_TOP_LEVEL_NEURONS
 	topLevelSentenceNeuron = false;
 	#endif
 	#endif
