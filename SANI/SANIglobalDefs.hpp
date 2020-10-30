@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n1b 20-September-2020
+ * Project Version: 1n2a 19-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -39,6 +39,8 @@
 
 
 #define SANI_POS_REL_TRANSLATOR_RULES_LAYER_START (1)
+
+#define SANI_PRINT_EXECUTION_TIME	//disable this while performing incremental automated testing
 
 #ifdef USE_SANI
 	#define SANI_NODES	//identified SANI1m3b
@@ -65,14 +67,22 @@
 		#define SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
 	#endif
 	
-	//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_COMPONENTS	//SANI1j-1m (generates variable first/last components when generating network)
+	#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_COMPONENTS	//SANI1j-1m (generates variable first/last components when generating network)
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_COMPONENTS
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
-			#define SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_SHARED
 			#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS	//SANI1j5a	//optional
 			//#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS	//SANI1l8e	//optional
+			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
+				#define SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_SHARED
+			#endif
+			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
+				#define SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_SHARED
+			#endif
 		#else
 			#define SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS	//SANI1j5a	//optional
+			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
+				#define SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_SHARED
+			#endif
 		#endif
 	#else
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
