@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5b 29-October-2020
+ * Project Version: 1n5c 29-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -63,17 +63,30 @@
 	//#define SANI_DEBUG_RULES_PRINT_SENTENCES
 	//#define SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 
+	//#define SANI_DEBUG_PROPAGATE_TRACE
+	#ifdef SANI_DEBUG_PROPAGATE_TRACE
+		#define SANI_DEBUG_PROPAGATE
+		#define SANI_DEBUG_PROPAGATE_EXTRA4
+
+		//#define SANI_DEBUG_PROPAGATE_EXTRA2
+		//#define SANI_DEBUG_PROPAGATE_EXTRA3_PRIMARY
+	#endif
+		
+			
 	#ifdef COMPILE_SANI
-		#define SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
+		//#define SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
 	#endif
 	
 	
-	//#define SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS	//SANI1n5c
+	#define SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS	//SANI1n5c
 	#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS
+		#define SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS_MIN_LENGTH (2)
 		//#define SANI_SEQUENCE_GRAMMAR_ENSURE_TOP_LEVEL_NEURON_FOUND	//SANI1n5b	//inactive
 		#ifdef SANI_SEQUENCE_GRAMMAR_ENSURE_TOP_LEVEL_NEURON_FOUND
 			#define SANI_SEQUENCE_GRAMMAR_RECORD_TOP_LEVEL_NEURONS
 		#endif
+	#else
+		#define SANI_SEQUENCE_GRAMMAR_GENERATE_VERIFY_MORE_THAN_ONE_SECTION_FOUND	//SANI1n5b
 	#endif
 		
 	#ifdef SANI_SEQUENCE_GRAMMAR	//#ifndef GIA_POS_REL_TRANSLATOR_RULES_USE
@@ -306,8 +319,6 @@
 			#define SANI_DEBUG_SEQUENCE_GRAMMAR_MAX_POS_PERMUTATIONS_FOR_PARTICULAR_SENTENCE_INDEX (2)
 		#endif
 	#endif
-
-	//#define SANI_DEBUG_RULES_PRINT_SENTENCES
 
 	#define SANI_SEQUENCE_GRAMMAR_VERIFICATION	//not required	//should be activated for software verification	//can be disabled for specific debugging
 	#define SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION	//SANI1j5aTEMP53	//not required 	//should be activated for software verification

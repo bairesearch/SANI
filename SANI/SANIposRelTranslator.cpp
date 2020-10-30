@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5b 29-October-2020
+ * Project Version: 1n5c 29-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator
  * /
@@ -94,7 +94,7 @@ bool SANIposRelTranslatorClass::parseTxtfileAndCreateSemanticNetworkBasedUponSem
 	/*
 	#ifdef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC_OPTIMISED
 	translatorVariables->parserDemarkateOptimumPathway = true;	//note actual demarkateOptimumPathwayBackprop isnt required to be executed (it is done by GIAtranslatorClass::convertSentenceRelationsIntoGIAnetworkNodesWrapper for the given sentence), but everything else is (ie code require to extract 
-	if(!GIAposRelTranslatorPermutations.executeTxtRelTranslatorWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes))
+	if(!GIAposRelTranslatorPermutations.executePosRelTranslatorWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes))
 	{
 		result = false;
 	}
@@ -102,7 +102,7 @@ bool SANIposRelTranslatorClass::parseTxtfileAndCreateSemanticNetworkBasedUponSem
 	#endif
 	*/
 	#else
-	if(!SANIposRelTranslatorPermutations.executeTxtRelTranslatorWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes))
+	if(!SANIposRelTranslatorPermutations.executePosRelTranslatorWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes))
 	{
 		result = false;
 	}

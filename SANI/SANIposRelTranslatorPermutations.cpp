@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5b 29-October-2020
+ * Project Version: 1n5c 29-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -48,7 +48,7 @@ static bool parseIsolatedSubreferenceSetsRecord;
 
 #endif
 
-bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
+bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
 {
 	bool result = true;
 
@@ -72,7 +72,7 @@ bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper(SANIt
 		In the future use a neural net to train the system to identify new rule groups (or upgrade/refine rule groups)
 	*/
 	
-	//cout << "SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper" << endl;
+	//cout << "SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper" << endl;
 
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_SENTENCE_INDEXING
@@ -96,11 +96,11 @@ bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper(SANIt
 		translatorVariables->currentPreprocessorSentenceInList = currentLRPpreprocessorSentenceInList;
 		#endif
 		
-		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS
-		cout << "SANIposRelTranslatorPermutationsClass::executeTxtRelTranslator{}: sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", sentenceContents = " << LRPpreprocessorWordClassObject.printWordListString(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList)) << endl;
+		#ifdef SANI_DEBUG_RULES_PRINT_SENTENCES
+		cout << "SANIposRelTranslatorPermutationsClass::executePosRelTranslator{}: sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", sentenceContents = " << LRPpreprocessorWordClassObject.printWordListString(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList)) << endl;
 		#endif
-			
-		if(!executeTxtRelTranslatorWrapper2(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList))
+		
+		if(!executePosRelTranslatorWrapper2(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList))
 		{
 			result = false;
 		}
@@ -118,7 +118,7 @@ bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper(SANIt
 	return result;
 }
 
-bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper2(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList)
+bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper2(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList)
 {
 	bool result = true;
 
@@ -135,7 +135,7 @@ bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper2(SANI
 		In the future use a neural net to train the system to identify new rule groups (or upgrade/refine rule groups)
 	*/
 	
-	//cout << "SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper2" << endl;
+	//cout << "SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper2" << endl;
 
 	vector<uint64_t> POSambiguityInfoPermutation;
 	vector<LRPpreprocessorPlainTextWord*>* sentenceContents = LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList);
@@ -151,111 +151,111 @@ bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslatorWrapper2(SANI
 		result = false;
 	}
 
-	if(!executeTxtRelTranslator(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &POSambiguityInfoPermutation))
+	#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS
+	if(!executePosRelTranslatorOnPOSunambiguousSentenceSubsets(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &POSambiguityInfoPermutation))
+	{
+		result = false;
+	}	
+	#else
+	if(!executePosRelTranslator(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &POSambiguityInfoPermutation))
 	{
 		result = false;
 	}
+	#endif
 
 	//cout << "2 currentLRPpreprocessorSentenceInList->firstParseTreeGroup = " << currentLRPpreprocessorSentenceInList->firstParseTreeGroup->groupName << endl;
 
 	return result;
 }
 
-
-#ifndef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC
-bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(SANItranslatorVariablesClass* translatorVariables)
+#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS
+bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambiguousSentenceSubsets(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, vector<uint64_t>* POSambiguityInfoPermutation)
 {
 	bool result = true;
 	
-	#ifdef SANI_DEBUG_RULES
-	cout << "printParseTreeDebug: " << endl;
-	#endif
-	
-	LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList = translatorVariables->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList;
-	while(currentLRPpreprocessorSentenceInList->next != NULL)
+	vector<LRPpreprocessorPlainTextWord*>* sentenceContents = LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList);
+	vector<LRPpreprocessorPlainTextWord*> sentenceContentsSubset;
+	vector<uint64_t> POSambiguityInfoPermutationSubset;
+	for(int w = 0; w<sentenceContents->size(); w++)
 	{
-		vector<LRPpreprocessorPlainTextWord*>* sentenceContents = LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList);
-
-		//this will replace the sentenceContents word->wordPOStypeInferred values with their ideal value as stored in the parse tree (in the case where the ideal word->wordPOStypeInferred values were overwritten by a more recent bad parse):
+		LRPpreprocessorPlainTextWord* word = (*sentenceContents)[w];
+		uint64_t POSambiguityInfo = (*POSambiguityInfoPermutation)[w];
 		
-		#ifdef SANI_FORWARD
-		if(currentLRPpreprocessorSentenceInList->firstParseTreeGroup != NULL)
+		unsigned char unambiguousPOSinfoIndex;
+		bool treatWordAsAmbiguousIfNullPOSvalue = true;	//CHECKTHIS
+		if(LRPpreprocessorPOStaggerDatabase.determinePOSambiguityInfoIsAmbiguous(POSambiguityInfo, &unambiguousPOSinfoIndex, treatWordAsAmbiguousIfNullPOSvalue))
 		{
-		#endif
-			SANIGroupParseTree* firstParseTreeGroup = currentLRPpreprocessorSentenceInList->firstParseTreeGroup;
-			int layer = SANI_POS_REL_TRANSLATOR_RULES_LAYER_START;
-			#ifdef SANI_DEBUG_RULES
-			cout << "firstParseTreeGroup: groupTypeName = " << firstParseTreeGroup->groupTypeName << ", groupName = " << firstParseTreeGroup->groupName << endl;
-			#endif
-			if(!transferParseTreePOStypeInferredToWordList(firstParseTreeGroup, layer))
+			if(sentenceContentsSubset.size() >= SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS_MIN_LENGTH)	//(sentenceContentsSubset.size() > 0)
 			{
-				result = false;
+				cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
+				if(!executePosRelTranslatorOnPOSunambiguousSentenceSubset(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &sentenceContentsSubset, &POSambiguityInfoPermutationSubset))
+				{
+					result = false;
+				}
 			}
-
-			#ifdef SANI_DEBUG_RULES
-			for(int w=0; w<sentenceContents->size(); w++)
+			else
 			{
-				LRPpreprocessorPlainTextWord* contextWord = sentenceContents->at(w);
-				cout << "LRPpreprocessorPOStypeNameArray[contextWord->wordPOStypeInferred] = " << LRPpreprocessorPOStypeNameArray[contextWord->wordPOStypeInferred] << endl;
+				sentenceContentsSubset.clear();
+				POSambiguityInfoPermutationSubset.clear();
 			}
-			#endif
-		#ifdef SANI_FORWARD
 		}
-		#endif
-		
-		currentLRPpreprocessorSentenceInList = currentLRPpreprocessorSentenceInList->next;
+		else
+		{
+			sentenceContentsSubset.push_back(word);
+			POSambiguityInfoPermutationSubset.push_back(POSambiguityInfo);
+		}
 	}
-	#ifdef SANI_DEBUG_RULES
-	cout << "\n" << endl;
-	#endif
-
-	return result;
-}
-
-bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(SANIGroupParseTree* currentParseTreeGroup, int layer)
-{
-	bool result = true;
-	
-	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	if(sentenceContentsSubset.size() >= SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS_MIN_LENGTH)	//(sentenceContentsSubset.size() > 0)
 	{
-		SANInodes.printParseTreeDebugIndentation(layer);
-		
-		//#ifdef SANI_DEBUG_RULES
-		//cout << "transferParseTreePOStypeInferredToWordList currentParseTreeGroup: " <<  currentParseTreeGroup->groupTypeName << ":" << currentParseTreeGroup->groupName << endl;		
-		//#endif
-		//cout << "(currentParseTreeGroup->components).size() = " << (currentParseTreeGroup->components).size() << endl;
-		//cout << "i = " << i << endl;
-		
-		SANIComponentParseTree* currentParseTreeComponent = (currentParseTreeGroup->components)[i];
-		
-		//if(currentParseTreeComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)	//redundant
-		//{
-			if(currentParseTreeComponent->candidateStringMatch != NULL)
-			{
-				//this will replace the sentenceContents word->wordPOStypeInferred with the ideal value as stored in the parse tree (in the case where the ideal word->wordPOStypeInferred value was overwritten by more recent bad parse):
-				currentParseTreeComponent->candidateStringMatch->wordPOStypeInferred = currentParseTreeComponent->wordPOStypeInferred;
-				//cout << "currentParseTreeComponent->candidateStringMatch->wordPOStypeInferred = " << currentParseTreeComponent->candidateStringMatch->wordPOStypeInferred << endl;
-			}
-		//}
-		
-		#ifdef SANI_DEBUG_RULES
-		SANIpropagateOperations.printComponent(currentParseTreeComponent, layer);
-		#endif
-		if(currentParseTreeComponent->parseTreeGroupRef != NULL)
+		cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
+		if(!executePosRelTranslatorOnPOSunambiguousSentenceSubset(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &sentenceContentsSubset, &POSambiguityInfoPermutationSubset))
 		{
-			if(!transferParseTreePOStypeInferredToWordList(currentParseTreeComponent->parseTreeGroupRef, layer+1))
-			{
-				result = false;
-			}
+			result = false;
 		}
+	}
+	
+	//restore word indices
+	for(int w = 0; w<sentenceContents->size(); w++)
+	{
+		LRPpreprocessorPlainTextWord* word = (*sentenceContents)[w];
+		word->translatorSentenceWordIndex = w;
 	}
 	
 	return result;
 }
+bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambiguousSentenceSubset(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, vector<uint64_t>* POSambiguityInfoPermutationSubset)
+{
+	bool result = true;
+	
+	//set sentenceContents;
+	vector<LRPpreprocessorPlainTextWord*> sentenceContentsBackup = *(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList));	//currentLRPpreprocessorSentenceInList->sentenceContentsLRP
+	*(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList)) = *sentenceContentsSubset;
+	
+	//temporarily modify word indices
+	for(int w=0; w<sentenceContentsSubset->size(); w++)
+	{
+		LRPpreprocessorPlainTextWord* word = (*sentenceContentsSubset)[w];
+		word->translatorSentenceWordIndex = w;
+	}
+	
+	if(!executePosRelTranslator(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, POSambiguityInfoPermutationSubset))
+	{
+		result = false;
+	}
+	
+	//restore sentenceContents;
+	*(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList)) = sentenceContentsBackup;
+	
+	sentenceContentsSubset->clear();
+	POSambiguityInfoPermutationSubset->clear();
+	
+	return result;
+}	
 #endif
 
 
-bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslator(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, vector<uint64_t>* POSambiguityInfoPermutation)
+
+bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, vector<uint64_t>* POSambiguityInfoPermutation)
 {
 	bool result = true;
 
@@ -360,7 +360,7 @@ bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslator(SANItranslat
 	if(foundParse)
 	{
 		#ifdef SANI_SEQUENCE_GRAMMAR
-		cout << "SANIposRelTranslatorPermutationsClass::executeTxtRelTranslator{}: Successfully parsed sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", ";
+		cout << "SANIposRelTranslatorPermutationsClass::executePosRelTranslator{}: Successfully parsed sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", ";
 		LRPpreprocessorSentenceClassObject.printSentence(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList), true);
 		//cout << "sentenceContents = " << LRPpreprocessorWordClassObject.printWordListString(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList)) << endl;
 		#endif
@@ -370,9 +370,9 @@ bool SANIposRelTranslatorPermutationsClass::executeTxtRelTranslator(SANItranslat
 		#ifndef SANI_FORWARD
 		SANIpropagateInverse.clearAllWordsAlreadyFoundMatchInComponent(sentenceContents, minIndexOfMatchesFoundBackupOptimum);	//redundant?	
 		#endif
-		cerr << "SANIposRelTranslatorPermutationsClass::executeTxtRelTranslator{}: Failed to parse sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", ";
+		cerr << "SANIposRelTranslatorPermutationsClass::executePosRelTranslator{}: Failed to parse sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", ";
 		LRPpreprocessorSentenceClassObject.printSentence(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList), true);
-		//cerr << "SANIposRelTranslatorPermutationsClass::executeTxtRelTranslator{}: Failed to parse sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", sentenceContents = " << LRPpreprocessorWordClassObject.printWordListString(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList)) << endl;
+		//cerr << "SANIposRelTranslatorPermutationsClass::executePosRelTranslator{}: Failed to parse sentence " << currentLRPpreprocessorSentenceInList->sentenceIndexOriginal << ", sentenceContents = " << LRPpreprocessorWordClassObject.printWordListString(LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList)) << endl;
 		//exit(EXIT_ERROR);
 	}
 	//#endif
@@ -470,7 +470,7 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			if(SANIpropagate.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
 			#endif
 			#else	
-			if(SANIpropagateInverse.generateParseTreeIntro(SANIrulesTokenLayers, SANIGroupTypes, sentenceContents, firstParseTreeGroupTemp, &performanceTemp, parseIsolatedSubreferenceSets))
+			if(SANIpropagateInverse.executePosRelTranslatorNeuralNetworkInverse(SANIrulesTokenLayers, SANIGroupTypes, sentenceContents, firstParseTreeGroupTemp, &performanceTemp, parseIsolatedSubreferenceSets))
 			#endif
 			{
 				passedTemp =  true;
@@ -712,6 +712,98 @@ bool SANIposRelTranslatorPermutationsClass::deleteAllSubgroupsRecurse(SANIGroupP
 #endif
 
 
+
+#ifndef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC
+bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(SANItranslatorVariablesClass* translatorVariables)
+{
+	bool result = true;
+	
+	#ifdef SANI_DEBUG_RULES
+	cout << "printParseTreeDebug: " << endl;
+	#endif
+	
+	LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList = translatorVariables->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList;
+	while(currentLRPpreprocessorSentenceInList->next != NULL)
+	{
+		vector<LRPpreprocessorPlainTextWord*>* sentenceContents = LRPpreprocessorSentenceClassObject.getSentenceContents(currentLRPpreprocessorSentenceInList);
+
+		//this will replace the sentenceContents word->wordPOStypeInferred values with their ideal value as stored in the parse tree (in the case where the ideal word->wordPOStypeInferred values were overwritten by a more recent bad parse):
+		
+		#ifdef SANI_FORWARD
+		if(currentLRPpreprocessorSentenceInList->firstParseTreeGroup != NULL)
+		{
+		#endif
+			SANIGroupParseTree* firstParseTreeGroup = currentLRPpreprocessorSentenceInList->firstParseTreeGroup;
+			int layer = SANI_POS_REL_TRANSLATOR_RULES_LAYER_START;
+			#ifdef SANI_DEBUG_RULES
+			cout << "firstParseTreeGroup: groupTypeName = " << firstParseTreeGroup->groupTypeName << ", groupName = " << firstParseTreeGroup->groupName << endl;
+			#endif
+			if(!transferParseTreePOStypeInferredToWordList(firstParseTreeGroup, layer))
+			{
+				result = false;
+			}
+
+			#ifdef SANI_DEBUG_RULES
+			for(int w=0; w<sentenceContents->size(); w++)
+			{
+				LRPpreprocessorPlainTextWord* contextWord = sentenceContents->at(w);
+				cout << "LRPpreprocessorPOStypeNameArray[contextWord->wordPOStypeInferred] = " << LRPpreprocessorPOStypeNameArray[contextWord->wordPOStypeInferred] << endl;
+			}
+			#endif
+		#ifdef SANI_FORWARD
+		}
+		#endif
+		
+		currentLRPpreprocessorSentenceInList = currentLRPpreprocessorSentenceInList->next;
+	}
+	#ifdef SANI_DEBUG_RULES
+	cout << "\n" << endl;
+	#endif
+
+	return result;
+}
+
+bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(SANIGroupParseTree* currentParseTreeGroup, int layer)
+{
+	bool result = true;
+	
+	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	{
+		SANInodes.printParseTreeDebugIndentation(layer);
+		
+		//#ifdef SANI_DEBUG_RULES
+		//cout << "transferParseTreePOStypeInferredToWordList currentParseTreeGroup: " <<  currentParseTreeGroup->groupTypeName << ":" << currentParseTreeGroup->groupName << endl;		
+		//#endif
+		//cout << "(currentParseTreeGroup->components).size() = " << (currentParseTreeGroup->components).size() << endl;
+		//cout << "i = " << i << endl;
+		
+		SANIComponentParseTree* currentParseTreeComponent = (currentParseTreeGroup->components)[i];
+		
+		//if(currentParseTreeComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)	//redundant
+		//{
+			if(currentParseTreeComponent->candidateStringMatch != NULL)
+			{
+				//this will replace the sentenceContents word->wordPOStypeInferred with the ideal value as stored in the parse tree (in the case where the ideal word->wordPOStypeInferred value was overwritten by more recent bad parse):
+				currentParseTreeComponent->candidateStringMatch->wordPOStypeInferred = currentParseTreeComponent->wordPOStypeInferred;
+				//cout << "currentParseTreeComponent->candidateStringMatch->wordPOStypeInferred = " << currentParseTreeComponent->candidateStringMatch->wordPOStypeInferred << endl;
+			}
+		//}
+		
+		#ifdef SANI_DEBUG_RULES
+		SANIpropagateOperations.printComponent(currentParseTreeComponent, layer);
+		#endif
+		if(currentParseTreeComponent->parseTreeGroupRef != NULL)
+		{
+			if(!transferParseTreePOStypeInferredToWordList(currentParseTreeComponent->parseTreeGroupRef, layer+1))
+			{
+				result = false;
+			}
+		}
+	}
+	
+	return result;
+}
+#endif
 
 
 

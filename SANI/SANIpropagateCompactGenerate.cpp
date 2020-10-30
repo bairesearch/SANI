@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5b 29-October-2020
+ * Project Version: 1n5c 29-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -70,7 +70,7 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(SA
 	SANIForwardPropogationSentenceData forwardPropogationSentenceData;
 	forwardPropogationSentenceData.sentenceContents = sentenceContents;
 	
-	bool toplevelGroupActivationFound = SANIpropagateCompact.executeTxtRelTranslatorNeuralNetworkPart1(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance);
+	bool toplevelGroupActivationFound = SANIpropagateCompact.executePosRelTranslatorNeuralNetworkPart1(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance);
 	
 	if(!toplevelGroupActivationFound)
 	{				
@@ -82,14 +82,15 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(SA
 				
 			}
 	
+			
 			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 			cout << "testSentenceNetworkNodes #1" << endl;
 			#endif
 			if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
 			{
 				
-			}		
-			
+			}
+					
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY
 			if(!SANIpropagateCompactIdentify.identifyVariableComponentsAndReferenceSets(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, *topLevelParseTreeGroup))
 			{
@@ -103,11 +104,12 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(SA
 			{
 				
 			}
+			
 			#endif
 		}
 	}
 		
-	SANIpropagateCompact.executeTxtRelTranslatorNeuralNetworkPart2(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance);
+	SANIpropagateCompact.executePosRelTranslatorNeuralNetworkPart2(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance);
 	
 		
 	return toplevelGroupActivationFound;
@@ -875,11 +877,13 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimi
 		{			
 			completedIdentifyingSentenceHighLevelNeurons = true;
 			
+			#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_VERIFY_MORE_THAN_ONE_SECTION_FOUND
 			if(*indexInSequenceStart == 0)
 			{
-				cerr << "SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimitNumComponentsSection error: (*indexInSequenceStart == 0) && indexInSequence == forwardPropogationSentenceData->sentenceContents->size(); SANIpropagateCompact.executeTxtRelTranslatorNeuralNetworkPart1 should have passed" << endl;
+				cerr << "SANI_SEQUENCE_GRAMMAR_GENERATE_VERIFY_MORE_THAN_ONE_SECTION_FOUND: SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimitNumComponentsSection error: only single section found: (*indexInSequenceStart == 0) && indexInSequence == forwardPropogationSentenceData->sentenceContents->size(); SANIpropagateCompact.executePosRelTranslatorNeuralNetworkPart1 should have passed" << endl;
 				exit(EXIT_ERROR);
 			}
+			#endif
 		}
 		
 		loopIndex++;
