@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n6a 31-October-2020
+ * Project Version: 1n6b 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -554,6 +554,27 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimi
 			
 	while(stillIdentifyingHighLevelNeurons)
 	{	
+	
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_DISALLOW_IDENTICAL_INPUTS
+		forwardPropogationSentenceData->highLevelNeuronPriorTemp = NULL;
+		#ifdef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE
+		SANIGroupNeuralNetwork* highLevelNeuronPriorTemp = NULL;
+		int lowestLayerNeuronIndex = 0;
+		bool foundLowestLayerNeuron = findLowestLayerNeuron(highLevelNeuronPriorArray, &highLevelNeuronPriorTemp, &lowestLayerNeuronIndex);	
+		#else
+		SANIGroupNeuralNetwork* highLevelNeuronPriorTemp = *highLevelNeuronPrior;
+		#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_ALLOW_IDENTICAL_INPUTS_NON_STRING
+		if((highLevelNeuronPriorTemp != NULL) && !SANInodes.isNeuronString(highLevelNeuronPriorTemp))
+		{
+		#endif
+			forwardPropogationSentenceData->highLevelNeuronPriorTemp = highLevelNeuronPriorTemp;
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_ALLOW_IDENTICAL_INPUTS_NON_STRING
+		}
+		#endif
+		#endif
+		
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
 		/*
 		#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_INCREMENTALLY_SECTIONED
@@ -662,7 +683,6 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimi
 		}
 		#endif
 		#endif
-		
 		
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH
 		#ifdef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE
@@ -1119,6 +1139,23 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariation(SAN
 		
 	while(stillIdentifyingHighLevelNeurons)
 	{
+	
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_DISALLOW_IDENTICAL_INPUTS
+		//consider limiting to non-string neurons
+		forwardPropogationSentenceData->highLevelNeuronPriorTemp = NULL;
+		if(listOfHighLevelNeuronsCurrent->size() > 0)
+		{
+			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_ALLOW_IDENTICAL_INPUTS_NON_STRING
+			if(!SANInodes.isNeuronString(listOfHighLevelNeuronsCurrent->back()))
+			{
+			#endif
+				forwardPropogationSentenceData->highLevelNeuronPriorTemp = listOfHighLevelNeuronsCurrent->back();
+			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_ALLOW_IDENTICAL_INPUTS_NON_STRING
+			}
+			#endif
+		}
+		#endif
+		
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 		cout << "(*(forwardPropogationSentenceData->sentenceContents))[indexInSequence]->tagName = " << (*(forwardPropogationSentenceData->sentenceContents))[indexInSequence]->tagName << endl;
 		#endif
