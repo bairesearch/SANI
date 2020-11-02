@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7a 01-November-2020
+ * Project Version: 1n7b 01-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -136,6 +136,9 @@ class SANIposRelTranslatorPermutationsClass
 		#ifndef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC
 		private: bool transferParseTreePOStypeInferredToWordList(SANItranslatorVariablesClass* translatorVariables);
 			private: bool transferParseTreePOStypeInferredToWordList(SANIGroupParseTree* currentParseTreeGroup, int layer);
+		#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
+		bool detectLongConsecutivePOS(vector<uint64_t>* POSambiguityInfoPermutation);
 		#endif
 
 };

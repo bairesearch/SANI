@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7a 01-November-2020
+ * Project Version: 1n7b 01-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -190,7 +190,20 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambigu
 		bool treatWordAsAmbiguousIfNullPOSvalue = true;	//CHECKTHIS
 		if(LRPpreprocessorPOStaggerDatabase.determinePOSambiguityInfoIsAmbiguous(POSambiguityInfo, &unambiguousPOSinfoIndex, treatWordAsAmbiguousIfNullPOSvalue))
 		{
+			bool passedPrelimRequirements = false;
 			if(sentenceContentsSubset.size() >= SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS_MIN_LENGTH)	//(sentenceContentsSubset.size() > 0)
+			{
+				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
+				if(!detectLongConsecutivePOS(&POSambiguityInfoPermutationSubset))
+				{
+				#endif
+					passedPrelimRequirements = true;
+				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
+				}
+				#endif
+			}
+			
+			if(passedPrelimRequirements)
 			{
 				//cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
 				if(!executePosRelTranslatorOnPOSunambiguousSentenceSubset(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &sentenceContentsSubset, &POSambiguityInfoPermutationSubset))
@@ -212,11 +225,18 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambigu
 	}
 	if(sentenceContentsSubset.size() >= SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS_MIN_LENGTH)	//(sentenceContentsSubset.size() > 0)
 	{
-		//cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
-		if(!executePosRelTranslatorOnPOSunambiguousSentenceSubset(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &sentenceContentsSubset, &POSambiguityInfoPermutationSubset))
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
+		if(!detectLongConsecutivePOS(&POSambiguityInfoPermutationSubset))
 		{
-			result = false;
+		#endif
+			//cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
+			if(!executePosRelTranslatorOnPOSunambiguousSentenceSubset(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &sentenceContentsSubset, &POSambiguityInfoPermutationSubset))
+			{
+				result = false;
+			}
+		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
 		}
+		#endif
 	}
 	
 	//restore word indices
@@ -299,8 +319,26 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslat
 	POSambiguityInfoUnambiguousPermutationArray.push_back(POSambiguityInfoUnambiguousPermutationNew);
 	LRPpreprocessorPOStagger.generatePOSambiguityInfoUnambiguousPermutationArray(&POSambiguityInfoUnambiguousPermutationArray, POSambiguityInfoPermutation, POSambiguityInfoUnambiguousPermutationNew, 0);
 	int iOptimum = 0;
+	#ifndef SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS
+	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
+	for(int i=0; i<POSambiguityInfoUnambiguousPermutationArray.size();)
+	{
+		vector<uint64_t>* POSambiguityInfoPermutationTemp = (POSambiguityInfoUnambiguousPermutationArray)[i];
+		if(detectLongConsecutivePOS(POSambiguityInfoPermutationTemp))
+		{
+			POSambiguityInfoUnambiguousPermutationArray.erase(POSambiguityInfoUnambiguousPermutationArray.begin()+i);
+		}
+		else
+		{
+			i++;
+		}
+	}
+	#endif
+	#endif
 	#endif
 	bool foundParse = false;
+	
+
 	
 	#ifdef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC_OPTIMISED
 	if(translatorVariables->parserDemarkateOptimumPathway)
@@ -811,6 +849,42 @@ bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWo
 #endif
 
 
+#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
+bool SANIposRelTranslatorPermutationsClass::detectLongConsecutivePOS(vector<uint64_t>* POSambiguityInfoPermutation)
+{
+	bool foundLongConsecutivePOS = false;
+	
+	int consecutivePOScount = 1;
+	uint64_t consecutivePOStype = INT_DEFAULT_VALUE;
+	
+	for(int i=0; i<POSambiguityInfoPermutation->size(); i++)
+	{
+		uint64_t currentPOStype = (*POSambiguityInfoPermutation)[i];
+		
+		if(currentPOStype == consecutivePOStype)
+		{
+			consecutivePOScount++;
+			if(consecutivePOScount > SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS_MAX_ALLOWED)
+			{
+				foundLongConsecutivePOS = true;
+				
+				//cout << "SANIposRelTranslatorPermutationsClass::detectLongConsecutivePOS" << endl;
+				//LRPpreprocessorPOStagger.printPOSambiguityInfo(currentPOStype);
+			}
+		}
+		else
+		{
+			consecutivePOScount = 1;
+		}
+		
+		consecutivePOStype = currentPOStype;
+	}
+	
+	return foundLongConsecutivePOS;
+}
+#endif
+				
+				
 
 #endif
 

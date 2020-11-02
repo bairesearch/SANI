@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7a 01-November-2020
+ * Project Version: 1n7b 01-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -719,6 +719,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		if(SANInodes.hasComponentTypeString(component))	//added GIA3j5aTEMP65
 		{
 			passCriteria = false;
+			//cout << "fail1" << endl;
 		}
 	}
 	if(testLastComponentNotString)
@@ -726,6 +727,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		if(SANInodes.hasComponentTypeString(secondComponent))
 		{
 			passCriteria = false;
+			//cout << "fail2" << endl;
 		}
 	}	
 	if(testFirstComponentSubgroupsUnique)
@@ -733,13 +735,10 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		for(int j=0; j<component->SANIbackGroupConnectionList.size(); j++)
 		{
 			SANIGroupNeuralNetwork* subGroup = (component->SANIbackGroupConnectionList)[j];
-			#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 			if(groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient(subGroup))
-			#else
-			if(groupContainsNeuronWithinProspectiveAlternateSubgroup(forwardPropogationSentenceData, subGroup))
-			#endif
 			{	
 				passCriteria = false;
+				//cout << "fail3" << endl;
 			}
 			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 			groupContainsNeuronWithinProspectiveAlternateSubgroupReset(subGroup);
@@ -763,13 +762,10 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		#else
 			SANIGroupNeuralNetwork* secondComponentSubGroup = (secondComponent->SANIbackGroupConnectionList)[0];	//assume second component only has 1 reference
 		#endif
-			#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 			if(groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient(secondComponentSubGroup))
-			#else
-			if(groupContainsNeuronWithinProspectiveAlternateSubgroup(forwardPropogationSentenceData, secondComponentSubGroup))
-			#endif
 			{	
 				passCriteria = false;
+				//cout << "fail4" << endl;
 				//cout << "groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient" << endl;
 			}
 			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
@@ -786,6 +782,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		if(findValidDualLowerLevelConnection(forwardPropogationSentenceData, components, component, false))		
 		{	
 			passCriteria = false;
+			//cout << "fail5" << endl;
 		}
 	}
 	#endif

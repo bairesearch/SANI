@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7a 01-November-2020
+ * Project Version: 1n7b 01-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - identify and connect regions
  * /
@@ -321,6 +321,18 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 	bool result = false;
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+	//verify no neurons already marked;
+	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);
+	for(int k2=0; k2<groupType->groups.size(); k2++)
+	{
+		SANIGroupNeuralNetwork* groupTypeNeuralNetworkGroup = (groupType->groups)[k2];
+		if(groupTypeNeuralNetworkGroup->marked)
+		{
+			cerr << "SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents error: groupTypeNeuralNetworkGroup->marked" << endl;
+			exit(EXIT_ERROR);
+		}
+	}
+	
 	markSubNeurons(generatedNeuron);	//required for SANIpropagateOperationsClass::identifyMissingOrVariableStart/EndComponentFound:calculateVariableComponentPassCriteria;
 	#endif
 						
@@ -359,6 +371,7 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 	if(passEdgeRequirements)
 	{
 		//cout << "passEdgeRequirements" << endl;
+		
 		for(int i=0; i<nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size(); i++)
 		{
 			if(!(generatedNeuron->markToErase))	//only perform merge once
@@ -366,7 +379,9 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 				SANIComponentNeuralNetwork* currentComponent = (nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[i];
 				SANIGroupNeuralNetwork* candidateMatchGroup = currentComponent->ownerGroup;
 				if(candidateMatchGroup != generatedNeuron)
-				{			
+				{		
+					//cout << "(candidateMatchGroup != generatedNeuron)" << endl;
+						
 					#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VERIFY_NOT_NEWLY_CREATED
 					if(!(candidateMatchGroup->newlyGeneratedForSentenceTemp)) //only consider candidateMatchGroup if neuron has not been newly generated for current sentence	//candidateMatchGroup->timeIndex != forwardPropogationSentenceData->sentenceIndex
 					{
@@ -405,7 +420,7 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 						if(candidateMatchGroupNonvariableComponent->SANIbackGroupConnectionList.size() == 1)	//ensure than candidateMatch non-variable component has only 1 child (ie SANI doesnt support neurons with more than 1 variable component; either first or last)
 						{
 							if(currentComponent->componentIndex == candidateMatchGroupNonvariableComponentIndex2)
-							{
+							{								
 								//based on SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady:
 								bool passPreconditions = false;
 								if(identifyVariableFirstOrLastComponent)
@@ -429,6 +444,9 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 								//CHECKTHIS: no additional tests required from SANIpropagateOperationsClass::identifySequentialActivationFound
 								if(passPreconditions)
 								{
+									//cout << "passPreconditions" << endl;
+									//exit(EXIT_ERROR);
+									
 									#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 									//cout << "\nfound a variable first/last component candidate match" << endl;
 									/*
@@ -461,7 +479,8 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 										}
 									}
 									if(!duplicateProspectiveVariableComponentDetected)
-									{
+									{										
+										
 										//found a variable [first/]last component candidate match
 										//now merge newly generated neuron with existing candidateMatchGroup
 
@@ -576,8 +595,8 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 	{			
 		if(generatedNeuron->markToErase)
 		{
-			cout << "SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents" << endl;
-			exit(EXIT_ERROR);
+			//cout << "SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents" << endl;
+			//exit(EXIT_ERROR);
 			
 			result = true;
 
