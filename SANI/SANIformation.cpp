@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5d 29-October-2020
+ * Project Version: 1n6a 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -1119,6 +1119,13 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 			else
 			{
 				group->neuronReference->SANIactivationLevel = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_INACTIVE;
+			}
+			#endif
+			
+			#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
+			if(group->generatedForLastSentence)
+			{
+				group->neuronReference->SANIgeneratedForLastSentence = true;
 			}
 			#endif
 		}

@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5d 29-October-2020
+ * Project Version: 1n6a 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator
  * /

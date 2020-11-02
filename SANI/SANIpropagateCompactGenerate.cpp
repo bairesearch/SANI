@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5d 29-October-2020
+ * Project Version: 1n6a 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -76,15 +76,13 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(SA
 	{				
 		if(createNewConnections)
 		{
-
 			if(!generateSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData))
 			{
 				
 			}
 	
-			
-			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-			cout << "testSentenceNetworkNodes #1" << endl;
+			#ifdef SANI_DEBUG_PROPAGATE_TRACE
+			cout << "\ntestSentenceNetworkNodes #1" << endl;
 			#endif
 			if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
 			{
@@ -97,14 +95,21 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(SA
 				result = false;
 			}
 			
-			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
+			#ifdef SANI_DEBUG_PROPAGATE_TRACE
 			cout << "testSentenceNetworkNodes #2" << endl;
 			#endif
 			if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
 			{
 				
 			}
+			#endif
 			
+			#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
+			SANIpropagateCompactIdentify.setGeneratedForLastSentence(translatorVariables);
+			#endif
+		
+			#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
+			SANIpropagateCompactIdentify.clearHiddenLayerGroupsTemp();
 			#endif
 		}
 	}
@@ -182,8 +187,10 @@ bool SANIpropagateCompactGenerateClass::testSentenceNetworkNodes(SANItranslatorV
 	if(!SANIpropagateCompact.performPropagationTest(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, true, topLevelParseTreeGroup))
 	{
 		result = false;
+		#ifndef SANI_DEBUG_IGNORE_TEST_FAILURE
 		cerr << "SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork error: !SANIpropagateCompact.performPropagationTest" << endl;
 		exit(EXIT_ERROR);
+		#endif
 	}
 	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
 	forwardPropogationSentenceData->updateNeuronRecency = false;
@@ -2677,7 +2684,7 @@ bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogati
 	SANIComponentNeuralNetwork* newComponent = new SANIComponentNeuralNetwork();
 
 	newComponent->ownerGroup = higherLevelComponentGroupOwner;
-	
+
 	//see SANInodes.getFirstComponent
 	if(forwardPropogationSentenceData->parseSentenceReverse)
 	{
@@ -2690,7 +2697,7 @@ bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogati
 		//higherLevelComponentGroupOwner->components.push_front(newComponent);
 		higherLevelComponentGroupOwner->components.insert(higherLevelComponentGroupOwner->components.begin(), newComponent);
 		SANInodes.updateComponentsOwnerGroupAndIndexes(higherLevelComponentGroupOwner, &(higherLevelComponentGroupOwner->components), false, NULL);
-		
+
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 		if(higherLevelComponentGroupOwner->components.size() > SANI_SEQUENCE_GRAMMAR_MAX_NUM_COMPONENTS)
 		{
@@ -2706,12 +2713,12 @@ bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogati
 		newComponent->componentIndex = componentIndex;
 		higherLevelComponentGroupOwner->components.push_back(newComponent);
 	}
-			
+
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	//should never be true
 	newComponent->groupRefName = group->groupName;
 	newComponent->groupTypeRefName = group->groupTypeName;
 	#endif
-	
+
 	/*
 	this is only for initialisation (SANIformation) and parseTreeGroup components?;
 	newComponent->groupRef = group;	//newComponent->ownerGroup instead
@@ -2740,9 +2747,9 @@ bool SANIpropagateCompactGenerateClass::addComponentToGroup(SANIForwardPropogati
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
 	cout << "SANIpropagateCompactGenerateClass::addComponentToGroup: higherLevelComponentGroupOwner->groupIndex = " << higherLevelComponentGroupOwner->groupIndex << ", newComponent->componentIndex = " << newComponent->componentIndex << endl;
 	#endif
-	
+
 	SANIformation.createGroupANNconnection(group, newComponent);
-	
+
 	return result;
 }
 

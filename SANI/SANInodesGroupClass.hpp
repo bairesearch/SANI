@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5d 29-October-2020
+ * Project Version: 1n6a 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -372,8 +372,11 @@ public:
 	#endif
 	#endif	
 
-	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONSB
+	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_INDIVIDUALLY
 	bool newlyGeneratedForSentenceTemp;
+	#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
+	bool generatedForLastSentence;
+	#endif
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_CENTRAL_COMPONENTS_LINK
 	vector<SANIGroupNeuralNetwork*> phraseCandidateSynonyms;
@@ -393,6 +396,9 @@ public:
 	bool endOfSentenceWordDetected;
 	bool markToErase;
 	#endif
+	
+
+		
 };
 
 

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5d 29-October-2020
+ * Project Version: 1n6a 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - identify and connect regions
  * /
@@ -44,10 +44,36 @@ vector<SANIGroupNeuralNetwork*> newHiddenLayerGroupsTemp;
 bool SANIpropagateCompactIdentifyClass::addGroupToHiddenLayerGroupsTemp(SANIGroupNeuralNetwork* newGroup)
 {
 	newHiddenLayerGroupsTemp.push_back(newGroup);
-	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONSB
+	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_INDIVIDUALLY
 	newGroup->newlyGeneratedForSentenceTemp = true;
 	#endif
 }
+
+bool SANIpropagateCompactIdentifyClass::clearHiddenLayerGroupsTemp()
+{
+	//cout << "newHiddenLayerGroupsTemp.size() = " << newHiddenLayerGroupsTemp.size() << endl; 
+	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_INDIVIDUALLY
+	for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
+	{
+		SANIGroupNeuralNetwork* currentNeuron = newHiddenLayerGroupsTemp[k];
+		currentNeuron->newlyGeneratedForSentenceTemp = false;
+	}
+	#endif
+	newHiddenLayerGroupsTemp.clear();
+}
+
+bool SANIpropagateCompactIdentifyClass::setGeneratedForLastSentence(SANItranslatorVariablesClass* translatorVariables)
+{
+	if(translatorVariables->currentPreprocessorSentenceInList->sentenceIndexOriginal == translatorVariables->maxNumberSentences)
+	{
+		for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
+		{
+			SANIGroupNeuralNetwork* currentNeuron = newHiddenLayerGroupsTemp[k];
+			currentNeuron->generatedForLastSentence = true;
+		}
+	}
+}
+
 #endif
 
 
@@ -58,7 +84,7 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableComponentsAndReferenceSe
 	bool result = true;
 	
 	/*
-	//required for SANIpropagateOperationsClass::identifyMissingOrVariableStart/EndComponentFound:calculateVariableComponentPassCriteria;
+	//moved below;
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT	//assumes SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
 	for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
 	{
@@ -84,18 +110,6 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableComponentsAndReferenceSe
 	{
 		result = false;
 	}
-	#endif
-
-	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
-	//cout << "newHiddenLayerGroupsTemp.size() = " << newHiddenLayerGroupsTemp.size() << endl; 
-	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONSB
-	for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
-	{
-		SANIGroupNeuralNetwork* currentNeuron = newHiddenLayerGroupsTemp[k];
-		currentNeuron->newlyGeneratedForSentenceTemp = false;
-	}
-	#endif
-	newHiddenLayerGroupsTemp.clear();
 	#endif
 	
 	/*

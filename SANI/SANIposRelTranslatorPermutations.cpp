@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5d 29-October-2020
+ * Project Version: 1n6a 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -187,7 +187,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambigu
 		{
 			if(sentenceContentsSubset.size() >= SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS_MIN_LENGTH)	//(sentenceContentsSubset.size() > 0)
 			{
-				cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
+				//cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
 				if(!executePosRelTranslatorOnPOSunambiguousSentenceSubset(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &sentenceContentsSubset, &POSambiguityInfoPermutationSubset))
 				{
 					result = false;
@@ -207,7 +207,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambigu
 	}
 	if(sentenceContentsSubset.size() >= SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS_MIN_LENGTH)	//(sentenceContentsSubset.size() > 0)
 	{
-		cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
+		//cout << "sentenceContentsSubset.size() = " << sentenceContentsSubset.size() << endl;
 		if(!executePosRelTranslatorOnPOSunambiguousSentenceSubset(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, &sentenceContentsSubset, &POSambiguityInfoPermutationSubset))
 		{
 			result = false;

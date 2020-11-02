@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n5d 29-October-2020
+ * Project Version: 1n6a 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -1261,7 +1261,7 @@ bool SANIpropagateOperationsClass::consecutiveSequenceDetected(SANIForwardPropog
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_PREVENT_ACTIVATION_IF_REPEATED_SEQUENCE_MISMATCH_DETECTED
-bool SANIpropagateOperationsClass::findValidDualLowerLevelConnectionAlternate(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIForwardPropogationWordData* forwardPropogationWordData, vector<SANIComponentNeuralNetwork*>* components, SANIComponentNeuralNetwork* component)
+bool SANIpropagateOperationsClass::findValidDualLowerLevelConnectionAlternate(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIComponentNeuralNetwork*>* components, SANIComponentNeuralNetwork* component)
 {	
 	bool validDualLowerLevelConnectionFound = false;
 	bool secondComponentFound = false;
