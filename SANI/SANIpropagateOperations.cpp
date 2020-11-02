@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n6b 31-October-2020
+ * Project Version: 1n6c 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -756,18 +756,27 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		}
 		#endif
 		
-		SANIGroupNeuralNetwork* secondComponentSubGroup = (secondComponent->SANIbackGroupConnectionList)[0];	//second component only has 1 reference	
-		#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
-		if(groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient(secondComponentSubGroup))
+		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_SHARED
+		for(int j=0; j<secondComponent->SANIbackGroupConnectionList.size(); j++)
+		{
+			SANIGroupNeuralNetwork* secondComponentSubGroup = (secondComponent->SANIbackGroupConnectionList)[j];
 		#else
-		if(groupContainsNeuronWithinProspectiveAlternateSubgroup(forwardPropogationSentenceData, secondComponentSubGroup))
+			SANIGroupNeuralNetwork* secondComponentSubGroup = (secondComponent->SANIbackGroupConnectionList)[0];	//assume second component only has 1 reference
 		#endif
-		{	
-			passCriteria = false;
-			//cout << "groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient" << endl;
+			#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+			if(groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient(secondComponentSubGroup))
+			#else
+			if(groupContainsNeuronWithinProspectiveAlternateSubgroup(forwardPropogationSentenceData, secondComponentSubGroup))
+			#endif
+			{	
+				passCriteria = false;
+				//cout << "groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient" << endl;
+			}
+			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+			groupContainsNeuronWithinProspectiveAlternateSubgroupReset(secondComponentSubGroup);
+			#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_SHARED
 		}
-		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-		groupContainsNeuronWithinProspectiveAlternateSubgroupReset(secondComponentSubGroup);
 		#endif
 	}
 	

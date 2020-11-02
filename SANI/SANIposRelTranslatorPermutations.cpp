@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n6b 31-October-2020
+ * Project Version: 1n6c 31-October-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -113,6 +113,11 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper(SANIt
 	{
 		result = false;
 	}
+	#endif
+	
+	#ifdef SANI_DEBUG_COUNT_GENERATED_NEURONS 
+	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);
+	cout << "SANI_DEBUG_COUNT_GENERATED_NEURONS: groupType->groups.size() = " << groupType->groups.size() << endl;
 	#endif
 	
 	return result;
