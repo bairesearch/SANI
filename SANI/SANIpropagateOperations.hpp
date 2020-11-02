@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7c 01-November-2020
+ * Project Version: 1n8a 02-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -240,11 +240,12 @@ class SANIpropagateOperationsClass
 	public: bool deinitialiseParseTreeGroupList(vector<SANIGroupType*>* SANIGroupTypes, vector<SANIGroupParseTree*>* parseTreeGroupList);
 	#endif
 	
-	
-	
-	
+	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_VERIFY_THAT_VARIABLE_EDGE_COMPONENT_SOURCE_POS_IS_NOT_IDENTICAL
+	public: bool variableEdgeComponentSourcePOSisIdenticalWrapper1(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* generatedNeuron, SANIGroupNeuralNetwork* candidateMatchGroup, bool identifyVariableFirstOrLastComponent);
+		private: bool variableEdgeComponentSourcePOSisIdenticalWrapper2(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* neuronWithNewVariableComponent, SANIGroupNeuralNetwork* edgeNeuron, bool identifyVariableFirstOrLastComponent);
+			private: bool variableEdgeComponentSourcePOSisIdentical(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* neuronToDetect, SANIGroupNeuralNetwork* edgeNeuron, bool identifyVariableFirstOrLastComponent);
+	#endif
 };
-
 
 
 #endif

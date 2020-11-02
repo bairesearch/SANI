@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7c 01-November-2020
+ * Project Version: 1n8a 02-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - identify and connect regions
  * /
@@ -254,8 +254,8 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableComponents(vector<SANIGr
 				exit(EXIT_ERROR);
 			}
 			*/
-			SANIGroupNeuralNetwork* firstComponentOfGeneratedNeuronSource = (firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];
-			SANIGroupNeuralNetwork* lastComponentOfGeneratedNeuronSource = (lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];
+			SANIGroupNeuralNetwork* firstComponentOfGeneratedNeuronSource = (firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];	//generated neuron doesn't have variable components
+			SANIGroupNeuralNetwork* lastComponentOfGeneratedNeuronSource = (lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];	//generated neuron doesn't have variable components
 
 			bool identifyVariableFirstComponent = false;
 			bool identifyVariableLastComponent = false;
@@ -424,22 +424,43 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 							if(currentComponent->componentIndex == candidateMatchGroupNonvariableComponentIndex2)
 							{								
 								//based on SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady:
-								bool passPreconditions = false;
+								bool passPreconditions = true;
 								if(identifyVariableFirstOrLastComponent)
 								{
 									#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS
-									if(SANIpropagateOperations.identifyMissingOrVariableStartComponentFound(&(candidateMatchGroup->components), forwardPropogationSentenceData, candidateMatchGroupVariableComponent))	//requires firstComponent
+									if(!SANIpropagateOperations.identifyMissingOrVariableStartComponentFound(&(candidateMatchGroup->components), forwardPropogationSentenceData, candidateMatchGroupVariableComponent))	//requires firstComponent
 									{
-										passPreconditions = true;
+										passPreconditions = false;
 									}
+									#endif
+									#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_VERIFY_THAT_VARIABLE_EDGE_COMPONENT_SOURCE_POS_IS_NOT_IDENTICAL
+									if(SANIpropagateOperations.variableEdgeComponentSourcePOSisIdenticalWrapper1(forwardPropogationSentenceData, generatedNeuron, candidateMatchGroup, identifyVariableFirstOrLastComponent))
+									{
+										//cout << "variableEdgeComponentSourcePOSisIdenticalWrapper1" << endl;
+										//exit(EXIT_ERROR);
+										passPreconditions = false;
+									}
+									/*
+									else
+									{
+										cout << "!variableEdgeComponentSourcePOSisIdenticalWrapper1" << endl;
+										exit(EXIT_ERROR);
+									}
+									*/
 									#endif
 								}
 								else
 								{
 									#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_LAST_COMPONENTS
-									if(SANIpropagateOperations.identifyMissingOrVariableEndComponentFound(&(candidateMatchGroup->components), forwardPropogationSentenceData, candidateMatchGroupNonvariableComponent))	//requires secondLastComponentIndex (firstComponent)
+									if(!SANIpropagateOperations.identifyMissingOrVariableEndComponentFound(&(candidateMatchGroup->components), forwardPropogationSentenceData, candidateMatchGroupNonvariableComponent))	//requires secondLastComponentIndex (firstComponent)
 									{
-										passPreconditions = true;
+										passPreconditions = false;
+									}
+									#endif
+									#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_VERIFY_THAT_VARIABLE_EDGE_COMPONENT_SOURCE_POS_IS_NOT_IDENTICAL
+									if(SANIpropagateOperations.variableEdgeComponentSourcePOSisIdenticalWrapper1(forwardPropogationSentenceData, generatedNeuron, candidateMatchGroup, identifyVariableFirstOrLastComponent))
+									{
+										passPreconditions = false;
 									}
 									#endif
 								}

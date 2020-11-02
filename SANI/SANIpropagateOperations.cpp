@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7c 01-November-2020
+ * Project Version: 1n8a 02-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -155,6 +155,7 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 				stillParsingActiveComponents = false;
 
 				identifySequentialActivationFound(components, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, activationPathWordCurrentParseTreeGroup, i, currentComponent, *previousActiveComponent, &sequentialActivationFound, existingActivationFoundStartComponent, existingActivationFoundEndComponent, ownerGroup, componentWordConnectivityTestsResult);
+				//cout << "sequentialActivationFound = " << sequentialActivationFound << endl;
 				
 				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 				identifyMissingOrVariableEndComponentFound(components, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, activationPathWordCurrentParseTreeGroup, i, currentComponent, *previousActiveComponent, missingOrVariableEndComponentFound);
@@ -269,6 +270,8 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 		#endif
 	}
 
+	//cout << "sequentialActivationFound = " << sequentialActivationFound << endl;
+	
 	return sequentialActivationFound;
 }
 
@@ -1722,10 +1725,16 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTests(SANIGroupNeura
 		parseTreeGroupToFindWordIndexMax = lastActiveComponentInParseTreeParseTreeGroupRef;
 		wordIndexMinMin = forwardPropogationWordData->wordReference->translatorSentenceWordIndex;
 		wordIndexMaxMax = lastActiveComponentInParseTree->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;
+				
+		//cout << "wordIndexMinMin (forwardPropogationWordData->wordReference->translatorSentenceWordIndex) = " << wordIndexMinMin << endl;
+		//cout << "wordIndexMaxMax (lastActiveComponentInParseTree->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex) = " << wordIndexMaxMax << endl;
 	}
 
 	if(parseTreeGroupToFindWordIndexMax != NULL)
 	{
+		//cout << "parseTreeGroupToFindWordIndexMax->parseTreeMinWordIndex (lastActiveComponentInParseTreeParseTreeGroupRef) = " << parseTreeGroupToFindWordIndexMax->parseTreeMinWordIndex << endl;		
+		//cout << "parseTreeGroupToFindWordIndexMax->parseTreeMaxWordIndex (lastActiveComponentInParseTreeParseTreeGroupRef) = " << parseTreeGroupToFindWordIndexMax->parseTreeMaxWordIndex << endl;
+	
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_WORDINDEX_VERIFICATION
 		cout << "parseTreeGroupToFindWordIndexMax != NULL" << endl;
 		cout << "parseTreeGroupToFindWordIndexMax->groupRef->groupIndex = " << parseTreeGroupToFindWordIndexMax->groupRef->groupIndex << endl;
@@ -1738,6 +1747,9 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTests(SANIGroupNeura
 
 	if(parseTreeGroupToFindWordIndexMin != NULL)
 	{
+		//cout << "parseTreeGroupToFindWordIndexMin->parseTreeMinWordIndex (prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef) = " << parseTreeGroupToFindWordIndexMin->parseTreeMinWordIndex << endl;
+		//cout << "parseTreeGroupToFindWordIndexMin->parseTreeMaxWordIndex (prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef) = " << parseTreeGroupToFindWordIndexMin->parseTreeMaxWordIndex << endl;
+
 		if(!getMinMaxWordIndexInParseTree(parseTreeGroupToFindWordIndexMin, false, &wordIndexMin, 0))
 		{
 		}
@@ -1748,8 +1760,8 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTests(SANIGroupNeura
 	cout << "ownerGroup->groupIndex = " << ownerGroup->groupIndex << endl;	
 	cout << "wordIndexMax = " << wordIndexMax << endl;
 	cout << "wordIndexMin = " << wordIndexMin << endl;
-	cout << "wordIndexMaxMax = " << wordIndexMaxMax << endl;
-	cout << "wordIndexMinMin = " << wordIndexMinMin << endl;
+	//cout << "wordIndexMaxMax = " << wordIndexMaxMax << endl;
+	//cout << "wordIndexMinMin = " << wordIndexMinMin << endl;
 	cout << "existingActivationFoundStartComponent = " << existingActivationFoundStartComponent << endl;
 	#endif
 	
@@ -3061,3 +3073,83 @@ bool SANIpropagateOperationsClass::deinitialiseParseTreeGroupList(vector<SANIGro
 
 
 
+#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_VERIFY_THAT_VARIABLE_EDGE_COMPONENT_SOURCE_POS_IS_NOT_IDENTICAL
+bool SANIpropagateOperationsClass::variableEdgeComponentSourcePOSisIdenticalWrapper1(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* generatedNeuron, SANIGroupNeuralNetwork* candidateMatchGroup, bool identifyVariableFirstOrLastComponent)
+{
+	bool result = false;
+	
+	//find every existing variable edge (first/last) component pos
+	
+	SANIComponentNeuralNetwork* newVariableComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, generatedNeuron, identifyVariableFirstOrLastComponent);
+	SANIGroupNeuralNetwork* neuronWithNewVariableComponent = (newVariableComponent->SANIbackGroupConnectionList)[0];	//generated neuron doesn't have variable components
+	
+	SANIComponentNeuralNetwork* edgeComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, candidateMatchGroup, identifyVariableFirstOrLastComponent);
+	for(int l2=0; l2<edgeComponent->SANIbackGroupConnectionList.size(); l2++)
+	{
+		SANIGroupNeuralNetwork* edgeComponentSource = edgeComponent->SANIbackGroupConnectionList[l2];
+		if(variableEdgeComponentSourcePOSisIdenticalWrapper2(forwardPropogationSentenceData, neuronWithNewVariableComponent, edgeComponentSource, identifyVariableFirstOrLastComponent))
+		{
+			result = true;
+		}
+	}
+	
+	return result;
+}
+
+bool SANIpropagateOperationsClass::variableEdgeComponentSourcePOSisIdenticalWrapper2(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* neuronWithNewVariableComponent, SANIGroupNeuralNetwork* edgeNeuron, bool identifyVariableFirstOrLastComponent)
+{
+	bool result = false;
+	
+	//find every existing variable edge (first/last) component pos
+	
+	if(edgeNeuron->inputLayerNeuron)	//groupTypeIsString
+	{
+		if(variableEdgeComponentSourcePOSisIdentical(forwardPropogationSentenceData, edgeNeuron, neuronWithNewVariableComponent, identifyVariableFirstOrLastComponent))
+		{
+			result = true;
+		}
+	}
+	
+	if(edgeNeuron->components.size() > 0)
+	{
+		SANIComponentNeuralNetwork* edgeComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, edgeNeuron, !identifyVariableFirstOrLastComponent);
+
+		for(int l2=0; l2<edgeComponent->SANIbackGroupConnectionList.size(); l2++)
+		{
+			SANIGroupNeuralNetwork* edgeComponentSource = edgeComponent->SANIbackGroupConnectionList[l2];
+			if(variableEdgeComponentSourcePOSisIdenticalWrapper2(forwardPropogationSentenceData, neuronWithNewVariableComponent, edgeComponentSource, identifyVariableFirstOrLastComponent))
+			{
+				result = true;
+			}
+		}
+	}
+	
+	return result;
+}
+
+bool SANIpropagateOperationsClass::variableEdgeComponentSourcePOSisIdentical(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* neuronToDetect, SANIGroupNeuralNetwork* edgeNeuron, bool identifyVariableFirstOrLastComponent)
+{
+	bool result = false;
+		
+	if(neuronToDetect == edgeNeuron)
+	{
+		result = true;	
+	}
+	
+	if(edgeNeuron->components.size() > 0)
+	{
+		SANIComponentNeuralNetwork* edgeComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, edgeNeuron, !identifyVariableFirstOrLastComponent);
+
+		for(int l2=0; l2<edgeComponent->SANIbackGroupConnectionList.size(); l2++)
+		{
+			SANIGroupNeuralNetwork* edgeComponentSource = edgeComponent->SANIbackGroupConnectionList[l2];
+			if(variableEdgeComponentSourcePOSisIdentical(forwardPropogationSentenceData, neuronToDetect, edgeComponentSource, identifyVariableFirstOrLastComponent))
+			{
+				result = true;
+			}
+		}
+	}
+	
+	return result;
+}
+#endif

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7c 01-November-2020
+ * Project Version: 1n8a 02-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -668,7 +668,6 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponentWrapper
 			}
 			*/
 		}
-		
 	
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_SUPPORT_VARIABLE_LAST_COMPONENTS
 		propagateVariableEndComponentRemoveLastParseTreeComponent(translatorVariables, layer, ownerGroup, currentComponent, &(ownerGroup->components), forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, &activationSequenceCompleted, previousActiveComponent, finalActiveComponent, &existingActivationFoundEndComponent, componentWordConnectivityTests, sequentialActivationFound, activationPathWordCurrentParseTreeGroup);
@@ -677,7 +676,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponentWrapper
 		verifyMissingOrVariableStartComponentFound(translatorVariables, layer, ownerGroup, currentComponent, &(ownerGroup->components), forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, &activationSequenceCompleted, firstActiveComponentInGroup, previousActiveComponent, finalActiveComponent, existingActivationFoundStartComponent, &missingStartComponentFound, &variableStartComponentFound, componentWordConnectivityTests, &missingOrVariableStartComponentFound, numberOfInactiveComponentsRemaining, sequentialActivationFound, activationPathWordCurrentParseTreeGroup);
 		verifyMissingOrVariableStartComponentFoundAllowedWordIndices(translatorVariables, layer, ownerGroup, currentComponent, &(ownerGroup->components), forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, &activationSequenceCompleted, firstActiveComponentInGroup, previousActiveComponent, finalActiveComponent, existingActivationFoundStartComponent, &missingStartComponentFound, &variableStartComponentFound, componentWordConnectivityTests, &missingOrVariableStartComponentFound, numberOfInactiveComponentsRemaining, sequentialActivationFound, activationPathWordCurrentParseTreeGroup);
 		#endif
-		
+				
 		if(*sequentialActivationFound)
 		{	
 			//cout << "sequentialActivationFound: missingOrVariableStartComponentFound = " << missingOrVariableStartComponentFound << endl;

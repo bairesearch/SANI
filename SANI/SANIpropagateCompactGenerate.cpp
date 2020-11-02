@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7c 01-November-2020
+ * Project Version: 1n8a 02-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -78,7 +78,7 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(SA
 		{
 			if(!generateSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData))
 			{
-				
+				result = false;
 			}
 	
 			#ifdef SANI_DEBUG_PROPAGATE_TRACE
@@ -86,21 +86,24 @@ bool SANIpropagateCompactGenerateClass::generatePosRelTranslatorNeuralNetwork(SA
 			#endif
 			if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
 			{
-				
+				result = false;
 			}
 					
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY
-			if(!SANIpropagateCompactIdentify.identifyVariableComponentsAndReferenceSets(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, *topLevelParseTreeGroup))
+			if(result)
 			{
-				result = false;
-			}
-			
-			#ifdef SANI_DEBUG_PROPAGATE_TRACE
-			cout << "testSentenceNetworkNodes #2" << endl;
-			#endif
-			if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
-			{
-				
+				if(!SANIpropagateCompactIdentify.identifyVariableComponentsAndReferenceSets(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, *topLevelParseTreeGroup))
+				{
+					result = false;
+				}
+
+				#ifdef SANI_DEBUG_PROPAGATE_TRACE
+				cout << "testSentenceNetworkNodes #2" << endl;
+				#endif
+				if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
+				{
+					result = false;
+				}
 			}
 			#endif
 			
