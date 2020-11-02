@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n7b 01-November-2020
+ * Project Version: 1n7c 01-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - identify and connect regions
  * /
@@ -321,6 +321,7 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 	bool result = false;
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+	/*
 	//verify no neurons already marked;
 	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);
 	for(int k2=0; k2<groupType->groups.size(); k2++)
@@ -332,8 +333,9 @@ bool SANIpropagateCompactIdentifyClass::identifyVariableFirstLastComponents(vect
 			exit(EXIT_ERROR);
 		}
 	}
-	
-	markSubNeurons(generatedNeuron);	//required for SANIpropagateOperationsClass::identifyMissingOrVariableStart/EndComponentFound:calculateVariableComponentPassCriteria;
+	*/
+	//required for SANIpropagateOperationsClass::identifyMissingOrVariableStart/EndComponentFound:calculateVariableComponentPassCriteria;
+	markFirstComponentSubNeurons(forwardPropogationSentenceData, generatedNeuron);	//changed SANI1n7c - OLD: markSubNeurons(generatedNeuron);
 	#endif
 						
 	bool passEdgeRequirements = true;
@@ -1069,6 +1071,23 @@ bool SANIpropagateCompactIdentifyClass::createReferenceSetCandidateVector(SANIGr
 
 #ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
 #ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
+bool SANIpropagateCompactIdentifyClass::markFirstComponentSubNeurons(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron)
+{	
+	bool result = true;
+	
+	if(!SANInodes.isNeuronString(currentNeuron))	//CHECKTHIS
+	{
+		currentNeuron->marked = true;
+		SANIComponentNeuralNetwork* firstComponent = SANInodes.getFirstComponent(forwardPropogationSentenceData, currentNeuron, true);
+		for(int j=0; j<firstComponent->SANIbackGroupConnectionList.size(); j++)
+		{
+			SANIGroupNeuralNetwork* subGroup = (firstComponent->SANIbackGroupConnectionList)[j];
+			markSubNeurons(subGroup);
+		}
+	}
+	
+	return result;
+}
 bool SANIpropagateCompactIdentifyClass::markSubNeurons(SANIGroupNeuralNetwork* currentNeuron)
 {
 	bool result = true;
