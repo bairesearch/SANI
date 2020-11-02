@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n6d 31-October-2020
+ * Project Version: 1n7a 01-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -1130,63 +1130,6 @@ bool SANIpropagateOperationsClass::groupContainsNeuronWithinProspectiveAlternate
 					{
 						SANIGroupNeuralNetwork* subGroup = (currentComponent->SANIbackGroupConnectionList)[j];
 						if(groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient(subGroup))
-						{
-							result = true;
-						}
-					}
-				}
-			}
-
-			#ifdef SANI_SEQUENCE_GRAMMAR_VERIFY_NO_CIRCULAR
-			currentNeuron->verified = false;
-			#endif
-		}
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-	}
-	#endif
-	
-	return result;
-}
-#endif
-#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_BASIC
-bool SANIpropagateOperationsClass::groupContainsNeuronWithinProspectiveAlternateSubgroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron)
-{
-	bool result = false;
-	
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-	if(!currentNeuron->counted)
-	{
-		currentNeuron->counted = true;
-	#endif
-		if(!SANInodes.isNeuronString(currentNeuron))
-		{
-			#ifdef SANI_SEQUENCE_GRAMMAR_VERIFY_NO_CIRCULAR
-			if(currentNeuron->verified)
-			{
-				cout << "SANIpropagateOperationsClass::groupContainsNeuronWithinProspectiveAlternateSubgroup error: currentNeuron has already been parsed (circular loop detected)" << endl;
-				exit(EXIT_ERROR);
-			}
-			currentNeuron->verified = true;
-			#endif
-
-			bool candidateNeuronInCompleteHistory = false;
-			for(int i=0; i<forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.size(); i++)
-			{
-				if(currentNeuron == forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory[i])
-				{
-					//cout << "existingSubgroupContainsNeuronWithinProspectiveAlternateSubgroup" << endl;
-					result = true;	
-				}
-			}	
-			if(!result)
-			{
-				for(int i=0; i<currentNeuron->components.size(); i++)
-				{
-					SANIComponentNeuralNetwork* currentComponent = currentNeuron->components[i];
-					for(int j=0; j<currentComponent->SANIbackGroupConnectionList.size(); j++)
-					{
-						SANIGroupNeuralNetwork* subGroup = (currentComponent->SANIbackGroupConnectionList)[j];
-						if(groupContainsNeuronWithinProspectiveAlternateSubgroup(forwardPropogationSentenceData, subGroup))
 						{
 							result = true;
 						}

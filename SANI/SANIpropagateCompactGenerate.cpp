@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n6d 31-October-2020
+ * Project Version: 1n7a 01-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -417,8 +417,7 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileVariationWrapper(SANItra
 	}
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_INCREMENTALLY_SECTIONED_PREVENT_INTRASENTENCE_MATCHING_SECTIONED_RESET_AT_END
-	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_BASIC
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
 	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.clear();
 	#endif
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT	
@@ -436,7 +435,6 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileVariationWrapper(SANItra
 	}
 	#else
 	SANIpropagateCompactIdentify.markSubNeuronsReset(*highLevelNeuronPrior);
-	#endif	
 	#endif
 	#endif	
 	#endif
@@ -507,10 +505,10 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimi
 	
 	#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_SUPPORT_VARIABLE_LAST_COMPONENT_FIRST_AND_LAST_COMPONENT_SUBGROUPS_ARE_UNIQUE_PRE
 	#ifndef SANI_SEQUENCE_GRAMMAR_GENERATE_INCREMENTALLY_SECTIONED_PREVENT_INTRASENTENCE_MATCHING_SECTIONED_RESET_AT_END
-	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_BASIC
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
 	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.clear();
-	#endif
+	cout << "1 clearing forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory" << endl;
+	exit(EXIT_ERROR);
 	#endif
 	#endif
 	#endif
@@ -1060,10 +1058,11 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariation(SAN
 	#endif
 	forwardPropogationSentenceData->firstLayer = &firstLayer;
 	SANIpropagateCompact.defineFirstLayer(translatorVariables, forwardPropogationSentenceData);
-	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_BASIC
+	
+	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
 	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.clear();
-	#endif
+	cout << "clearing forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory" << endl;
+	exit(EXIT_ERROR);
 	#endif
 	
 	/*
@@ -1529,25 +1528,16 @@ bool SANIpropagateCompactGenerateClass::addNeuronToList(vector<SANIGroupType*>* 
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 	SANIpropagateCompactIdentify.markSubNeurons(neuron);	
-	#else
-	addSubNeuronsToList(&(forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory), neuron);	//add subneurons to listOfHighLevelNeuronsCompleteHistory before connecting its first component to listOfHighLevelNeurons heirachy
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-	addSubNeuronsToListReset(neuron);
-	#endif
 	#endif
 	#else
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 	neuron->marked = true;
-	#else
-	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.push_back(neuron);
 	#endif
 	
-	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_BASIC	//SANI_SEQUENCE_GRAMMAR_GENERATE_ENSURE_ALL_NEURONS_IN_SUBGROUP_DO_NOT_HAVE_CONNECTIONS_TO_ANY_NEW_CANDIDATE has not been implemented for SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICENT
 	#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_ENSURE_ALL_NEURONS_IN_SUBGROUP_DO_NOT_HAVE_CONNECTIONS_TO_ANY_NEW_CANDIDATE
 	addParentNeuronsToList(&(forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory), neuron);
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	addParentNeuronsToListReset(neuron);
-	#endif
 	#endif
 	#endif
 	
@@ -2885,74 +2875,6 @@ bool SANIpropagateCompactGenerateClass::verifyLastWordIndex(SANIForwardPropogati
 
 #ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
 
-#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_BASIC
-bool SANIpropagateCompactGenerateClass::addSubNeuronsToList(vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeuronsCompleteHistory, SANIGroupNeuralNetwork* currentNeuron)
-{
-	bool result = true;
-	
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-	if(!currentNeuron->counted)
-	{
-		currentNeuron->counted = true;
-	#endif
-		if(!SANInodes.isNeuronString(currentNeuron))
-		{
-			#ifdef SANI_SEQUENCE_GRAMMAR_VERIFY_NO_CIRCULAR
-			if(currentNeuron->verified)
-			{
-				cout << "SANIpropagateCompactGenerateClass::addSubNeuronsToList error: currentNeuron has already been parsed (circular loop detected)" << endl;
-				exit(EXIT_ERROR);
-			}
-			currentNeuron->verified = true;
-			#endif
-
-			listOfHighLevelNeuronsCompleteHistory->push_back(currentNeuron);
-
-			for(int i=0; i<currentNeuron->components.size(); i++)
-			{
-				SANIComponentNeuralNetwork* currentComponent = currentNeuron->components[i];
-				for(int j=0; j<currentComponent->SANIbackGroupConnectionList.size(); j++)
-				{
-					SANIGroupNeuralNetwork* subGroup = (currentComponent->SANIbackGroupConnectionList)[j];
-					addSubNeuronsToList(listOfHighLevelNeuronsCompleteHistory, subGroup);
-				}
-			}
-
-			#ifdef SANI_SEQUENCE_GRAMMAR_VERIFY_NO_CIRCULAR
-			currentNeuron->verified = false;
-			#endif
-		}
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-	}
-	#endif
-	
-	return result;
-}
-#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
-bool SANIpropagateCompactGenerateClass::addSubNeuronsToListReset(SANIGroupNeuralNetwork* currentNeuron)
-{
-	bool result = true;
-	
-	if(currentNeuron->counted)
-	{
-		currentNeuron->counted = false;
-		if(!SANInodes.isNeuronString(currentNeuron))
-		{
-			for(int i=0; i<currentNeuron->components.size(); i++)
-			{
-				SANIComponentNeuralNetwork* currentComponent = currentNeuron->components[i];
-				for(int j=0; j<currentComponent->SANIbackGroupConnectionList.size(); j++)
-				{
-					SANIGroupNeuralNetwork* subGroup = (currentComponent->SANIbackGroupConnectionList)[j];
-					addSubNeuronsToListReset(subGroup);
-				}
-			}
-		}
-	}
-	
-	return result;
-}
-#endif
 #ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_ENSURE_ALL_NEURONS_IN_SUBGROUP_DO_NOT_HAVE_CONNECTIONS_TO_ANY_NEW_CANDIDATE
 bool SANIpropagateCompactGenerateClass::addParentNeuronsToList(vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeuronsCompleteHistory, SANIGroupNeuralNetwork* currentNeuron)
 {
@@ -3013,7 +2935,6 @@ bool SANIpropagateCompactGenerateClass::addParentNeuronsToListReset(SANIGroupNeu
 	
 	return result;
 }
-#endif
 #endif
 #endif
 #endif
