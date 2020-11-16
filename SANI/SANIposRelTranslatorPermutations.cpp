@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -115,9 +115,11 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper(SANIt
 	}
 	#endif
 	
+	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_DEBUG_COUNT_GENERATED_NEURONS 
 	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);
 	cout << "SANI_DEBUG_COUNT_GENERATED_NEURONS: groupType->groups.size() = " << groupType->groups.size() << endl;
+	#endif
 	#endif
 	
 	return result;
@@ -186,7 +188,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambigu
 		LRPpreprocessorPlainTextWord* word = (*sentenceContents)[w];
 		uint64_t POSambiguityInfo = (*POSambiguityInfoPermutation)[w];
 		
-		unsigned char unambiguousPOSinfoIndex;
+		uchar unambiguousPOSinfoIndex;
 		bool treatWordAsAmbiguousIfNullPOSvalue = true;	//CHECKTHIS
 		if(LRPpreprocessorPOStaggerDatabase.determinePOSambiguityInfoIsAmbiguous(POSambiguityInfo, &unambiguousPOSinfoIndex, treatWordAsAmbiguousIfNullPOSvalue))
 		{

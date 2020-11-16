@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -168,7 +168,6 @@ class SANInodesClass
 	
 	public: bool findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, SANIGroupType** groupTypeFound);
 	public: bool findGroup(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, const string groupName, SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound);
-
 	
 	#ifdef SANI_REMOVE_LAST_OPTIONAL_COMPONENTS
 	public: bool removeLastOptionalComponents(vector<SANIGroupType*>* SANIGroupTypes);
@@ -209,7 +208,7 @@ class SANInodesClass
 	#endif
 	public: bool getNeuralNetworkDepth(SANIGroupNeuralNetwork* currentNeuron, int* maxDepth);
 		public: bool getNeuralNetworkDepth(SANIComponentNeuralNetwork* component, int* maxDepth);
-	public: bool countNeuralNetworkMaxLeafSizeAndDepth(SANIGroupNeuralNetwork* currentGroup, int* maxLeafSize, int* maxDepth);
+	public: bool countNeuralNetworkMaxLeafSizeAndDepth(SANIGroupNeuralNetwork* currentNeuron, int* maxLeafSize, int* maxDepth);
 		public: bool countNeuralNetworkMaxLeafSizeAndDepth(SANIComponentNeuralNetwork* component, int* maxLeafSize, int* maxDepth);
 	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	public: bool countNeuralNetworkMaxLeafSizeAndDepthReset(SANIGroupNeuralNetwork* currentNeuron);

@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -557,27 +557,27 @@ SANIForwardPropogationSentenceData::SANIForwardPropogationSentenceData(void)
 	
 	//moved from SANIpropagate static variables:
 	#ifdef SANI_PARSE_SAVE_PARSE_TREE
-	topLevelParseTreeGroupLocal = NULL;
+	topLevelParseTreeGroupPropagate = NULL;
 	#endif
 	//#ifdef SANI_HEAVY_OPTIMISED
 	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS
-	maxIteration = INT_DEFAULT_VALUE;
+	maxIterationPropagate = INT_DEFAULT_VALUE;
 	#endif
 	//#endif
 	//#ifdef SANI_HEAVY_OPTIMISED or SANI_LIGHT_OPTIMISED or SANI_COMPACT
 	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT	
-	parseTreeMaxWeight = INT_DEFAULT_VALUE;
+	parseTreeMaxWeightPropagate = INT_DEFAULT_VALUE;
 	#endif
 	//#endif
 	#ifdef SANI_LIGHT_OPTIMISED
 	#ifdef SANI_FREE_MEMORY
-	//parseTreeGroupListLocal = NULL;
-	//parseTreeComponentListExtra = NULL;
+	//parseTreeGroupListPropagate = NULL;
+	//parseTreeComponentListExtraPropagate = NULL;
 	#endif
 	#endif
 	#ifdef SANI_LIGHT_UNOPTIMISED
 	#ifdef SANI_LIGHT_BIO
-	//parseTreeGroupsArray = NULL;
+	//parseTreeGroupsArrayPropagate = NULL;
 	#endif
 	#endif
 }

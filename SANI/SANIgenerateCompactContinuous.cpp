@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -384,7 +384,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 			}			
 
 			#ifdef SANI_FREE_MEMORY
-			SANIpropagateOperationsParseTree.deinitialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListLocal));
+			SANIpropagateOperationsParseTree.deinitialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListPropagate));
 			#endif
 			
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_DETECT_LOCAL_VARATION
@@ -1047,17 +1047,17 @@ bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammatica
         				i2--;
 				}
 			}
-			
+
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_CLEAN_PARSE_TREE_MEMORY
 			//required when SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron:directWireLowLevelPOSneuronToGrammaticalSentenceNeuron is executed before deinitialiseParseTreeGroupList
-			for(int i2=0; i2<forwardPropogationSentenceData->parseTreeGroupListLocal.size(); i2++)
+			for(int i2=0; i2<forwardPropogationSentenceData->parseTreeGroupListPropagate.size(); i2++)
 			{
-				SANIGroupParseTree* parseTreeGroupTemp = (forwardPropogationSentenceData->parseTreeGroupListLocal)[i2];
+				SANIGroupParseTree* parseTreeGroupTemp = (forwardPropogationSentenceData->parseTreeGroupListPropagate)[i2];
 				if(parseTreeGroupTemp == singleComponentNeuron->currentParseTreeGroupTemp)
 				{
 					//cout << "(parseTreeGroupTemp == singleComponentNeuron->currentParseTreeGroupTemp)" << endl;
 					SANInodes.deleteGroup(parseTreeGroupTemp);
-					forwardPropogationSentenceData->parseTreeGroupListLocal.erase(forwardPropogationSentenceData->parseTreeGroupListLocal.begin()+i2);
+					forwardPropogationSentenceData->parseTreeGroupListPropagate.erase(forwardPropogationSentenceData->parseTreeGroupListPropagate.begin()+i2);
 					i2--;
 				}
 			}

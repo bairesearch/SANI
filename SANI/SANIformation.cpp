@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -41,7 +41,7 @@
 SANIGroupNeuralNetwork* firstInputGroupInNetwork;
 #ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 SANIGroupNeuralNetwork* firstGroupInInputLayerSectionWordOrig;
-unordered_map<string, SANIGroupNeuralNetwork*> inputLayerSectionWordOrigMap;	//for efficient lookup
+unordered_map<string,SANIGroupNeuralNetwork*> inputLayerSectionWordOrigMap;	//for efficient lookup
 #else
 SANIGroupNeuralNetwork* firstGroupInInputLayerSectionWordPOStype;
 #ifdef SANI_CREATE_NEURONS_FOR_NOUN_VERB_VARIANTS
@@ -63,8 +63,8 @@ int numberOfInputGroupsInSectionVerbVariantType;
 int numberOfInputGroupsInSectionExplicitWord;
 int numberOfInputGroupsInSectionTokensLayer;
 
-unordered_map<string, SANIGroupNeuralNetwork*> inputLayerSectionExplicitWordMap;
-unordered_map<string, SANIGroupNeuralNetwork*> inputLayerSectionTokensLayerMap;
+unordered_map<string,SANIGroupNeuralNetwork*> inputLayerSectionExplicitWordMap;
+unordered_map<string,SANIGroupNeuralNetwork*> inputLayerSectionTokensLayerMap;
 #ifdef SANI_ADD_EXPLICIT_WORD_REFERENCES_AS_INDEPENDENT_POS_PERMUTATIONS
 vector<string> explicitWordListLocal;
 #endif
@@ -88,11 +88,11 @@ vector<string>* SANIformationClass::getExplicitWordList()
 	return &explicitWordListLocal;
 }
 #endif
-unordered_map<string, SANIGroupNeuralNetwork*>* SANIformationClass::getInputLayerSectionExplicitWordMap()
+unordered_map<string,SANIGroupNeuralNetwork*>* SANIformationClass::getInputLayerSectionExplicitWordMap()
 {
 	return &inputLayerSectionExplicitWordMap;
 }
-unordered_map<string, SANIGroupNeuralNetwork*>* SANIformationClass::getInputLayerSectionTokensLayerMap()
+unordered_map<string,SANIGroupNeuralNetwork*>* SANIformationClass::getInputLayerSectionTokensLayerMap()
 {
 	return &inputLayerSectionTokensLayerMap;
 }
@@ -252,7 +252,7 @@ bool SANIformationClass::findInputNeuronLayerSectionWordOrig(LRPpreprocessorPlai
 	bool result = false;
 	
 	string wordOrig = currentWord->tagName;
-	unordered_map<string, SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionWordOrigMap.find(wordOrig);
+	unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionWordOrigMap.find(wordOrig);
 	if(iter != inputLayerSectionWordOrigMap.end())
 	{
 		result = true;
@@ -762,7 +762,7 @@ bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* SANI
 			else if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_EXPLICIT)
 			{
 				string word = component->word;
-				unordered_map<string, SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionExplicitWordMap.find(word);
+				unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionExplicitWordMap.find(word);
 				if(iter != inputLayerSectionExplicitWordMap.end())
 				{
 					stringGroup = iter->second;
@@ -786,7 +786,7 @@ bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* SANI
 				}
 				else
 				{
-					cerr << "SANIformationClass::createNeuronLayerComponents{} error: !findTokensLayerClassType(): component->tokenClass = " << component->tokenClass << ", component->tokenType = " << component->tokenType << endl;
+					cerr << "SANIformationClass::createNeuronLayerComponents{} error: !findTokensLayerClassType{}: component->tokenClass = " << component->tokenClass << ", component->tokenType = " << component->tokenType << endl;
 					exit(EXIT_ERROR);
 				}
 			}
@@ -892,7 +892,7 @@ bool SANIformationClass::findTokensLayerClassType(string layerName, string layer
 bool SANIformationClass::findTokensLayerClass(string layerName, string layerClassName, SANIGroupNeuralNetwork** layerClassGroupFound)
 {
 	bool result = false;	
-	for(unordered_map<string, SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionTokensLayerMap.begin(); iter != inputLayerSectionTokensLayerMap.end(); iter++)
+	for(unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionTokensLayerMap.begin(); iter != inputLayerSectionTokensLayerMap.end(); iter++)
 	{
 		SANIGroupNeuralNetwork* layerGroup = iter->second;
 		//cout << "layerGroup->GIAtokenLayerName = " << layerGroup->GIAtokenLayerName << endl;
@@ -928,10 +928,10 @@ bool SANIformationClass::findWordInList(const string word, vector<string>* expli
 	return result;
 }
 
-bool SANIformationClass::findWordInGroupMap(const string word, unordered_map<string, SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound)
+bool SANIformationClass::findWordInGroupMap(const string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound)
 {
 	bool result = false;
-	unordered_map<string, SANIGroupNeuralNetwork*>::iterator it = wordMap->find(word);
+	unordered_map<string,SANIGroupNeuralNetwork*>::iterator it = wordMap->find(word);
 	if(it != wordMap->end())
 	{
 		result = true;

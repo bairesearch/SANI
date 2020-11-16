@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -110,7 +110,10 @@ bool SANIpropagateCompactClass::executePosRelTranslatorNeuralNetworkPart1(SANItr
 	bool sentenceValidActivationPath = false;
 
 	#ifdef SANI_PARSE_SAVE_PARSE_TREE
-	forwardPropogationSentenceData->topLevelParseTreeGroupLocal = NULL;
+	forwardPropogationSentenceData->topLevelParseTreeGroupPropagate = NULL;
+	#endif
+	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT	
+	forwardPropogationSentenceData->parseTreeMaxWeightPropagate = 0;
 	#endif
 	
 	//sentence specific variables:
@@ -183,14 +186,14 @@ bool SANIpropagateCompactClass::performPropagationTest(SANItranslatorVariablesCl
 	if(performPropagation(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, resetAllNeuronComponents, deinitialiseParseTreeGroupAfterFinish, firstIndexInSequence))
 	{
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-		cout << "toplevelGroupActivationFound: groupIndexes = " << SANInodes.printParseTreeGroupIndices(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 0) << endl;
+		cout << "toplevelGroupActivationFound: groupIndexes = " << SANInodes.printParseTreeGroupIndices(forwardPropogationSentenceData->topLevelParseTreeGroupPropagate, 0) << endl;
 		#endif
 		result = true;
 		
 		#ifdef SANI_PARSE_SAVE_PARSE_TREE
 		if(recordTopLevelParseTreeGroup)
 		{
-			*topLevelParseTreeGroup = forwardPropogationSentenceData->topLevelParseTreeGroupLocal;
+			*topLevelParseTreeGroup = forwardPropogationSentenceData->topLevelParseTreeGroupPropagate;
 		}
 		#endif
 	}
@@ -246,7 +249,7 @@ bool SANIpropagateCompactClass::performPropagation(SANItranslatorVariablesClass*
 		SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);	//this is required to initialise currentParseTreeGroup for every group (only required for first execution of SANIpropagateCompactClass::executePosRelTranslatorNeuralNetwork)
 	}
 	#ifdef SANI_FREE_MEMORY
-	SANIpropagateOperationsParseTree.initialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListLocal));
+	SANIpropagateOperationsParseTree.initialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListPropagate));
 	#endif
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
@@ -287,7 +290,7 @@ bool SANIpropagateCompactClass::performPropagation(SANItranslatorVariablesClass*
 	if(deinitialiseParseTreeGroupAfterFinish)
 	{
 		#ifdef SANI_FREE_MEMORY
-		SANIpropagateOperationsParseTree.deinitialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListLocal));
+		SANIpropagateOperationsParseTree.deinitialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListPropagate));
 		#endif
 	}
 	
@@ -451,7 +454,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupSelect(SANItrans
 	bool result = false;
 
 	//now search for existing sequence in network
-
+	
 	for(int i=0; i<group->SANIfrontComponentConnectionList.size(); i++)
 	{
 		#ifndef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
@@ -639,7 +642,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 		SANIpropagateOperations.resetGroupActivation(ownerGroup);
 		SANIpropagateOperationsParseTree.resetGroupParseTreeGroupRef(ownerGroup, false);
 		#ifdef SANI_FREE_MEMORY
-		(forwardPropogationSentenceData->parseTreeGroupListLocal).push_back(ownerGroup->currentParseTreeGroupTemp);
+		(forwardPropogationSentenceData->parseTreeGroupListPropagate).push_back(ownerGroup->currentParseTreeGroupTemp);
 		#endif	
 		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
 		ownerGroup->parseTreeGroupMemory.push_back(ownerGroup->currentParseTreeGroupTemp);
@@ -786,7 +789,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 			#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
 			int maxWeight;
 			SANIpropagateOperationsParseTree.calculatePerformanceWeightOfParseTree(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, &maxWeight);
-			if(maxWeight >= forwardPropogationSentenceData->parseTreeMaxWeight)
+			if(maxWeight >= forwardPropogationSentenceData->parseTreeMaxWeightPropagate)
 			{
 			#endif				
 				int wComparisonInt;
@@ -838,9 +841,9 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 								#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS_POS_TYPES
 								cout << "topLevelGroup" << endl;
 								#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
-								cout << "parseTreeMaxWeight1 = " << forwardPropogationSentenceData->parseTreeMaxWeight << endl;
+								cout << "parseTreeMaxWeight1 = " << forwardPropogationSentenceData->parseTreeMaxWeightPropagate << endl;
 								#endif
-								cout << "forwardPropogationSentenceData->topLevelParseTreeGroupLocal->groupName = " << activationPathWordCurrentParseTreeGroupOwner->groupName << endl;
+								cout << "forwardPropogationSentenceData->topLevelParseTreeGroupPropagate->groupName = " << activationPathWordCurrentParseTreeGroupOwner->groupName << endl;
 								printBackpropParseTree(activationPathWordCurrentParseTreeGroupOwner, 3);
 								#endif
 								
@@ -862,18 +865,18 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 
 								forwardPropogationSentenceData->toplevelGroupActivationFound = true;
 
-								forwardPropogationSentenceData->parseTreeMaxWeight = maxWeight;
+								forwardPropogationSentenceData->parseTreeMaxWeightPropagate = maxWeight;
 
 								#ifdef SANI_PARSE_SAVE_PARSE_TREE
 								#ifdef SANI_REPLICATE_TOP_LEVEL_PARSE_TREE
-								SANInodes.deleteParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 0);
-								forwardPropogationSentenceData->topLevelParseTreeGroupLocal = SANInodes.replicateParseTree(activationPathWordCurrentParseTreeGroupOwner, 0);
+								SANInodes.deleteParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupPropagate, 0);
+								forwardPropogationSentenceData->topLevelParseTreeGroupPropagate = SANInodes.replicateParseTree(activationPathWordCurrentParseTreeGroupOwner, 0);
 								#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS_POS_TYPES
-								//printBackpropParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 3);
+								//printBackpropParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupPropagate, 3);
 								#endif
 								#else
 								//copy currentParseTreeGroupTemp so it cant be overwritten;
-								forwardPropogationSentenceData->topLevelParseTreeGroupLocal = SANInodes.copyGroup(activationPathWordCurrentParseTreeGroupOwner);
+								forwardPropogationSentenceData->topLevelParseTreeGroupPropagate = SANInodes.copyGroup(activationPathWordCurrentParseTreeGroupOwner);
 								#endif
 								#endif
 

@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -74,8 +74,8 @@ class SANIformationClass
 	#ifdef SANI_ADD_EXPLICIT_WORD_REFERENCES_AS_INDEPENDENT_POS_PERMUTATIONS
 	public: vector<string>* getExplicitWordList();
 	#endif
-	public: unordered_map<string, SANIGroupNeuralNetwork*>* getInputLayerSectionExplicitWordMap();
-	public: unordered_map<string, SANIGroupNeuralNetwork*>* getInputLayerSectionTokensLayerMap();
+	public: unordered_map<string,SANIGroupNeuralNetwork*>* getInputLayerSectionExplicitWordMap();
+	public: unordered_map<string,SANIGroupNeuralNetwork*>* getInputLayerSectionTokensLayerMap();
 	public: SANIGroupNeuralNetwork* getFirstGroupInInputLayerSectionWordPOStype();
 	#endif
 	#ifdef SANI_NEURAL_NETWORK
@@ -111,7 +111,7 @@ class SANIformationClass
 		private: bool findTokensLayerClass(string layerName, string layerClassName, SANIGroupNeuralNetwork** layerClassGroupFound);
 	#endif
 	private: bool findWordInList(const string word, vector<string>* explicitWordList);
-	public: bool findWordInGroupMap(const string word, unordered_map<string, SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound);
+	public: bool findWordInGroupMap(const string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound);
 	public: SANIGroupNeuralNetwork* getInputGroupLayerSection(SANIGroupNeuralNetwork* firstGroupInInputLayerSection, int groupIndexInSection);
 	private: void addGroupToLayer(SANIGroupNeuralNetwork** currentGroupInLayer, int* numberOfGroupsInSection);
 	#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY

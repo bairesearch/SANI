@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightUnoptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Unoptimised - ~O(n^2)
  * /
@@ -93,16 +93,7 @@ class SANIpropagateLightUnoptimisedClass
 							private: bool propagateWordThroughNetworkGroupSelect(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup);
 								private: bool propagateWordThroughNetworkGroupComponentWrapper(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, int groupFrontComponentConnectionListIndex, SANIposRelTranslatorDebug* debug);	
 									private: bool propagateWordThroughNetworkGroupComponent(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool activationSequenceCompleted, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, int groupFrontComponentConnectionListIndex, SANIposRelTranslatorDebug* debug);
-										#ifdef SANI_SOLIDIFY_NET_BACKPROP
-										#ifdef SANI_SOLIDIFY_NET_BACKPROP_AFTER_ACTIVATING_INDIVIDUAL_COMPONENTS
-										private: bool solidifyNeuralNetBackpropGroupLastComponent(SANIGroupParseTree* currentParseTreeGroup, int level);
-										#endif
-										#endif
 										//private: bool findComponentRef(SANIGroupParseTree* currentParseTreeGroup, SANIComponentNeuralNetwork* componentRef, SANIComponentNeuralNetwork** componentFound);
-										#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
-										private: bool isSentenceWordDataFullyConnected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
-										private: void isSentenceWordDataFullyConnected(vector<bool>* previousWordConnectionsFound, SANIForwardPropogationWordData* currentWordData);
-										#endif
 										private: void restoreGroupActivations(SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool restoreCurrentParseTreeGroupTemp);
 										private: bool propagateWordThroughNetworkGroupComponentPassNextWord(SANItranslatorVariablesClass* translatorVariables, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner);
 

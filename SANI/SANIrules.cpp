@@ -26,7 +26,7 @@
  * File Name: SANIrules.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Rules
  * /
@@ -280,7 +280,7 @@ bool SANIrulesClass::extractSANIGroups(vector<SANIGroupType*>* SANIGroupTypes)
 
 									if(!parseComponents(firstTagInTxtRelTranslatorGroupTag, group, &(group->components), false, NULL))
 									{
-										cerr << "SANIrules::extractSANIGroups{} error: !parseComponents(firstTagInTxtRelTranslatorGroupTag, &(group->components), false))" << endl;
+										cerr << "SANIrules::extractSANIGroups{} error: !parseComponents{firstTagInTxtRelTranslatorGroupTag, &(group->components), false))" << endl;
 										exit(EXIT_ERROR);			
 									}
 								}
@@ -712,7 +712,7 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 
 			if(!parseComponents(firstTagInTxtRelTranslatorOrTag, groupOwner, &(component->subComponents), true, component))
 			{
-				cerr << "SANIrules::extractSANIGroups{} error: !parseComponents(firstTagInTxtRelTranslatorOrTag, &(component->components))" << endl;
+				cerr << "SANIrules::extractSANIGroups{} error: !parseComponents{firstTagInTxtRelTranslatorOrTag, &(component->components)}" << endl;
 				exit(EXIT_ERROR);			
 			}
 			
@@ -745,7 +745,7 @@ bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFir
 
 			if(!parseComponents(firstTagInTxtRelTranslatorRepeatTag, groupOwner, &(component->subComponents), true, component))
 			{
-				cerr << "SANIrules::extractSANIGroups{} error: !parseComponents(firstTagInTxtRelTranslatorRepeatTag, &(component->components))" << endl;
+				cerr << "SANIrules::extractSANIGroups{} error: !parseComponents{firstTagInTxtRelTranslatorRepeatTag, &(component->components)}" << endl;
 				exit(EXIT_ERROR);			
 			}
 			
@@ -808,7 +808,7 @@ bool SANIrulesClass::connectComponentsReferences(vector<SANIGroupType*>* SANIGro
 					if(!SANInodes.findGroup(SANIGroupTypes, component->groupTypeRefName, component->groupRefName, &(component->groupTypeRef), &(component->groupRef)))
 					{
 						result = false;
-						cerr << "SANIrulesClass::connectComponentsReferences{} error: !SANInodes.findGroup(), component->groupTypeRefName = " << component->groupTypeRefName << ", component->groupRefName = " << component->groupRefName <<endl;
+						cerr << "SANIrulesClass::connectComponentsReferences{} error: !SANInodes.findGroup{}, component->groupTypeRefName = " << component->groupTypeRefName << ", component->groupRefName = " << component->groupRefName <<endl;
 						exit(EXIT_ERROR);
 					}
 				}
@@ -817,7 +817,7 @@ bool SANIrulesClass::connectComponentsReferences(vector<SANIGroupType*>* SANIGro
 					if(!SANInodes.findGroupType(SANIGroupTypes, component->groupTypeRefName, &(component->groupTypeRef)))
 					{
 						result = false;
-						cerr << "SANIrulesClass::connectComponentsReferences{} error: !SANInodes.findGroupType(), component->groupTypeRefName = " << component->groupTypeRefName << endl;
+						cerr << "SANIrulesClass::connectComponentsReferences{} error: !SANInodes.findGroupType{}, component->groupTypeRefName = " << component->groupTypeRefName << endl;
 						exit(EXIT_ERROR);
 					}
 					//cout << "\tcomponent->groupTypeRef->groupTypeName = " << component->groupTypeRef->groupTypeName << endl;					
@@ -835,7 +835,7 @@ bool SANIrulesClass::connectComponentsReferences(vector<SANIGroupType*>* SANIGro
 			if(!connectComponentsReferences(SANIGroupTypes, &(component->subComponents), true))
 			{
 				result = false;
-				cerr << "SANIrulesClass::connectComponentsReferences{} error: !connectComponentsReferences()" << endl;
+				cerr << "SANIrulesClass::connectComponentsReferences{} error: !connectComponentsReferences{}" << endl;
 				exit(EXIT_ERROR);			
 			}
 		}

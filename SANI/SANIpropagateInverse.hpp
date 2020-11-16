@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Inverse
  * /
@@ -83,16 +83,12 @@ class SANIpropagateInverseClass
 		private: bool forwardNounVerbVariantRequirementsGroupToComponent(SANIGroupParseTree* currentParseGroup, SANIComponentParseTree* currentComponent);
 		#endif
 		private: bool findStringMatch(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, LRPpreprocessorPlainTextWord* currentWord, SANIComponentParseTree* currentParseTreeComponent);
-		private: bool verifyPOStype(LRPpreprocessorPlainTextWord* currentWord, unsigned char wordPOStype);
+		private: bool verifyPOStype(LRPpreprocessorPlainTextWord* currentWord, uchar wordPOStype);
 		public: bool updatePerformance(const int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent);
 			private: bool deleteAllSubgroupsRecurse(SANIGroupParseTree* currentParseTreeGroup, int layer);
 			private: bool deleteParseComponent(SANIComponentParseTree* currentParseTreeComponent);
 		public: void clearAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup);
 		public: void restoreAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundNew);
-	private: void defineSubstancesBasedOnNetworkAndDeterminerInfo(SANItranslatorVariablesClass* translatorVariables);
-	private: int getEntityArrayMaxIndex(SANItranslatorVariablesClass* translatorVariables);
-
-	private: bool printParseTreeDebugIndentation(int layer);
 
 };
 #endif

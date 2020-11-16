@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -74,7 +74,7 @@ class SANIpropagateCompactOperationsClass
 	private: bool upperNeuronContainsWordIndexOfProspectiveComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord, SANIComponentNeuralNetwork* component, SANIGroupNeuralNetwork* group);
 	#endif	
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_PREVENT_RESET_IF_REPEATED_SEQUENCE_DETECTED
-	private: bool repeatedSequenceDetected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIGroupParseTree* currentParseTreeGroupTemp, const int wordTranslatorSentenceWordIndex);
+	private: bool repeatedSequenceDetected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIGroupParseTree* currentParseTreeGroupTemp, int wordTranslatorSentenceWordIndex);
 	#endif
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_PREVENT_RESET_IF_NEXT_SEQUENCE_IS_SAME_AS_CURRENT_SEQUENCE

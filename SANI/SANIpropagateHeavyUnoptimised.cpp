@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyUnoptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Heavy Unoptimised - ~O(n^2)
  * /
@@ -47,10 +47,6 @@ bool SANIpropagateHeavyUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SA
 	*performance = 0;
 	
 	bool sentenceValidActivationPath = false;
-
-	#ifdef SANI_PARSE_SAVE_PARSE_TREE
-	forwardPropogationSentenceData->topLevelParseTreeGroupLocal = NULL;
-	#endif
 				
 	//sentence specific variables:
 	SANIForwardPropogationSentenceData forwardPropogationSentenceData;
@@ -74,6 +70,10 @@ bool SANIpropagateHeavyUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SA
 		forwardPropogationSentenceData.forwardPropogationWordDataArray.push_back(forwardPropogationWordData);
 	}
 	forwardPropogationSentenceData.activationPathWordFirstParseTreeGroupArray.resize(sentenceContents->size());
+
+	#ifdef SANI_PARSE_SAVE_PARSE_TREE
+	forwardPropogationSentenceData.topLevelParseTreeGroupPropagate = NULL;
+	#endif
 	
 	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);	//this is required to initialise currentParseTreeGroup for every group (only required for first execution of SANIpropagateHeavyUnoptimisedClass::executePosRelTranslatorNeuralNetwork)
 	
@@ -101,14 +101,14 @@ bool SANIpropagateHeavyUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SA
 		result = true;
 		
 		#ifdef SANI_PARSE_SAVE_PARSE_TREE
-		*topLevelParseTreeGroup = forwardPropogationSentenceData->topLevelParseTreeGroupLocal;
-		//cout << "forwardPropogationSentenceData->topLevelParseTreeGroupLocal" << endl;
+		*topLevelParseTreeGroup = forwardPropogationSentenceData.topLevelParseTreeGroupPropagate;
+		//cout << "forwardPropogationSentenceData->topLevelParseTreeGroupPropagate" << endl;
 		
 		//#ifdef SANI_DEBUG_PROPAGATE
 		cout << "topLevelGroup" << endl;
-		printBackpropParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 1);
+		printBackpropParseTree(&(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate), 1);
 		cout << "end printBackpropParseTree" << endl;
-		//cout << "forwardPropogationSentenceData->topLevelParseTreeGroupLocal->groupName = " << forwardPropogationSentenceData->topLevelParseTreeGroupLocal->groupName << endl;
+		//cout << "forwardPropogationSentenceData->topLevelParseTreeGroupPropagate->groupName = " << forwardPropogationSentenceData->topLevelParseTreeGroupPropagate->groupName << endl;
 		//#endif	
 		#endif	
 		
@@ -135,9 +135,9 @@ bool SANIpropagateHeavyUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SA
 		int performanceNOTUSED = 0;
 		bool print = false;
 		bool performancePreprocess = false;
-		SANIpropagateOperationsParseTree.traceBackpropParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 1, print, performancePreprocess, &performanceNOTUSED, NULL);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
+		SANIpropagateOperationsParseTree.traceBackpropParseTree(&(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate), 1, print, performancePreprocess, &performanceNOTUSED, NULL);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
 		SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);
-		SANIpropagateOperationsParseTree.resetNeuronBackprop(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	//added GIA3g6aTEMP32 
+		SANIpropagateOperationsParseTree.resetNeuronBackprop(&(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate), GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	//added GIA3g6aTEMP32 
 		
 		for(int w=0; w<sentenceContents->size(); w++)
 		{
@@ -314,7 +314,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkIntro(SANItr
 	}
 	#endif
 		
-	for(unordered_map<string, SANIGroupNeuralNetwork*>::iterator iter1 = SANIformation.getInputLayerSectionTokensLayerMap()->begin(); iter1 != SANIformation.getInputLayerSectionTokensLayerMap()->end(); iter1++)
+	for(unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter1 = SANIformation.getInputLayerSectionTokensLayerMap()->begin(); iter1 != SANIformation.getInputLayerSectionTokensLayerMap()->end(); iter1++)
 	{
 		SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayer = iter1->second;
 		for(int i=0; i<currentGroupInInputLayerSectionTokensLayer->SANIbackGroupConnectionList.size(); i++)
@@ -1353,7 +1353,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 
 							forwardPropogationSentenceData->toplevelGroupActivationFound = true;
 							#ifdef SANI_PARSE_SAVE_PARSE_TREE
-							forwardPropogationSentenceData->topLevelParseTreeGroupLocal = activationPathWordCurrentParseTreeGroupOwner;
+							forwardPropogationSentenceData->topLevelParseTreeGroupPropagate = activationPathWordCurrentParseTreeGroupOwner;
 							#endif
 							#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
 							if(!SANIpropagateOperationsParse.updatePerformance(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))

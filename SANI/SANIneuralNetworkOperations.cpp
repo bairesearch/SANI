@@ -26,7 +26,7 @@
  * File Name: SANIneuralNetworkOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Neural Network Operations
  * /
@@ -263,8 +263,8 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfInputNeurons(int64_t* 
 	#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
 	groupType = &SANIGroupTypeArtificialSectionExplicitWordMap;
 	x = 0;
-	unordered_map<string, SANIGroupNeuralNetwork*>* inputLayerSectionExplicitWordMap = SANIformation.getInputLayerSectionExplicitWordMap();
-	for(unordered_map<string, SANIGroupNeuralNetwork*>::iterator iter1 = inputLayerSectionExplicitWordMap->begin(); iter1 != inputLayerSectionExplicitWordMap->end(); iter1++)
+	unordered_map<string,SANIGroupNeuralNetwork*>* inputLayerSectionExplicitWordMap = SANIformation.getInputLayerSectionExplicitWordMap();
+	for(unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter1 = inputLayerSectionExplicitWordMap->begin(); iter1 != inputLayerSectionExplicitWordMap->end(); iter1++)
 	{
 		SANIGroupNeuralNetwork* currentGroupInExplicitWordMap = iter1->second;
 		SANIGroupNeuralNetwork* group = currentGroupInExplicitWordMap;
@@ -305,8 +305,8 @@ bool SANIneuralNetworkOperationsClass::determinePositonsOfInputNeurons(int64_t* 
 	x2flat = 0;
 	int x3flat = 0;
 	int x4flat = 0;
-	unordered_map<string, SANIGroupNeuralNetwork*>* inputLayerSectionTokensLayerMap = SANIformation.getInputLayerSectionTokensLayerMap();
-	for(unordered_map<string, SANIGroupNeuralNetwork*>::iterator iter1 = inputLayerSectionTokensLayerMap->begin(); iter1 != inputLayerSectionTokensLayerMap->end(); iter1++)
+	unordered_map<string,SANIGroupNeuralNetwork*>* inputLayerSectionTokensLayerMap = SANIformation.getInputLayerSectionTokensLayerMap();
+	for(unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter1 = inputLayerSectionTokensLayerMap->begin(); iter1 != inputLayerSectionTokensLayerMap->end(); iter1++)
 	{
 		SANIGroupNeuralNetwork* currentGroupInInputLayerSectionTokensLayer = iter1->second;
 		SANIGroupNeuralNetwork* group = currentGroupInInputLayerSectionTokensLayer;

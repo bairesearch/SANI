@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate Operations - unsupervised training of sequence grammar parse network
  * /
@@ -294,7 +294,7 @@ bool SANIpropagateCompactGenerateOperationsClass::propagateVariableEndComponentR
 				}
 
 				#ifdef SANI_FREE_MEMORY
-				(forwardPropogationSentenceData->parseTreeGroupListLocal).push_back(ownerGroup->currentParseTreeGroupTemp);
+				(forwardPropogationSentenceData->parseTreeGroupListPropagate).push_back(ownerGroup->currentParseTreeGroupTemp);
 				#endif	
 				#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
 				//ownerGroup->parseTreeGroupMemory.push_back(ownerGroup->currentParseTreeGroupTemp);	//not required (as memory is only currently used for groups with first component active)

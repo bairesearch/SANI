@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o1a 05-November-2020
+ * Project Version: 1o2a 08-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -288,7 +288,7 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS_ENFORCE_DURING_FIRST_HIDDEN_LAYER_GENERATION
 	bool firstHiddenLayerNeuron;
 	#endif	
-	bool inputLayerNeuron;
+	bool inputLayerNeuron;	//neuron is in first layer of generated network
 	bool groupTypeIsString;
 	//SANIForwardPropogationWordData* wordDataTemp;
 	int wordPOStype;
@@ -635,27 +635,27 @@ public:
 	
 	//moved from SANIpropagate static variables:
 	#ifdef SANI_PARSE_SAVE_PARSE_TREE
-	SANIGroupParseTree* topLevelParseTreeGroupLocal;
+	SANIGroupParseTree* topLevelParseTreeGroupPropagate;
 	#endif
 	//#ifdef SANI_HEAVY_OPTIMISED
 	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS
-	bool maxIteration;
+	bool maxIterationPropagate;
 	#endif
 	//#endif
 	//#ifdef SANI_HEAVY_OPTIMISED or SANI_LIGHT_OPTIMISED or SANI_COMPACT
 	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT	
-	int parseTreeMaxWeight;
+	int parseTreeMaxWeightPropagate;
 	#endif
 	//#endif
 	//#ifdef SANI_LIGHT_OPTIMISED or SANI_COMPACT
 	#ifdef SANI_FREE_MEMORY
-	vector<SANIGroupParseTree*> parseTreeGroupListLocal;
-	vector<SANIComponentParseTree*> parseTreeComponentListExtra;
+	vector<SANIGroupParseTree*> parseTreeGroupListPropagate;
+	vector<SANIComponentParseTree*> parseTreeComponentListExtraPropagate;
 	#endif
 	//#endif
 	#ifdef SANI_LIGHT_UNOPTIMISED
 	#ifdef SANI_LIGHT_BIO
-	vector<SANIGroupParseTree*> parseTreeGroupsArray;
+	vector<SANIGroupParseTree*> parseTreeGroupsArrayPropagate;
 	#endif
 	#endif
 };
