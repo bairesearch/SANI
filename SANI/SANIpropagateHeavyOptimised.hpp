@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyOptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Heavy Optimised - ~O(nlogn)
  * /
@@ -51,6 +51,7 @@
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
 #include "SANIpropagateOperations.hpp"
+#include "SANIpropagateOperationsParseTree.hpp"
 #include "SANIformation.hpp"
 #include "SANIposRelTranslatorVariables.hpp"
 #ifdef USE_GIA
@@ -76,29 +77,30 @@ class SANIpropagateHeavyOptimisedClass
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANIpropagateOperationsClass SANIpropagateOperations;
+	private: SANIpropagateOperationsParseTreeClass SANIpropagateOperationsParseTree;
 	private: SANIformationClass SANIformation;
 	#ifdef SANI_PARSE
 	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
 	#endif
 	private: ANNdisplayClass ANNdisplay;
 
-	public: bool executePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance);
-		private: bool propagateWordThroughNetworkWordGroupIntro(SANItranslatorVariablesClass* translatorVariables, int w, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
-			private: bool propagateWordThroughNetworkWordGroupInit(SANItranslatorVariablesClass* translatorVariables, int w, int wordPOStype, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
-				private: bool propagateWordThroughNetworkWordGroupInit(SANItranslatorVariablesClass* translatorVariables, int w, SANIGroupNeuralNetwork* inputLayerGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
-		private: bool propagateWordThroughNetworkGroupIntro(SANItranslatorVariablesClass* translatorVariables, SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
-			private: bool connectToPreviousActivationGroup(SANItranslatorVariablesClass* translatorVariables, SANIGroupActivationMemory* activationPathWordFirstActivationMemoryGroup, SANIGroupActivationMemory* activationPathWordFirstActivationMemoryGroupNext, SANIForwardPropogationActivationPointData* forwardPropogationActivationPointData, SANIForwardPropogationActivationPointData* forwardPropogationActivationPointDataNext, SANIForwardPropogationSignalData* forwardPropogationSignalDataNext, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationWordData* forwardPropogationWordDataNext, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);		
-			private: bool propagateWordThroughNetworkGroup(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup);
-				private: bool propagateWordThroughNetworkGroupSelect(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIComponentNeuralNetwork* currentComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner);
-					private: bool propagateWordThroughNetworkGroupComponentWrapper(SANItranslatorVariablesClass* translatorVariables, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIposRelTranslatorDebug* debug);	
-						private: bool propagateWordThroughNetworkGroupComponent(SANItranslatorVariablesClass* translatorVariables, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool activationSequenceCompleted, int layer, bool repeatDetected, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIposRelTranslatorDebug* debug);
+	public: bool executePosRelTranslatorNeuralNetwork(const SANItranslatorVariablesClass* translatorVariables, constEffective vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance);
+		private: bool propagateWordThroughNetworkWordGroupIntro(const SANItranslatorVariablesClass* translatorVariables, int w, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
+			private: bool propagateWordThroughNetworkWordGroupInit(const SANItranslatorVariablesClass* translatorVariables, int w, int wordPOStype, const SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
+				private: bool propagateWordThroughNetworkWordGroupInit(const SANItranslatorVariablesClass* translatorVariables, int w, SANIGroupNeuralNetwork* inputLayerGroup, const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
+		private: bool propagateWordThroughNetworkGroupIntro(const SANItranslatorVariablesClass* translatorVariables, SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
+			private: bool connectToPreviousActivationGroup(const SANItranslatorVariablesClass* translatorVariables, SANIGroupActivationMemory* activationPathWordFirstActivationMemoryGroup, SANIGroupActivationMemory* activationPathWordFirstActivationMemoryGroupNext, const SANIForwardPropogationActivationPointData* forwardPropogationActivationPointData, const SANIForwardPropogationActivationPointData* forwardPropogationActivationPointDataNext, SANIForwardPropogationSignalData* forwardPropogationSignalDataNext, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationWordData* forwardPropogationWordDataNext, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);		
+			private: bool propagateWordThroughNetworkGroup(const SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup);
+				private: bool propagateWordThroughNetworkGroupSelect(const SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* ownerGroup, constEffective SANIGroupNeuralNetwork* ownerGroupOrig, SANIComponentNeuralNetwork* currentComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner);
+					private: bool propagateWordThroughNetworkGroupComponentWrapper(const SANItranslatorVariablesClass* translatorVariables, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, const SANIGroupNeuralNetwork* ownerGroupOrig, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, const SANIposRelTranslatorDebug* debug);	
+						private: bool propagateWordThroughNetworkGroupComponent(const SANItranslatorVariablesClass* translatorVariables, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, const SANIGroupNeuralNetwork* ownerGroupOrig, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool activationSequenceCompleted, int layer, const bool repeatDetected, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, const SANIposRelTranslatorDebug* debug);
 			
-	private: bool printBackpropParseTree(SANIGroupParseTree* group, int level);
+	private: bool printBackpropParseTree(SANIGroupParseTree* group, const int level);
 
-	private: void generateMemoryActiveGroup(SANIGroupNeuralNetwork* activationMemoryGroup, SANIGroupNeuralNetwork* groupOrig, SANIGroupNeuralNetwork* currentParseTreeGroupTemplate, SANIGroupActivationMemory** activationMemoryGroupNew, SANIGroupParseTree** currentParseTreeGroupNew, bool copyParseTreeGroupComponents);
-	private: void generateMemoryActiveGroup(SANIGroupNeuralNetwork* activationMemoryGroup, SANIGroupNeuralNetwork* groupOrig, SANIGroupParseTree* currentParseTreeGroup, SANIGroupActivationMemory** activationMemoryGroupNew, SANIGroupParseTree** currentParseTreeGroupNew, bool copyParseTreeGroupComponents);
+	private: void generateMemoryActiveGroup(SANIGroupNeuralNetwork* activationMemoryGroup, constEffective SANIGroupNeuralNetwork* groupOrig, SANIGroupNeuralNetwork* currentParseTreeGroupTemplate, SANIGroupActivationMemory** activationMemoryGroupNew, SANIGroupParseTree** currentParseTreeGroupNew, const bool copyParseTreeGroupComponents);
+	private: void generateMemoryActiveGroup(SANIGroupNeuralNetwork* activationMemoryGroup, constEffective SANIGroupNeuralNetwork* groupOrig, SANIGroupParseTree* currentParseTreeGroup, SANIGroupActivationMemory** activationMemoryGroupNew, SANIGroupParseTree** currentParseTreeGroupNew, const bool copyParseTreeGroupComponents);
 
-	private: void printComponents(vector<SANIComponentNeuralNetwork*>* components);
+	private: void printComponents(const vector<SANIComponentNeuralNetwork*>* components);
 
 };
 

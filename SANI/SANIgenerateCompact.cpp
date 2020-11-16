@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -39,7 +39,7 @@
 #ifdef SANI_SEQUENCE_GRAMMAR
 
 
-bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetworkWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, bool createNewConnections)
+bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetworkWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool createNewConnections)
 {
 	SANIGroupParseTree* topLevelParseTreeGroup = NULL; 
 	bool parseIsolatedSubreferenceSets = false;
@@ -48,7 +48,7 @@ bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetworkWrapper(SANI
 	return generatePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performance, createNewConnections);
 }
 
-bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance, bool createNewConnections)
+bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance, const bool createNewConnections)
 {
 	bool result = true;
 	

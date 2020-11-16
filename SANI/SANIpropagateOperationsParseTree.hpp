@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -68,9 +68,9 @@ class SANIpropagateOperationsParseTreeClass
 	#ifdef SANI_FORWARD
 	
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
-	public: bool getMinMaxWordIndexInParseTree(SANIGroupParseTree* currentParseTreeGroup, bool findMaxOrMinWordIndex, int* wordIndexMaxOrMin, int level);
+	public: bool getMinMaxWordIndexInParseTree(const SANIGroupParseTree* currentParseTreeGroup, const bool findMaxOrMinWordIndex, int* wordIndexMaxOrMin, int level);
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
-	public: bool componentWordConnectivityTestsCompareToMemory(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int wordIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent);
+	public: bool componentWordConnectivityTestsCompareToMemory(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int wordIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent);
 	#endif
 	#endif
 		
@@ -82,29 +82,29 @@ class SANIpropagateOperationsParseTreeClass
 	#ifdef SANI_PARSE
 	#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-	public: bool updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
+	public: bool updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
 	#endif
-		public: bool updatePerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer);
+		public: bool updatePerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
 	#endif
-		public: bool traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, bool print, bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents);
-			public: bool traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, bool print, bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, bool calculateMaxWeight, int* maxWeight);
+		public: bool traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents);
+			public: bool traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool calculateMaxWeight, int* maxWeight);
 	#endif
 		
 	#ifdef SANI_PARSE
 	#ifdef SANI_HEAVY
 	#ifdef SANI_HEAVY_OPTIMISED
-	public: bool resetGroupParseTreeGroupRef(SANIGroupActivationMemory* activationMemoryGroup, SANIGroupParseTree* currentParseTreeGroup, bool deleteExistingParseTreeGroupRef);
+	public: bool resetGroupParseTreeGroupRef(SANIGroupActivationMemory* activationMemoryGroup, SANIGroupParseTree* currentParseTreeGroup, const bool deleteExistingParseTreeGroupRef);
 	#else
-	public: bool resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, bool deleteExistingParseTreeGroupRef);
+	public: bool resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, const bool deleteExistingParseTreeGroupRef);
 	#endif
 	#else
-	public: bool resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, bool deleteExistingParseTreeGroupRef);
+	public: bool resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, const bool deleteExistingParseTreeGroupRef);
 	public: bool restoreGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, SANIGroupParseTree* parseTreeGroupOrig);
 	#endif
 	#endif
 	
 	#ifdef SANI_PARSE
-	public: bool resetNeuronBackprop(SANIGroupParseTree* currentParseTreeGroup, int groupBoolIndexType);
+	public: bool resetNeuronBackprop(SANIGroupParseTree* currentParseTreeGroup, const int groupBoolIndexType);
 	#endif
 		
 	#ifdef SANI_FREE_MEMORY
@@ -112,10 +112,12 @@ class SANIpropagateOperationsParseTreeClass
 	public: bool deinitialiseParseTreeGroupList(vector<SANIGroupType*>* SANIGroupTypes, vector<SANIGroupParseTree*>* parseTreeGroupList);
 	#endif
 	
+	#ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
 	public: void updateParseTreeMaxMinWordIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup);
 		#ifdef SANI_SEQUENCE_GRAMMAR
 		public: void updateParseTreeMaxMinWordIndexOfParentBasic(SANIGroupParseTree* parentGroup, SANIForwardPropogationWordData* forwardPropogationWordData, SANIGroupParseTree* childGroup);
 		#endif
+	#endif
 	
 	
 	#endif

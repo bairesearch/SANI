@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -39,7 +39,7 @@
 #ifdef SANI_FORWARD
 
 #ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
-bool SANIpropagateOperationsParseTreeClass::getMinMaxWordIndexInParseTree(SANIGroupParseTree* currentParseTreeGroup, bool findMaxOrMinWordIndex, int* wordIndexMaxOrMin, int level)
+bool SANIpropagateOperationsParseTreeClass::getMinMaxWordIndexInParseTree(const SANIGroupParseTree* currentParseTreeGroup, const bool findMaxOrMinWordIndex, int* wordIndexMaxOrMin, int level)
 {
 	bool result = false;
 	
@@ -110,7 +110,7 @@ bool SANIpropagateOperationsParseTreeClass::getMinMaxWordIndexInParseTree(SANIGr
 	return result;	
 }
 #ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
-bool SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int wordIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent)
+bool SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int wordIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent)
 {
 	bool result = false;
 	
@@ -233,7 +233,7 @@ bool SANIpropagateOperationsParseTreeClass::setPerformanceWeightOfParseTree(SANI
 #ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-bool SANIpropagateOperationsParseTreeClass::updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer)
+bool SANIpropagateOperationsParseTreeClass::updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer)
 {
 	bool result = true;
 	
@@ -248,7 +248,7 @@ bool SANIpropagateOperationsParseTreeClass::updatePerformance(SANIGroupParseTree
 #endif
 
 //doesn't perform topLevelGroup check;
-bool SANIpropagateOperationsParseTreeClass::updatePerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer)
+bool SANIpropagateOperationsParseTreeClass::updatePerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer)
 {
 	bool result = true;
 				 
@@ -305,14 +305,14 @@ bool SANIpropagateOperationsParseTreeClass::updatePerformanceGroup(SANIGroupPars
 }
 #endif
 
-bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, bool print, bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents)
+bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents)
 {
 	bool calculateMaxWeight = false;
 	int maxWeightNOTUSED = 0;
 	return traceBackpropParseTree(currentParseTreeGroup, level, print, performancePreprocess, performance, sentenceContents, calculateMaxWeight, &maxWeightNOTUSED);
 
 }
-bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, bool print, bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, bool calculateMaxWeight, int* maxWeight)
+bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool calculateMaxWeight, int* maxWeight)
 {
 	bool result = true;
 	
@@ -451,7 +451,7 @@ bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTree(SANIGroupPars
 #ifdef SANI_PARSE
 #ifdef SANI_HEAVY
 #ifdef SANI_HEAVY_OPTIMISED
-bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGroupActivationMemory* activationMemoryGroup, SANIGroupParseTree* currentParseTreeGroup, bool deleteExistingParseTreeGroupRef)
+bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGroupActivationMemory* activationMemoryGroup, SANIGroupParseTree* currentParseTreeGroup, const bool deleteExistingParseTreeGroupRef)
 {	
 	bool result = true;	
 	
@@ -485,7 +485,7 @@ bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGrou
 	return result;
 }
 #else
-bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, bool deleteExistingParseTreeGroupRef)
+bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, const bool deleteExistingParseTreeGroupRef)
 {	
 	bool result = true;
 	
@@ -527,7 +527,7 @@ bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGrou
 }
 #endif
 #else
-bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, bool deleteExistingParseTreeGroupRef)
+bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, const bool deleteExistingParseTreeGroupRef)
 {	
 	bool result = true;
 	
@@ -585,7 +585,7 @@ bool SANIpropagateOperationsParseTreeClass::restoreGroupParseTreeGroupRef(SANIGr
 
 #ifdef SANI_PARSE
 
-bool SANIpropagateOperationsParseTreeClass::resetNeuronBackprop(SANIGroupParseTree* currentParseTreeGroup, int groupBoolIndexType)
+bool SANIpropagateOperationsParseTreeClass::resetNeuronBackprop(SANIGroupParseTree* currentParseTreeGroup, const int groupBoolIndexType)
 {
 	bool result = true;
 	
@@ -667,6 +667,7 @@ bool SANIpropagateOperationsParseTreeClass::deinitialiseParseTreeGroupList(vecto
 #endif
 
 
+#ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
 void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup)
 {
 	#ifdef SANI_PARSE_GENERATE_PARSE_TREE
@@ -781,6 +782,7 @@ void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfPare
 		*/
 	}
 }
+#endif
 #endif
 
 

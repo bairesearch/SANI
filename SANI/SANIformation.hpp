@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -85,9 +85,9 @@ class SANIformationClass
 	public: bool createSANI(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
 		private: bool createInputNeuronLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
-			private: bool createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, int* numberOfGroupsInSection);
-			public: bool addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
-			public: bool findInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
+			private: bool createInputNeuronLayerSectionWordOrig(const SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, const int* numberOfGroupsInSection);
+			public: bool addInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
+			public: bool findInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
 			#else
 			private: bool createInputNeuronLayerSectionWordPOStype(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordPOStype, int* numberOfGroupsInSection);
 			#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY	
@@ -96,23 +96,23 @@ class SANIformationClass
 				private: bool createInputNeuronLayerSectionVerbVariantType(SANIGroupNeuralNetwork* currentGroupInInputLayerSectionWordPOStype, SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordVerbVariantType, int* numberOfGroupsInSection);
 				#endif
 			private: bool createInputNeuronLayerSectionExplicitWord(SANIGroupNeuralNetwork** currentGroupInInputLayerSection, int* numberOfGroupsInSection, vector<SANIGroupType*>* SANIGroupTypes);	
-				private: bool createInputNeuronLayerSectionExplicitWord(vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, vector<string>* explicitWordList);	
+				private: bool createInputNeuronLayerSectionExplicitWord(const vector<SANIComponentNeuralNetwork*>* components, const bool subcomponents, vector<string>* explicitWordList);	
 			private: bool createInputNeuronLayerSectionTokensLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork** currentGroupInInputLayerSectionTokensLayer, int* numberOfGroupsInSectionTokensLayer);
 			#endif
 			#endif
 	#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
-		private: bool createNeuronLayerIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
-			private: bool createNeuronLayerGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, SANIGroupType* groupType);
-				private: bool createNeuronLayerGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group);
-					private: bool createNeuronLayerComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, SANIComponentNeuralNetwork* higherLevelComponent);
+		private: bool createNeuronLayerIntro(const vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
+			private: bool createNeuronLayerGroupType(const vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, const SANIGroupType* groupType);
+				private: bool createNeuronLayerGroup(const vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group);
+					private: bool createNeuronLayerComponents(const vector<XMLparserTag*>* SANIrulesTokenLayers, const SANIGroupNeuralNetwork* group, const vector<SANIComponentNeuralNetwork*>* components, const bool subcomponents, const SANIComponentNeuralNetwork* higherLevelComponent);
 		
 		
-	private: bool findTokensLayerClassType(string layerName, string layerClassName, string layerClassTypeName, SANIGroupNeuralNetwork** groupFound);		
-		private: bool findTokensLayerClass(string layerName, string layerClassName, SANIGroupNeuralNetwork** layerClassGroupFound);
+	private: bool findTokensLayerClassType(const string layerName, const string layerClassName, const string layerClassTypeName, SANIGroupNeuralNetwork** groupFound);		
+		private: bool findTokensLayerClass(const string layerName, const string layerClassName, SANIGroupNeuralNetwork** layerClassGroupFound);
 	#endif
-	private: bool findWordInList(string word, vector<string>* explicitWordList);
-	public: bool findWordInGroupMap(string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound);
-	public: SANIGroupNeuralNetwork* getInputGroupLayerSection(SANIGroupNeuralNetwork* firstGroupInInputLayerSection, int groupIndexInSection);
+	private: bool findWordInList(const string word, vector<string>* explicitWordList);
+	public: bool findWordInGroupMap(string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, constEffective SANIGroupNeuralNetwork** groupFound);
+	public: SANIGroupNeuralNetwork* getInputGroupLayerSection(SANIGroupNeuralNetwork* firstGroupInInputLayerSection, const int groupIndexInSection);
 	private: void addGroupToLayer(SANIGroupNeuralNetwork** currentGroupInLayer, int* numberOfGroupsInSection);
 	#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
 	private: bool createGroupANNconnectionIO(SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelGroup);
@@ -124,7 +124,7 @@ class SANIformationClass
 				public: ANNneuronConnection* createANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent, double connectionStrength);
 					private: ANNneuronConnection* createANNconnection(SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelGroup);
 			#ifdef SANI_SEQUENCE_GRAMMAR
-			public: void deleteANNconnections(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* component);
+			public: void deleteANNconnections(const SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* component);
 			#endif
 			#ifdef SANI_ANN_DELAY_ANN_CONNECTIVITY_TILL_END
 			public: bool createANNconnectivity(vector<SANIGroupType*>* SANIGroupTypes);

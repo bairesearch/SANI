@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -67,27 +67,27 @@ class SANIpropagateCompactOperationsClass
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANIpropagateOperationsParseTreeClass SANIpropagateOperationsParseTree;
 	
-	public: bool identifySequentialActivationFound(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIComponentNeuralNetwork*>* components, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, int i, SANIComponentNeuralNetwork* currentComponent, SANIComponentNeuralNetwork* previousActiveComponent, bool* sequentialActivationFound, bool* existingActivationFoundStartComponent, bool* existingActivationFoundEndComponent, SANIGroupNeuralNetwork* ownerGroup, bool componentWordConnectivityTestsResult);
-	public: bool identifyMissingStartComponentFound(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIComponentNeuralNetwork*>* components, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, int i, SANIComponentNeuralNetwork* currentComponent, SANIComponentNeuralNetwork* previousActiveComponent, bool* missingStartComponentFound, bool* stillParsingActiveComponents);
+	public: bool identifySequentialActivationFound(const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIComponentNeuralNetwork*>* components, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const int i, const SANIComponentNeuralNetwork* currentComponent, const SANIComponentNeuralNetwork* previousActiveComponent, bool* sequentialActivationFound, bool* existingActivationFoundStartComponent, bool* existingActivationFoundEndComponent, SANIGroupNeuralNetwork* ownerGroup, const bool componentWordConnectivityTestsResult);
+	public: bool identifyMissingStartComponentFound(const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIComponentNeuralNetwork*>* components, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const int i, const SANIComponentNeuralNetwork* currentComponent, const SANIComponentNeuralNetwork* previousActiveComponent, bool* missingStartComponentFound, bool* stillParsingActiveComponents);
 
 	#ifdef SANI_SEQUENCE_GRAMMAR
-	private: bool upperNeuronContainsWordIndexOfProspectiveComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord, SANIComponentNeuralNetwork* component, SANIGroupNeuralNetwork* group);
+	private: bool upperNeuronContainsWordIndexOfProspectiveComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord, const SANIComponentNeuralNetwork* component, const SANIGroupNeuralNetwork* group);
 	#endif	
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_PREVENT_RESET_IF_REPEATED_SEQUENCE_DETECTED
-	private: bool repeatedSequenceDetected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIGroupParseTree* currentParseTreeGroupTemp, int wordTranslatorSentenceWordIndex);
+	private: bool repeatedSequenceDetected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIGroupParseTree* currentParseTreeGroupTemp, const int wordTranslatorSentenceWordIndex);
 	#endif
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_PREVENT_RESET_IF_NEXT_SEQUENCE_IS_SAME_AS_CURRENT_SEQUENCE
-	private: bool consecutiveSequenceDetected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIForwardPropogationWordData* forwardPropogationWordData, vector<SANIComponentNeuralNetwork*>* components, SANIComponentNeuralNetwork* component);
+	private: bool consecutiveSequenceDetected(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIForwardPropogationWordData* forwardPropogationWordData, const vector<SANIComponentNeuralNetwork*>* components, const SANIComponentNeuralNetwork* component);
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_PREVENT_ACTIVATION_IF_REPEATED_SEQUENCE_MISMATCH_DETECTED
-	private: bool findValidDualLowerLevelConnectionAlternate(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIComponentNeuralNetwork*>* components, SANIComponentNeuralNetwork* component);
-		private: bool findGroup1InFirstSectionOfGroup2BackConnection(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentGroup2, SANIGroupNeuralNetwork* group1ToFound);
+	private: bool findValidDualLowerLevelConnectionAlternate(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIComponentNeuralNetwork*>* components, const SANIComponentNeuralNetwork* component);
+		private: bool findGroup1InFirstSectionOfGroup2BackConnection(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentGroup2, const SANIGroupNeuralNetwork* group1ToFound);
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_PREVENT_RESET_IF_FIRST_INACTIVE_COMPONENT_GROUPREF_IS_SAME_AS_FUTURE_ACTIVE_COMPONENT_GROUPREF
-	public: bool findValidDualLowerLevelConnection(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIComponentNeuralNetwork*>* components, SANIComponentNeuralNetwork* component, bool assumeFirstComponentActive);	
+	public: bool findValidDualLowerLevelConnection(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIComponentNeuralNetwork*>* components, const SANIComponentNeuralNetwork* component, const bool assumeFirstComponentActive);	
 		#ifdef SANI_SEQUENCE_GRAMMAR_PREVENT_RESET_IF_FIRST_INACTIVE_COMPONENT_GROUPREF_IS_SAME_AS_FUTURE_ACTIVE_COMPONENT_GROUPREF_RECURSIVE
-		private: bool findGroup2InForwardConnectionBranchOfGroup1(SANIGroupNeuralNetwork* group2, SANIGroupNeuralNetwork* currentGroup);
+		private: bool findGroup2InForwardConnectionBranchOfGroup1(const SANIGroupNeuralNetwork* group2, const SANIGroupNeuralNetwork* currentGroup);
 		#endif
 	#endif
 	

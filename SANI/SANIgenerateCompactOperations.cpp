@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Operations - unsupervised training of sequence grammar parse network
  * /
@@ -39,7 +39,7 @@
 #ifdef SANI_SEQUENCE_GRAMMAR
 
 
-bool SANIgenerateCompactOperationsClass::addComponentToFirstLevelHiddenLayerGroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* inputLayerPOSneuron, SANIGroupNeuralNetwork* newNeuronSequenceGroup)
+bool SANIgenerateCompactOperationsClass::addComponentToFirstLevelHiddenLayerGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* inputLayerPOSneuron, SANIGroupNeuralNetwork* newNeuronSequenceGroup)
 {
 	bool result = true;
 
@@ -49,7 +49,7 @@ bool SANIgenerateCompactOperationsClass::addComponentToFirstLevelHiddenLayerGrou
 	return result;
 }
 
-SANIGroupNeuralNetwork* SANIgenerateCompactOperationsClass::createNewHiddenLayerGroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes)
+SANIGroupNeuralNetwork* SANIgenerateCompactOperationsClass::createNewHiddenLayerGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes)
 {
 	bool result = true;
 	
@@ -66,7 +66,7 @@ SANIGroupNeuralNetwork* SANIgenerateCompactOperationsClass::createNewHiddenLayer
 
 
 
-bool SANIgenerateCompactOperationsClass::addVariableComponentToGroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, bool addToStart)
+bool SANIgenerateCompactOperationsClass::addVariableComponentToGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, bool addToStart)
 {
 	bool result = true;
 
@@ -115,7 +115,7 @@ bool SANIgenerateCompactOperationsClass::addVariableComponentToGroup(SANIForward
 }
 
 
-bool SANIgenerateCompactOperationsClass::addComponentToGroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, bool componentTypeString, bool insertAtStart)
+bool SANIgenerateCompactOperationsClass::addComponentToGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, const bool componentTypeString, bool insertAtStart)
 {
 	bool result = true;
 
@@ -191,7 +191,7 @@ bool SANIgenerateCompactOperationsClass::addComponentToGroup(SANIForwardPropogat
 	return result;
 }
 
-bool SANIgenerateCompactOperationsClass::addComponentToGroup(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent)
+bool SANIgenerateCompactOperationsClass::addComponentToGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent)
 {
 	bool result = true;
 
@@ -231,7 +231,7 @@ SANIGroupNeuralNetwork* SANIgenerateCompactOperationsClass::createNewGroup()
 	return newGroup;
 }
 
-bool SANIgenerateCompactOperationsClass::findGroupDirectlyAbove(SANIGroupNeuralNetwork* group1, SANIGroupNeuralNetwork* group2)
+bool SANIgenerateCompactOperationsClass::findGroupDirectlyAbove(const SANIGroupNeuralNetwork* group1, const SANIGroupNeuralNetwork* group2)
 {
 	bool result = false;
 	
@@ -254,7 +254,7 @@ bool SANIgenerateCompactOperationsClass::findGroupDirectlyAbove(SANIGroupNeuralN
 }
 
 
-bool SANIgenerateCompactOperationsClass::verifyLastWordIndex(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* parseTreeGroup, int lastWordIndex, bool* adjacent)
+bool SANIgenerateCompactOperationsClass::verifyLastWordIndex(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupParseTree* parseTreeGroup, const int lastWordIndex, bool* adjacent)
 {
 	bool result = false;
 	
@@ -351,7 +351,7 @@ bool SANIgenerateCompactOperationsClass::addParentNeuronsToListReset(SANIGroupNe
 #endif
 
 
-int SANIgenerateCompactOperationsClass::calculateNextIndexInSequence(SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+int SANIgenerateCompactOperationsClass::calculateNextIndexInSequence(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	return SANIpropagateCompactGenerateOperations.calculateNextIndexInSequenceProspective(forwardPropogationSentenceData, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage);
 }
@@ -360,7 +360,7 @@ int SANIgenerateCompactOperationsClass::calculateNextIndexInSequence(SANIForward
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE
-bool SANIgenerateCompactOperationsClass::findLowestLayerNeuron(vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, SANIGroupNeuralNetwork** lowestLayerNeuron, int* lowestLayerNeuronIndex)
+bool SANIgenerateCompactOperationsClass::findLowestLayerNeuron(const vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, SANIGroupNeuralNetwork** lowestLayerNeuron, int* lowestLayerNeuronIndex)
 {
 	bool foundLowestLayerNeuron = false;
 	
@@ -380,7 +380,7 @@ bool SANIgenerateCompactOperationsClass::findLowestLayerNeuron(vector<SANIGroupN
 	
 	return foundLowestLayerNeuron;
 }
-bool SANIgenerateCompactOperationsClass::findHighestLayerNeuron(vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, SANIGroupNeuralNetwork** highestLayerNeuron, int* highestLayerNeuronIndex)
+bool SANIgenerateCompactOperationsClass::findHighestLayerNeuron(const vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, SANIGroupNeuralNetwork** highestLayerNeuron, int* highestLayerNeuronIndex)
 {
 	bool foundHighestLayerNeuron = false;
 	
@@ -398,7 +398,7 @@ bool SANIgenerateCompactOperationsClass::findHighestLayerNeuron(vector<SANIGroup
 	return foundHighestLayerNeuron;
 }
 //grammaticalSentenceNeuronSub = neuron currently being considered to being added to highLevelNeuronPriorArray[currentLayerIndex]
-bool SANIgenerateCompactOperationsClass::updateHighLevelNeuronHierachy(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, int lowestLayerNeuronIndex, SANIGroupNeuralNetwork* grammaticalSentenceNeuronSub, bool completedIdentifyingSentenceHighLevelNeurons)
+bool SANIgenerateCompactOperationsClass::updateHighLevelNeuronHierachy(vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, const int lowestLayerNeuronIndex, SANIGroupNeuralNetwork* grammaticalSentenceNeuronSub, const bool completedIdentifyingSentenceHighLevelNeurons)
 {
 	bool result = true;
 	

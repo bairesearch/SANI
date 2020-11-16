@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -45,7 +45,7 @@ void SANIpropagateOperationsClass::setParseSentenceReverseStrict(bool parseSente
 	forwardPropogationSentenceData->parseSentenceReverse = parseSentenceReverseNew;
 }
 
-void SANIpropagateOperationsClass::setParseSentenceReverse(bool normalDirection, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+void SANIpropagateOperationsClass::setParseSentenceReverse(const bool normalDirection, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool parseSentenceReverseNew = false;
 	if(normalDirection)
@@ -67,21 +67,21 @@ void SANIpropagateOperationsClass::setParseSentenceReverse(bool normalDirection,
 	forwardPropogationSentenceData->parseSentenceReverse = parseSentenceReverseNew;
 }
 
-bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* activationSequenceCompleted, bool* firstActiveComponentInGroup, SANIComponentNeuralNetwork** previousActiveComponent, SANIComponentNeuralNetwork** finalActiveComponent)
+bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* activationSequenceCompleted, bool* firstActiveComponentInGroup, SANIComponentNeuralNetwork** previousActiveComponent, SANIComponentNeuralNetwork** finalActiveComponent)
 {
 	bool existingActivationFoundNOTUSED = false;
 	return propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, testComponent, components, activationSequenceCompleted, firstActiveComponentInGroup, previousActiveComponent, finalActiveComponent, &existingActivationFoundNOTUSED);
 }
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
 #ifdef SANI_SUPPORT_COMPONENTS_OR
-bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components)
+bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, const vector<SANIComponentNeuralNetwork*>* components)
 {
 	bool existingActivationFoundNOTUSED = false;
 	return propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(forwardPropogationWordData, forwardPropogationSentenceData, testComponent, components, &existingActivationFoundNOTUSED);
 }
 #endif
 #ifdef SANI_SUPPORT_COMPONENTS_REPEAT
-bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* repeatDetected)
+bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, const vector<SANIComponentNeuralNetwork*>* components, bool* repeatDetected)
 {
 	bool existingActivationFoundNOTUSED = false;
 	return propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(forwardPropogationWordData, forwardPropogationSentenceData, testComponent, components, repeatDetected, &existingActivationFoundNOTUSED);
@@ -89,7 +89,7 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 #endif
 #endif
 
-bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* activationSequenceCompleted, bool* firstActiveComponentInGroup, SANIComponentNeuralNetwork** previousActiveComponent, SANIComponentNeuralNetwork** finalActiveComponent, bool* existingActivationFoundStartComponent)
+bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* activationSequenceCompleted, bool* firstActiveComponentInGroup, SANIComponentNeuralNetwork** previousActiveComponent, SANIComponentNeuralNetwork** finalActiveComponent, bool* existingActivationFoundStartComponent)
 {
 	bool missingStartComponentsFoundNOTUSED = false;
 	bool missingOrVariableStartComponentFoundNOTUSED = false;
@@ -102,7 +102,7 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 	return propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, testComponent, components, activationPathWordCurrentParseTreeGroupNOTUSED, activationSequenceCompleted, firstActiveComponentInGroup, previousActiveComponent, finalActiveComponent, existingActivationFoundStartComponent, &existingActivationFoundEndComponentNOTUSED, &missingStartComponentsFoundNOTUSED, &missingOrVariableStartComponentFoundNOTUSED, &missingOrVariableEndComponentFoundNOTUSED, &numberOfInactiveComponentsRemaining, ownerGroupNOTUSED, componentWordConnectivityTestsResultNOTUSED);
 }
 
-bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, bool* activationSequenceCompleted, bool* firstActiveComponentInGroup, SANIComponentNeuralNetwork** previousActiveComponent, SANIComponentNeuralNetwork** finalActiveComponent, bool* existingActivationFoundStartComponent, bool* existingActivationFoundEndComponent, bool* missingStartComponentFound, bool* missingOrVariableStartComponentFound, bool* missingOrVariableEndComponentFound, int* numberOfInactiveComponentsRemaining, SANIGroupNeuralNetwork* ownerGroup, bool componentWordConnectivityTestsResult)
+bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, bool* activationSequenceCompleted, bool* firstActiveComponentInGroup, SANIComponentNeuralNetwork** previousActiveComponent, SANIComponentNeuralNetwork** finalActiveComponent, bool* existingActivationFoundStartComponent, bool* existingActivationFoundEndComponent, bool* missingStartComponentFound, bool* missingOrVariableStartComponentFound, bool* missingOrVariableEndComponentFound, int* numberOfInactiveComponentsRemaining, SANIGroupNeuralNetwork* ownerGroup, const bool componentWordConnectivityTestsResult)
 {	
 	bool sequentialActivationFound = false;
 	
@@ -345,7 +345,7 @@ bool SANIpropagateOperationsClass::identifyMissingStartComponentFound(SANIForwar
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
 #ifdef SANI_SUPPORT_COMPONENTS_OR					
-bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* existingActivationFoundStartComponent)
+bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, const vector<SANIComponentNeuralNetwork*>* components, bool* existingActivationFoundStartComponent)
 {
 	bool sequentialActivationFound = false;
 	
@@ -385,7 +385,7 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 #endif
 #ifdef SANI_SUPPORT_COMPONENTS_REPEAT
 //precondition: repeat sequences can contain only 1 component
-bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, bool* repeatDetected, bool* existingActivationFoundStartComponent)
+bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, const vector<SANIComponentNeuralNetwork*>* components, bool* repeatDetected, const bool* existingActivationFoundStartComponent)
 {
 	bool sequentialActivationFound = false;
 	
@@ -464,13 +464,13 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 
 #ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
 #ifdef SANI_HEAVY
-bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
+bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
 {
 	bool result = false;
 
 	bool existingActivationFoundNOTUSED = false;
 
-	SANIGroupParseTree* prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef = activationPathWordCurrentParseTreeGroup;
+	const SANIGroupParseTree* prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef = activationPathWordCurrentParseTreeGroup;
 	
 	if(activationPathWordCurrentParseTreeGroupOwner->components.size() > 0)
 	{
@@ -481,7 +481,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIFor
 		
 		SANIGroupParseTree* previousActiveComponentInParseTreeParseTreeGroupRefNOTUSED = NULL;
 		SANIGroupNeuralNetwork* ownerGroupNOTUSED = NULL;
-		result = componentWordConnectivityTests(forwardPropogationWordData, forwardPropogationSentenceData, ownerGroupNOTUSED, prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef, lastActiveComponentNOTUSED, lastActiveComponentInParseTreeParseTreeGroupRef, lastActiveComponentInParseTree, previousActiveComponentInParseTreeParseTreeGroupRefNOTUSED, forwardPropogationWordData, existingActivationFoundNOTUSED);
+		result = componentWordConnectivityTests(forwardPropogationWordData, forwardPropogationSentenceData, ownerGroupNOTUSED, prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef, lastActiveComponentNOTUSED, lastActiveComponentInParseTreeParseTreeGroupRef, lastActiveComponentInParseTree, previousActiveComponentInParseTreeParseTreeGroupRefNOTUSED, existingActivationFoundNOTUSED);
 	}
 	else
 	{
@@ -492,24 +492,24 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIFor
 }
 #else
 #ifdef SANI_LIGHT_UNOPTIMISED
-bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
+bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
 {
 	bool existingActivationFoundStartComponent = false;
 	bool existingActivationFoundEndComponent = false;
 	return componentWordConnectivityTestsWrapper(forwardPropogationWordData, forwardPropogationSentenceData, ownerGroup, ownerGroup->currentParseTreeGroupTemp, activationPathWordCurrentParseTreeGroup, existingActivationFoundStartComponent, existingActivationFoundEndComponent);
 }
 #else
-bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, bool existingActivationFoundStartComponent)
+bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const bool existingActivationFoundStartComponent)
 {
 	bool existingActivationFoundEndComponent = false;
 	return componentWordConnectivityTestsWrapper(forwardPropogationWordData, forwardPropogationSentenceData, ownerGroup, ownerGroup->currentParseTreeGroupTemp, activationPathWordCurrentParseTreeGroup, existingActivationFoundStartComponent, existingActivationFoundEndComponent);
 }
 #endif
-bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* currentParseTreeGroupTemp, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, bool existingActivationFoundStartComponent, bool existingActivationFoundEndComponent)
+bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const bool existingActivationFoundStartComponent, const bool existingActivationFoundEndComponent)
 {
 	bool result = false;
 
-	SANIGroupParseTree* prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef = activationPathWordCurrentParseTreeGroup;
+	const SANIGroupParseTree* prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef = activationPathWordCurrentParseTreeGroup;
 
 	SANIGroupParseTree* lastActiveComponentInParseTreeParseTreeGroupRef = NULL;
 	SANIGroupParseTree* previousActiveComponentInParseTreeParseTreeGroupRef = NULL;	
@@ -643,7 +643,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIFor
 #endif
 
 //note if !SANI_PARSE_GENERATE_PARSE_TREE, lastActiveComponentInParseTreeParseTreeGroupRef will be NULL, so must rely on lastActiveComponentInParseTree->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex
-bool SANIpropagateOperationsClass::componentWordConnectivityTests(SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef, SANIComponent* lastActiveComponent, SANIGroupParseTree* lastActiveComponentInParseTreeParseTreeGroupRef, SANIComponentParseTree* lastActiveComponentInParseTree, SANIGroupParseTree* previousActiveComponentInParseTreeParseTreeGroupRef, bool existingActivationFoundStartComponent)
+bool SANIpropagateOperationsClass::componentWordConnectivityTests(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, const SANIGroupParseTree* prospectiveNewlyActiveComponentInParseTreeParseTreeGroupRef, SANIComponent* lastActiveComponent, const SANIGroupParseTree* lastActiveComponentInParseTreeParseTreeGroupRef, const SANIComponentParseTree* lastActiveComponentInParseTree, const SANIGroupParseTree* previousActiveComponentInParseTreeParseTreeGroupRef, const bool existingActivationFoundStartComponent)
 {
 	bool result = false;
 	
@@ -653,8 +653,8 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTests(SANIForwardPro
 	
 	int wordIndexMax = -1;
 	int wordIndexMin = REALLY_LARGE_INT;
-	SANIGroupParseTree* parseTreeGroupToFindWordIndexMin;
-	SANIGroupParseTree* parseTreeGroupToFindWordIndexMax;
+	const SANIGroupParseTree* parseTreeGroupToFindWordIndexMin;
+	const SANIGroupParseTree* parseTreeGroupToFindWordIndexMax;
 	int wordIndexMinMin;
 	int wordIndexMaxMax;
 	if(forwardPropogationSentenceData->parseSentenceReverse)
@@ -770,7 +770,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTests(SANIForwardPro
 								
 								
 #ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT
-bool SANIpropagateOperationsClass::isSentenceWordDataFullyConnected(SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+bool SANIpropagateOperationsClass::isSentenceWordDataFullyConnected(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	//forwardPropogationWordData->previousWordConnections.push_back(wPrevious);
 	bool result = true;
@@ -791,7 +791,7 @@ bool SANIpropagateOperationsClass::isSentenceWordDataFullyConnected(SANIForwardP
 	return result;
 }
 
-void SANIpropagateOperationsClass::isSentenceWordDataFullyConnected(vector<bool>* previousWordConnectionsFound, SANIForwardPropogationWordData* currentWordData)
+void SANIpropagateOperationsClass::isSentenceWordDataFullyConnected(vector<bool>* previousWordConnectionsFound, const SANIForwardPropogationWordData* currentWordData)
 {
 	for(int i = 0; i<currentWordData->previousWordConnections.size(); i++)
 	{
@@ -809,7 +809,7 @@ void SANIpropagateOperationsClass::isSentenceWordDataFullyConnected(vector<bool>
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
-bool SANIpropagateOperationsClass::componentTests1(SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+bool SANIpropagateOperationsClass::componentTests1(const SANIComponentNeuralNetwork* currentComponent, const SANIGroupNeuralNetwork* group, const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool componentTests = true;
 	
@@ -851,7 +851,7 @@ bool SANIpropagateOperationsClass::componentTests1(SANIComponentNeuralNetwork* c
 #endif
 
 #ifdef SANI_PREVIOUS_WORD_POS_TYPE_CHECKS
-bool SANIpropagateOperationsClass::componentTests2(SANIGroupNeuralNetwork* group, SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+bool SANIpropagateOperationsClass::componentTests2(const SANIGroupNeuralNetwork* group, const SANIGroupParseTree* currentParseTreeGroup, const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool componentTests = true;
 	
@@ -916,7 +916,7 @@ bool SANIpropagateOperationsClass::componentTests2(SANIGroupNeuralNetwork* group
 	return componentTests;
 }
 
-bool SANIpropagateOperationsClass::getFirstWordInParseTree(SANIGroupParseTree* currentParseTreeGroup, LRPpreprocessorPlainTextWord** firstWordInCurrentParseTreeGroupParseTree, int* translatorSentenceWordIndexMin, int* numComponentsFound)
+bool SANIpropagateOperationsClass::getFirstWordInParseTree(const SANIGroupParseTree* currentParseTreeGroup, LRPpreprocessorPlainTextWord** firstWordInCurrentParseTreeGroupParseTree, int* translatorSentenceWordIndexMin, int* numComponentsFound)
 {
 	bool result = false;
 		
@@ -949,7 +949,7 @@ bool SANIpropagateOperationsClass::getFirstWordInParseTree(SANIGroupParseTree* c
 	return result;
 }
 
-bool SANIpropagateOperationsClass::findPreviousWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, LRPpreprocessorPlainTextWord* currentWord, int previousWordPOStype)
+bool SANIpropagateOperationsClass::findPreviousWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const LRPpreprocessorPlainTextWord* currentWord, const int previousWordPOStype)
 {
 	bool result = false;
 	
@@ -980,7 +980,7 @@ bool SANIpropagateOperationsClass::findPreviousWordInSentence(vector<LRPpreproce
 			
 	return result;
 }
-bool SANIpropagateOperationsClass::findPreceedingWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, LRPpreprocessorPlainTextWord* currentWord, int existsPreceedingWordPOStype)
+bool SANIpropagateOperationsClass::findPreceedingWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const LRPpreprocessorPlainTextWord* currentWord, const int existsPreceedingWordPOStype)
 {
 	bool result = false;
 	
@@ -1007,7 +1007,7 @@ bool SANIpropagateOperationsClass::findPreceedingWordInSentence(vector<LRPprepro
 	return result;
 }
 
-bool SANIpropagateOperationsClass::checkWordPOStype(LRPpreprocessorPlainTextWord* currentWord, int unambiguousPOSindex)
+bool SANIpropagateOperationsClass::checkWordPOStype(const LRPpreprocessorPlainTextWord* currentWord, const int unambiguousPOSindex)
 {
 	bool result = false;	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
@@ -1031,7 +1031,7 @@ bool SANIpropagateOperationsClass::checkWordPOStype(LRPpreprocessorPlainTextWord
 
 
 
-bool SANIpropagateOperationsClass::resetAllNeurons(vector<SANIGroupType*>* SANIGroupTypes, int groupBoolIndexType)
+bool SANIpropagateOperationsClass::resetAllNeurons(vector<SANIGroupType*>* SANIGroupTypes, const int groupBoolIndexType)
 {
 	bool result = true;
 	
@@ -1058,7 +1058,7 @@ bool SANIpropagateOperationsClass::resetAllNeurons(vector<SANIGroupType*>* SANIG
 	return result;
 }
 
-bool SANIpropagateOperationsClass::resetAllNeuronComponents(vector<SANIGroupType*>* SANIGroupTypes, int groupBoolIndexType)
+bool SANIpropagateOperationsClass::resetAllNeuronComponents(vector<SANIGroupType*>* SANIGroupTypes, const int groupBoolIndexType)
 {
 	bool result = true;
 	
@@ -1133,7 +1133,7 @@ bool SANIpropagateOperationsClass::resetAllNeuronComponents(vector<SANIGroupType
 
 
 #ifdef SANI_SUPPORT_FUZZY_LAST_COMPONENTS
-bool SANIpropagateOperationsClass::isLastComponentFuzzy(SANIGroupNeuralNetwork* group)
+bool SANIpropagateOperationsClass::isLastComponentFuzzy(const SANIGroupNeuralNetwork* group)
 {
 	bool lastComponentIsFuzzy = false;
 
@@ -1162,7 +1162,7 @@ bool SANIpropagateOperationsClass::resetGroupActivation(SANIGroupNeuralNetwork* 
 	return result;
 }
 
-bool SANIpropagateOperationsClass::resetComponentsActivation(vector<SANIComponentNeuralNetwork*>* components)
+bool SANIpropagateOperationsClass::resetComponentsActivation(const vector<SANIComponentNeuralNetwork*>* components)
 {	
 	bool result = true;
 	
@@ -1196,7 +1196,7 @@ bool SANIpropagateOperationsClass::restoreGroupActivation(SANIGroupNeuralNetwork
 	return result;
 }
 
-bool SANIpropagateOperationsClass::restoreComponentsActivation(vector<SANIComponentNeuralNetwork*>* components, vector<SANIComponentNeuralNetwork*>* componentsOrig)
+bool SANIpropagateOperationsClass::restoreComponentsActivation(const vector<SANIComponentNeuralNetwork*>* components, const vector<SANIComponentNeuralNetwork*>* componentsOrig)
 {	
 	bool result = true;
 	
@@ -1219,7 +1219,7 @@ bool SANIpropagateOperationsClass::restoreComponentsActivation(vector<SANICompon
 
 
 #ifdef SANI_PREVENT_CIRCULAR_CONNECTION_LOOPS
-bool SANIpropagateOperationsClass::resetNeuronForwardProp(SANIGroupNeuralNetwork* group, int groupBoolIndexType)
+bool SANIpropagateOperationsClass::resetNeuronForwardProp(const SANIGroupNeuralNetwork* group, const int groupBoolIndexType)
 {
 	bool result = true;
 	
@@ -1263,7 +1263,7 @@ bool SANIpropagateOperationsClass::resetNeuronForwardProp(SANIGroupNeuralNetwork
 			
 
 
-bool SANIpropagateOperationsClass::doesRequireResetGroupActivation(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* Xcomponent, int indexOfXcomponentInGroup, SANIGroupNeuralNetwork* ownerGroup, SANIForwardPropogationWordData* forwardPropogationWordData)
+bool SANIpropagateOperationsClass::doesRequireResetGroupActivation(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIComponentNeuralNetwork* Xcomponent, const int indexOfXcomponentInGroup, const SANIGroupNeuralNetwork* ownerGroup, const SANIForwardPropogationWordData* forwardPropogationWordData)
 {
 	bool requireResetGroupActivation = false;
 	
@@ -1328,7 +1328,7 @@ bool SANIpropagateOperationsClass::doesRequireResetGroupActivation(SANIForwardPr
 
 					
 
-bool SANIpropagateOperationsClass::findNextAvailableComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int indexOfXcomponentInGroup, SANIGroupNeuralNetwork* ownerGroup)
+bool SANIpropagateOperationsClass::findNextAvailableComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int indexOfXcomponentInGroup, const SANIGroupNeuralNetwork* ownerGroup)
 {
 	bool foundNextAvailableComponent = false;
 	bool findingNextAvailableComponent = true;

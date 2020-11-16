@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -176,7 +176,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper2(SANI
 }
 
 #ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_SUBNETS_BASED_ON_POS_UNAMBIGUOUS_SEGMENTS
-bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambiguousSentenceSubsets(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, vector<uint64_t>* POSambiguityInfoPermutation)
+bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorOnPOSunambiguousSentenceSubsets(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, const vector<uint64_t>* POSambiguityInfoPermutation)
 {
 	bool result = true;
 	
@@ -427,9 +427,9 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslat
 
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, vector<vector<uint64_t>*>* POSambiguityInfoUnambiguousPermutationArray, int* iOptimum, int* minIndexOfMatchesFoundBackupOptimum)
+bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<vector<uint64_t>*>* POSambiguityInfoUnambiguousPermutationArray, int* iOptimum, int* minIndexOfMatchesFoundBackupOptimum)
 #else
-bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, vector<uint64_t>* POSambiguityInfoPermutation)
+bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<uint64_t>* POSambiguityInfoPermutation)
 #endif
 {
 	#ifdef SANI_SEQUENCE_GRAMMAR_THROW_SENTENCE_FAIL_ERROR_IF_ANY_POS_PERMUTATION_FAILS
@@ -680,7 +680,7 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 	
 #ifdef SANI_FORWARD
 //based on SANIpropagateInverseClass::updatePerformanceNeuralNetwork
-bool SANIposRelTranslatorPermutationsClass::updatePerformanceNeuralNetwork(int performanceTemp, int* performance, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroupTemp, bool passedTemp, int permutationIndex, int* performanceMaxPermutationIndex)
+bool SANIposRelTranslatorPermutationsClass::updatePerformanceNeuralNetwork(int performanceTemp, int* performance, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroupTemp, const bool passedTemp, int permutationIndex, int* performanceMaxPermutationIndex)
 {
 	bool result = false;
 	
@@ -759,7 +759,7 @@ bool SANIposRelTranslatorPermutationsClass::deleteAllSubgroupsRecurse(SANIGroupP
 
 
 #ifndef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC
-bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(SANItranslatorVariablesClass* translatorVariables)
+bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(const SANItranslatorVariablesClass* translatorVariables)
 {
 	bool result = true;
 	
@@ -778,7 +778,7 @@ bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWo
 		if(currentLRPpreprocessorSentenceInList->firstParseTreeGroup != NULL)
 		{
 		#endif
-			SANIGroupParseTree* firstParseTreeGroup = currentLRPpreprocessorSentenceInList->firstParseTreeGroup;
+			const SANIGroupParseTree* firstParseTreeGroup = currentLRPpreprocessorSentenceInList->firstParseTreeGroup;
 			int layer = SANI_POS_REL_TRANSLATOR_RULES_LAYER_START;
 			#ifdef SANI_DEBUG_RULES
 			cout << "firstParseTreeGroup: groupTypeName = " << firstParseTreeGroup->groupTypeName << ", groupName = " << firstParseTreeGroup->groupName << endl;
@@ -808,7 +808,7 @@ bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWo
 	return result;
 }
 
-bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWordList(const SANIGroupParseTree* currentParseTreeGroup, int layer)
 {
 	bool result = true;
 	
@@ -852,7 +852,7 @@ bool SANIposRelTranslatorPermutationsClass::transferParseTreePOStypeInferredToWo
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_CONSECUTIVE_POS
-bool SANIposRelTranslatorPermutationsClass::detectLongConsecutivePOS(vector<uint64_t>* POSambiguityInfoPermutation)
+bool SANIposRelTranslatorPermutationsClass::detectLongConsecutivePOS(const vector<uint64_t>* POSambiguityInfoPermutation)
 {
 	bool foundLongConsecutivePOS = false;
 	

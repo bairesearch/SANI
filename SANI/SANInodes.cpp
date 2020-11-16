@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -92,7 +92,7 @@ int SANInodesClass::assignGroupIndex(SANIGroupNeuralNetwork* group)
 }
 #endif
 
-bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, string groupTypeName, SANIGroupType** groupTypeFound)
+bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, constEffective SANIGroupType** groupTypeFound)
 {
 	bool result = false;
 	for(int i=0; i<SANIGroupTypes->size(); i++)
@@ -107,7 +107,7 @@ bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, strin
 	}
 	return result;
 }
-bool SANInodesClass::findGroup(vector<SANIGroupType*>* SANIGroupTypes, string groupTypeName, string groupName, SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound)
+bool SANInodesClass::findGroup(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, const string groupName, constEffective SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound)
 {
 	bool result = false;
 	for(int i=0; i<SANIGroupTypes->size(); i++)
@@ -204,7 +204,7 @@ bool SANInodesClass::removeLastOptionalComponents(vector<SANIGroupType*>* SANIGr
 	return result;
 }	
 
-bool SANInodesClass::removeOptionalComponent(SANIGroupType* groupType, int* groupIndex, int groupTypeGroupsSizeOrig, SANIGroupNeuralNetwork* group, int optionalComponentIndex)
+bool SANInodesClass::removeOptionalComponent(SANIGroupType* groupType, int* groupIndex, const int groupTypeGroupsSizeOrig, SANIGroupNeuralNetwork* group, int optionalComponentIndex)
 {
 	bool result = true;
 	
@@ -474,7 +474,7 @@ bool SANInodesClass::removeLastOptionalComponents(vector<SANIGroupType*>* SANIGr
 
 #endif
 	
-SANIGroupNeuralNetwork* SANInodesClass::copyGroup(SANIGroupNeuralNetwork* group)
+SANIGroupNeuralNetwork* SANInodesClass::copyGroup(const SANIGroupNeuralNetwork* group)
 {		
 	SANIGroupNeuralNetwork* newGroup = new SANIGroupNeuralNetwork(*group);
 	newGroup->components.clear();
@@ -482,7 +482,7 @@ SANIGroupNeuralNetwork* SANInodesClass::copyGroup(SANIGroupNeuralNetwork* group)
 
 	return newGroup;
 }
-bool SANInodesClass::copyComponents(vector<SANIComponentNeuralNetwork*>* components, vector<SANIComponentNeuralNetwork*>* componentsNew)
+bool SANInodesClass::copyComponents(const vector<SANIComponentNeuralNetwork*>* components, vector<SANIComponentNeuralNetwork*>* componentsNew)
 {	
 	bool result = true;
 	
@@ -506,7 +506,7 @@ bool SANInodesClass::copyComponents(vector<SANIComponentNeuralNetwork*>* compone
 	return result;
 }
 
-bool SANInodesClass::copyComponent(SANIComponentNeuralNetwork* currentComponent, vector<SANIComponentNeuralNetwork*>* componentsNew)
+bool SANInodesClass::copyComponent(const SANIComponentNeuralNetwork* currentComponent, vector<SANIComponentNeuralNetwork*>* componentsNew)
 {	
 	bool result = true;
 	
@@ -523,7 +523,7 @@ bool SANInodesClass::copyComponent(SANIComponentNeuralNetwork* currentComponent,
 	return result;
 }
 
-SANIGroupParseTree* SANInodesClass::copyGroup(SANIGroupParseTree* group)
+SANIGroupParseTree* SANInodesClass::copyGroup(const SANIGroupParseTree* group)
 {		
 	SANIGroupParseTree* newGroup = new SANIGroupParseTree(*group);
 	newGroup->components.clear();
@@ -531,7 +531,7 @@ SANIGroupParseTree* SANInodesClass::copyGroup(SANIGroupParseTree* group)
 
 	return newGroup;
 }
-bool SANInodesClass::copyComponents(vector<SANIComponentParseTree*>* components, vector<SANIComponentParseTree*>* componentsNew)
+bool SANInodesClass::copyComponents(const vector<SANIComponentParseTree*>* components, vector<SANIComponentParseTree*>* componentsNew)
 {	
 	bool result = true;
 	
@@ -546,7 +546,7 @@ bool SANInodesClass::copyComponents(vector<SANIComponentParseTree*>* components,
 }
 
 
-SANIGroupActivationMemory* SANInodesClass::copyGroup(SANIGroupActivationMemory* group)
+SANIGroupActivationMemory* SANInodesClass::copyGroup(const SANIGroupActivationMemory* group)
 {		
 	SANIGroupActivationMemory* newGroup = new SANIGroupActivationMemory(*group);
 	newGroup->components.clear();
@@ -558,7 +558,7 @@ SANIGroupActivationMemory* SANInodesClass::copyGroup(SANIGroupActivationMemory* 
 
 
 #ifdef SANI_FORWARD
-bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool isSubcomponent, SANIComponentNeuralNetwork* ownerComponent)
+bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(constEffective SANIGroupNeuralNetwork* group, const vector<SANIComponentNeuralNetwork*>* components, const bool isSubcomponent, constEffective SANIComponentNeuralNetwork* ownerComponent)
 {
 	bool result = true;
 	
@@ -590,7 +590,7 @@ bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork
 
 #ifdef SANI_FORWARD
 
-bool SANInodesClass::currentWordAmbiguous(LRPpreprocessorPlainTextWord* currentWord)
+bool SANInodesClass::currentWordAmbiguous(const LRPpreprocessorPlainTextWord* currentWord)
 {
 	bool result = false;
 	
@@ -607,12 +607,12 @@ bool SANInodesClass::currentWordAmbiguous(LRPpreprocessorPlainTextWord* currentW
 }
 
 
-int SANInodesClass::convertWordIndexToSentenceEntityIndex(int wordIndex)
+int SANInodesClass::convertWordIndexToSentenceEntityIndex(const int wordIndex)
 {
 	int sentenceEntityIndex = wordIndex + SANI_WORD_INDEX_W_TO_ENTITY_INDEX_OFFSET;
 	return sentenceEntityIndex;
 }
-int SANInodesClass::convertSentenceEntityIndexToWordIndex(int sentenceEntityIndex)
+int SANInodesClass::convertSentenceEntityIndexToWordIndex(const int sentenceEntityIndex)
 {
 	int wordIndex = sentenceEntityIndex - SANI_WORD_INDEX_W_TO_ENTITY_INDEX_OFFSET;
 	return wordIndex;
@@ -620,7 +620,7 @@ int SANInodesClass::convertSentenceEntityIndexToWordIndex(int sentenceEntityInde
 
 
 #ifdef SANI_ENFORCE_WORD_CONNECTIVITY_VERIFY_HYPOTHETICAL_PROPOGATION_FINDS_PREVIOUS_WORD_NOUNS_ONLY
-bool SANInodesClass::isWordPOStypeNoun(int wordPOStype)
+bool SANInodesClass::isWordPOStypeNoun(const int wordPOStype)
 {
 	bool result = false;
 	
@@ -673,7 +673,7 @@ bool SANInodesClass::isWordPOStypeNoun(int wordPOStype)
 #endif
 
 #ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
-int SANInodesClass::countParseTreeLeafSize(SANIGroupParseTree* currentParseTreeGroup)
+int SANInodesClass::countParseTreeLeafSize(const SANIGroupParseTree* currentParseTreeGroup)
 {
 	int size = 0;
 	
@@ -703,7 +703,7 @@ int SANInodesClass::countParseTreeLeafSize(SANIGroupParseTree* currentParseTreeG
 	return size;
 }
 #endif
-int SANInodesClass::countParseTreeLeafSizeUnoptimised(SANIGroupParseTree* currentParseTreeGroup)
+int SANInodesClass::countParseTreeLeafSizeUnoptimised(const SANIGroupParseTree* currentParseTreeGroup)
 {
 	int size = 0;
 		
@@ -793,7 +793,7 @@ bool SANInodesClass::getNeuralNetworkDepth(SANIGroupNeuralNetwork* currentNeuron
 	
 	return result;
 }
-bool SANInodesClass::getNeuralNetworkDepth(SANIComponentNeuralNetwork* component, int* maxDepth)
+bool SANInodesClass::getNeuralNetworkDepth(const SANIComponentNeuralNetwork* component, int* maxDepth)
 {
 	bool result = true;
 				
@@ -801,7 +801,7 @@ bool SANInodesClass::getNeuralNetworkDepth(SANIComponentNeuralNetwork* component
 	
 	for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 	{
-		SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
+		const SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 		componentMaxDepth = max(componentMaxDepth, groupSource->networkDepth);
 	}
 	*maxDepth = componentMaxDepth;
@@ -847,7 +847,7 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepth(SANIGroupNeuralNetwor
 	
 	return result;
 }
-bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepth(SANIComponentNeuralNetwork* component, int* maxLeafSize, int* maxDepth)
+bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepth(const SANIComponentNeuralNetwork* component, int* maxLeafSize, int* maxDepth)
 {
 	bool result = true;
 				
@@ -895,7 +895,7 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepthReset(SANIGroupNeuralN
 	
 	return result;
 }
-bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepthReset(SANIComponentNeuralNetwork* component)
+bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepthReset(const SANIComponentNeuralNetwork* component)
 {
 	bool result = true;
 				
@@ -910,7 +910,7 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepthReset(SANIComponentNeu
 #endif
 #endif
 
-SANIComponentNeuralNetwork* SANInodesClass::getFirstComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron, bool fromStart)
+SANIComponentNeuralNetwork* SANInodesClass::getFirstComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron, bool fromStart)
 {
 	if(forwardPropogationSentenceData->parseSentenceReverse)
 	{
@@ -930,7 +930,7 @@ SANIComponentNeuralNetwork* SANInodesClass::getFirstComponent(SANIForwardPropoga
 	return firstComponent;
 }
 
-SANIComponentParseTree* SANInodesClass::getFirstComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentNeuron, bool fromStart)
+SANIComponentParseTree* SANInodesClass::getFirstComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentNeuron, bool fromStart)
 {
 	if(forwardPropogationSentenceData->parseSentenceReverse)
 	{
@@ -953,7 +953,7 @@ SANIComponentParseTree* SANInodesClass::getFirstComponent(SANIForwardPropogation
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH	
-int SANInodesClass::calculateDepthFromBinaryTreeLeafSize(int numberOfLeafNodesInBinaryTree)
+int SANInodesClass::calculateDepthFromBinaryTreeLeafSize(const int numberOfLeafNodesInBinaryTree)
 {
 	//see http://courses.cs.vt.edu/~cs3114/Fall09/wmcquain/Notes/T03a.BinaryTreeTheorems.pdf
 	
@@ -985,12 +985,12 @@ double SANInodesClass::generateRandomNumber()
 #endif
 
 
-bool SANInodesClass::deleteGroup(SANIGroupNeuralNetwork* group)
+bool SANInodesClass::deleteGroup(const SANIGroupNeuralNetwork* group)
 {
 	deleteComponents(&(group->components));
 	delete group;
 }
-bool SANInodesClass::deleteComponents(vector<SANIComponentNeuralNetwork*>* components)
+bool SANInodesClass::deleteComponents(const vector<SANIComponentNeuralNetwork*>* components)
 {
 	bool result = true;
 	
@@ -1009,12 +1009,12 @@ bool SANInodesClass::deleteComponents(vector<SANIComponentNeuralNetwork*>* compo
 	return result;
 }	
 
-bool SANInodesClass::deleteGroup(SANIGroupParseTree* group)
+bool SANInodesClass::deleteGroup(const SANIGroupParseTree* group)
 {
 	deleteComponents(&(group->components));
 	delete group;
 }
-bool SANInodesClass::deleteComponents(vector<SANIComponentParseTree*>* components)
+bool SANInodesClass::deleteComponents(const vector<SANIComponentParseTree*>* components)
 {
 	bool result = true;
 	
@@ -1027,7 +1027,7 @@ bool SANInodesClass::deleteComponents(vector<SANIComponentParseTree*>* component
 	return result;
 }	
 
-bool SANInodesClass::deleteGroup(SANIGroupActivationMemory* group)
+bool SANInodesClass::deleteGroup(const SANIGroupActivationMemory* group)
 {
 	deleteComponents(&(group->components));
 	delete group;
@@ -1036,7 +1036,7 @@ bool SANInodesClass::deleteGroup(SANIGroupActivationMemory* group)
 
 
 			
-bool SANInodesClass::printGroup(SANIGroupNeuralNetwork* group, int layer)
+bool SANInodesClass::printGroup(const SANIGroupNeuralNetwork* group, const int layer)
 {
 	for(int i=0; i<group->components.size(); i++)
 	{
@@ -1045,7 +1045,7 @@ bool SANInodesClass::printGroup(SANIGroupNeuralNetwork* group, int layer)
 	}	
 }
 
-bool SANInodesClass::printComponent(SANIComponentParseTree* component, int layer)
+bool SANInodesClass::printComponent(const SANIComponentParseTree* component, const int layer)
 {
 	bool result = true;
 	
@@ -1106,7 +1106,7 @@ bool SANInodesClass::printComponent(SANIComponentParseTree* component, int layer
 	return result;
 }
 
-bool SANInodesClass::printComponent(SANIComponentNeuralNetwork* component, int layer)
+bool SANInodesClass::printComponent(const SANIComponentNeuralNetwork* component, const int layer)
 {
 	bool result = true;
 	
@@ -1182,7 +1182,7 @@ bool SANInodesClass::printComponent(SANIComponentNeuralNetwork* component, int l
 	return result;
 }
 
-bool SANInodesClass::printParseTreeDebugIndentation(int layer)
+bool SANInodesClass::printParseTreeDebugIndentation(const int layer)
 {
 	bool result = true;
 	
@@ -1210,7 +1210,7 @@ int SANInodesClass::calculateMinIndexOfMatchesFound(vector<LRPpreprocessorPlainT
 }
 
 
-void SANInodesClass::deleteParseTree(SANIGroupParseTree* parseTreeGroupToDelete, int level)
+void SANInodesClass::deleteParseTree(const SANIGroupParseTree* parseTreeGroupToDelete, const int level)
 {
 	if(parseTreeGroupToDelete != NULL)
 	{
@@ -1228,7 +1228,7 @@ void SANInodesClass::deleteParseTree(SANIGroupParseTree* parseTreeGroupToDelete,
 	}
 }
 
-SANIGroupParseTree* SANInodesClass::replicateParseTree(SANIGroupParseTree* parseTreeGroupToReplicate, int level)
+SANIGroupParseTree* SANInodesClass::replicateParseTree(const SANIGroupParseTree* parseTreeGroupToReplicate, const int level)
 {
 	bool result = false;
 
@@ -1248,17 +1248,17 @@ SANIGroupParseTree* SANInodesClass::replicateParseTree(SANIGroupParseTree* parse
 	return parseTreeGroupNew;
 }
 
-SANIGroupParseTree* SANInodesClass::convertNeuralNetworkGroupToParseTreeGroup(SANIGroupNeuralNetwork* group)
+SANIGroupParseTree* SANInodesClass::convertNeuralNetworkGroupToParseTreeGroup(constEffective SANIGroupNeuralNetwork* group)
 {
-	SANIGroup* groupBase = group;
+	constEffective SANIGroup* groupBase = group;
 	return (static_cast<SANIGroupParseTree*>(groupBase));
 }
-SANIComponentParseTree* SANInodesClass::convertNeuralNetworkComponentToParseTreeComponent(SANIComponentNeuralNetwork* component)
+SANIComponentParseTree* SANInodesClass::convertNeuralNetworkComponentToParseTreeComponent(constEffective SANIComponentNeuralNetwork* component)
 {
-	SANIComponent* componentBase = component;
+	constEffective SANIComponent* componentBase = component;
 	return (static_cast<SANIComponentParseTree*>(componentBase));
 }
-SANIGroupActivationMemory* SANInodesClass::convertNeuralNetworkGroupToMemoryActivationGroup(SANIGroupNeuralNetwork* group)
+SANIGroupActivationMemory* SANInodesClass::convertNeuralNetworkGroupToMemoryActivationGroup(constEffective SANIGroupNeuralNetwork* group)
 {
 	return (static_cast<SANIGroupActivationMemory*>(group));
 }
@@ -1286,7 +1286,7 @@ SANIComponentParseTree* SANInodesClass::convertNeuralNetworkComponentToParseTree
 	#endif	
 	return componentNew;
 }
-SANIGroupActivationMemory* SANInodesClass::convertNeuralNetworkGroupToMemoryActivationGroupNew(SANIGroupNeuralNetwork* group)
+SANIGroupActivationMemory* SANInodesClass::convertNeuralNetworkGroupToMemoryActivationGroupNew(const SANIGroupNeuralNetwork* group)
 {
 	SANIGroupActivationMemory* groupNew = new SANIGroupActivationMemory();
 	SANIGroupNeuralNetwork* groupNewBase = groupNew;
@@ -1298,7 +1298,7 @@ SANIGroupActivationMemory* SANInodesClass::convertNeuralNetworkGroupToMemoryActi
 
 
 #ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
-bool SANInodesClass::resetGroupOptimumPathway(SANIGroupNeuralNetwork* group)
+bool SANInodesClass::resetGroupOptimumPathway(const SANIGroupNeuralNetwork* group)
 {	
 	bool result = true;
 	
@@ -1307,7 +1307,7 @@ bool SANInodesClass::resetGroupOptimumPathway(SANIGroupNeuralNetwork* group)
 	return result;
 }
 
-bool SANInodesClass::resetComponentsOptimumPathway(vector<SANIComponentNeuralNetwork*>* components)
+bool SANInodesClass::resetComponentsOptimumPathway(const vector<SANIComponentNeuralNetwork*>* components)
 {	
 	bool result = true;
 	
@@ -1330,13 +1330,13 @@ bool SANInodesClass::resetComponentsOptimumPathway(vector<SANIComponentNeuralNet
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR
-int SANInodesClass::calculateCoverage(SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage)
+int SANInodesClass::calculateCoverage(const SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage)
 {
 	int activatedNeuronWordIndexCoverage = activatedNeuronWithMaxWordIndexCoverage->parseTreeMaxWordIndex - activatedNeuronWithMaxWordIndexCoverage->parseTreeMinWordIndex + 1;
 	return activatedNeuronWordIndexCoverage;
 }
 
-bool SANInodesClass::traceBackpropNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int level, int previousComponentIndex, int previousComponentType)
+bool SANInodesClass::traceBackpropNeuralNetwork(const SANIGroupNeuralNetwork* currentNeuron, const int level, const int previousComponentIndex, const int previousComponentType)
 {
 	printParseTreeDebugIndentation(level);
 	if(isNeuronString(currentNeuron))
@@ -1363,7 +1363,7 @@ bool SANInodesClass::traceBackpropNeuralNetwork(SANIGroupNeuralNetwork* currentN
 		
 }
 
-bool SANInodesClass::isNeuronString(SANIGroupNeuralNetwork* currentNeuron)
+bool SANInodesClass::isNeuronString(const SANIGroupNeuralNetwork* currentNeuron)
 {
 	bool result = false;
 	if(currentNeuron->groupTypeIsString)
@@ -1378,7 +1378,7 @@ bool SANInodesClass::isNeuronString(SANIGroupNeuralNetwork* currentNeuron)
 	return result;
 }
 
-bool SANInodesClass::getWordPOStypeFromAmbiguousWord(LRPpreprocessorPlainTextWord* currentWord, int* wordPOStype)
+bool SANInodesClass::getWordPOStypeFromAmbiguousWord(constEffective LRPpreprocessorPlainTextWord* currentWord, int* wordPOStype)
 {
 	bool result = false;
 	
@@ -1406,7 +1406,7 @@ bool SANInodesClass::getWordPOStypeFromAmbiguousWord(LRPpreprocessorPlainTextWor
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR
-bool SANInodesClass::printParseTreeGroupIndices(SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANInodesClass::printParseTreeGroupIndices(const SANIGroupParseTree* currentParseTreeGroup, const int layer)
 {
 	bool result = true;
 	
@@ -1434,7 +1434,7 @@ bool SANInodesClass::printParseTreeGroupIndices(SANIGroupParseTree* currentParse
 	return result;
 }
 
-string SANInodesClass::printParseTreeGroupIndicesFlat(SANIGroupParseTree* currentParseTreeGroup)
+string SANInodesClass::printParseTreeGroupIndicesFlat(const SANIGroupParseTree* currentParseTreeGroup)
 {
 	string groupIndicesString = "";
 	
@@ -1461,7 +1461,7 @@ string SANInodesClass::printParseTreeGroupIndicesFlat(SANIGroupParseTree* curren
 }
 
 
-bool SANInodesClass::printParseTree(SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANInodesClass::printParseTree(const SANIGroupParseTree* currentParseTreeGroup, const int layer)
 {
 	bool result = true;
 	
@@ -1493,7 +1493,7 @@ bool SANInodesClass::printParseTree(SANIGroupParseTree* currentParseTreeGroup, i
 }
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
-bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int layer)
+bool SANInodesClass::printNeuralNetwork(const SANIGroupNeuralNetwork* currentNeuron, const int layer)
 {
 	bool result = true;
 
@@ -1524,7 +1524,7 @@ bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, i
 	return result;
 }
 #else
-bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, int layer)
+bool SANInodesClass::printNeuralNetwork(const SANIGroupNeuralNetwork* currentNeuron, const int layer)
 {
 	bool result = true;
 
@@ -1558,7 +1558,7 @@ bool SANInodesClass::printNeuralNetwork(SANIGroupNeuralNetwork* currentNeuron, i
 }
 #endif
 #ifndef GIA_POS_REL_TRANSLATOR_RULES_USE	
-bool SANInodesClass::printNeuralNetworkInputNeuron(SANIGroupNeuralNetwork* inputNeuron, int layer)
+bool SANInodesClass::printNeuralNetworkInputNeuron(const SANIGroupNeuralNetwork* inputNeuron, const int layer)
 {
 	//CHECKTHIS
 	/*
@@ -1581,7 +1581,7 @@ bool SANInodesClass::printNeuralNetworkInputNeuron(SANIGroupNeuralNetwork* input
 
 
 
-bool SANInodesClass::hasComponentTypeString(SANIComponentNeuralNetwork* component)
+bool SANInodesClass::hasComponentTypeString(const SANIComponentNeuralNetwork* component)
 {
 	bool result = false;
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
@@ -1608,7 +1608,7 @@ bool SANInodesClass::hasComponentTypeString(SANIComponentNeuralNetwork* componen
 	return result;
 }
 
-bool SANInodesClass::hasComponentTypeString(SANIComponentParseTree* component)
+bool SANInodesClass::hasComponentTypeString(const SANIComponentParseTree* component)
 {
 	bool result = false;
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
@@ -1623,7 +1623,7 @@ bool SANInodesClass::hasComponentTypeString(SANIComponentParseTree* component)
 }		
 
 #ifdef SANI_SEQUENCE_GRAMMAR
-bool SANInodesClass::calculateComponentTypeString(SANIGroupNeuralNetwork* componentSource)
+bool SANInodesClass::calculateComponentTypeString(const SANIGroupNeuralNetwork* componentSource)
 {
 	bool componentTypeString = false;
 	if(componentSource->inputLayerNeuron)

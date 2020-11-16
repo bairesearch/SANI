@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightUnoptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Unoptimised - ~O(n^2)
  * /
@@ -39,7 +39,7 @@
 #ifdef SANI_LIGHT_UNOPTIMISED
 
 
-bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance)
+bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(const SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance)
 {
 	bool result = false;
 
@@ -113,7 +113,7 @@ bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SA
 		
 		//#ifdef SANI_DEBUG_PROPAGATE
 		cout << "topLevelGroup" << endl;
-		printBackpropParseTree(&(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate), 1);
+		printBackpropParseTree(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, 1);
 		cout << "end printBackpropParseTree" << endl;
 		//cout << "forwardPropogationSentenceData.topLevelParseTreeGroupPropagate->groupName = " << forwardPropogationSentenceData.topLevelParseTreeGroupPropagate->groupName << endl;
 		//#endif	
@@ -142,9 +142,9 @@ bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SA
 		int performanceNOTUSED = 0;
 		bool print = false;
 		bool performancePreprocess = false;
-		SANIpropagateOperationsParseTree.traceBackpropParseTree(&(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate), 1, print, performancePreprocess, &performanceNOTUSED, NULL);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
+		SANIpropagateOperationsParseTree.traceBackpropParseTree(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, 1, print, performancePreprocess, &performanceNOTUSED, NULL);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
 		SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);
-		SANIpropagateOperationsParseTree.resetNeuronBackprop(&(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate), GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	//added GIA3g6aTEMP32 
+		SANIpropagateOperationsParseTree.resetNeuronBackprop(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	//added GIA3g6aTEMP32 
 		
 		/*
 		for(int w=0; w<sentenceContents->size(); w++)
@@ -174,7 +174,7 @@ bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(SA
 	
 
 
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkIntro(SANItranslatorVariablesClass* translatorVariables, int w, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkIntro(const SANItranslatorVariablesClass* translatorVariables, int w, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
 {
 	bool result = false;
 
@@ -364,7 +364,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkIntro(SANItr
 }
 
 	
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupInit(SANItranslatorVariablesClass* translatorVariables, int w, int wordPOStype, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupInit(const SANItranslatorVariablesClass* translatorVariables, const int w, int wordPOStype, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
 {
 	bool result = false;
 	
@@ -385,7 +385,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupInit(SA
 	return result;
 }	
 	
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupInit(SANItranslatorVariablesClass* translatorVariables, int w, SANIGroupNeuralNetwork* inputLayerGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupInit(const SANItranslatorVariablesClass* translatorVariables, const int w, SANIGroupNeuralNetwork* inputLayerGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
 {
 	bool result = false;
 	
@@ -400,7 +400,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupInit(SA
 }				
 				
 
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupIntro(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupIntro(const SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordFirstParseTreeGroup)
 {
 	bool result = false;
 	
@@ -412,7 +412,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupIntro(S
 	return result;
 }
 
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroup(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroup(const SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
 {
 	bool result = false;
 	
@@ -446,7 +446,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroup(SANItr
 	return result;
 }
 		
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupSelect(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupSelect(const SANItranslatorVariablesClass* translatorVariables, const SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup)
 {
 	bool result = false;
 	
@@ -531,7 +531,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupSelect(
 	
 
 
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupComponentWrapper(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, int groupFrontComponentConnectionListIndex, SANIposRelTranslatorDebug* debug)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupComponentWrapper(const SANItranslatorVariablesClass* translatorVariables, const SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const int groupFrontComponentConnectionListIndex, const SANIposRelTranslatorDebug* debug)
 {
 	bool result = false;
 	
@@ -632,7 +632,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 	
 	
 //precondition: only components (not subcomponents) use special condition flags (wordNounVariantType/wordVerbVariantType)
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupComponent(SANItranslatorVariablesClass* translatorVariables, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* ownerComponent, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool activationSequenceCompleted, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, int groupFrontComponentConnectionListIndex, SANIposRelTranslatorDebug* debug)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupComponent(const SANItranslatorVariablesClass* translatorVariables, const SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* ownerComponent, const SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool activationSequenceCompleted, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const int groupFrontComponentConnectionListIndex, const SANIposRelTranslatorDebug* debug)
 {
 	bool result = false;
 	
@@ -749,7 +749,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 			if(forwardPropogationWordData->w == wComparisonInt)	//start of sentence found
 			{
 			#endif
-				if(SANIpropagateOperationsParse.updatePerformance(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
+				if(SANIpropagateOperationsParseTree.updatePerformance(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
 				{
 					/*
 					cout << "topLevelGroup && SANIpropagateOperations.isSentenceWordDataFullyConnected; TEMP EXIT" << endl;
@@ -855,7 +855,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 }
 
 
-void SANIpropagateLightUnoptimisedClass::restoreGroupActivations(SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool restoreCurrentParseTreeGroupTemp)
+void SANIpropagateLightUnoptimisedClass::restoreGroupActivations(SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool restoreCurrentParseTreeGroupTemp)
 {
 	#ifdef SANI_LIGHT_NEW
 	if(restoreCurrentParseTreeGroupTemp)
@@ -935,7 +935,7 @@ void SANIpropagateLightUnoptimisedClass::restoreGroupActivations(SANIGroupNeural
 	#endif
 }
 
-bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupComponentPassNextWord(SANItranslatorVariablesClass* translatorVariables, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner)
+bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupComponentPassNextWord(const SANItranslatorVariablesClass* translatorVariables, const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, constEffective SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner)
 {
 	bool result = false;
 	
@@ -984,7 +984,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 
 
 #ifdef SANI_PREVIOUS_WORD_POS_TYPE_CHECKS
-bool SANIpropagateLightUnoptimisedClass::componentTests2(SANIGroupNeuralNetwork* group, SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+bool SANIpropagateLightUnoptimisedClass::componentTests2(const SANIGroupNeuralNetwork* group, const SANIGroupParseTree* currentParseTreeGroup, const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool componentTests = true;
 	
@@ -1033,7 +1033,7 @@ bool SANIpropagateLightUnoptimisedClass::componentTests2(SANIGroupNeuralNetwork*
 	return componentTests;
 }
 
-bool SANIpropagateLightUnoptimisedClass::findPreviousWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, int currentWordIndex, int previousWordPOStype)
+bool SANIpropagateLightUnoptimisedClass::findPreviousWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const int currentWordIndex, const int previousWordPOStype)
 {
 	bool result = false;
 	
@@ -1064,7 +1064,7 @@ bool SANIpropagateLightUnoptimisedClass::findPreviousWordInSentence(vector<LRPpr
 			
 	return result;
 }
-bool SANIpropagateLightUnoptimisedClass::findPreceedingWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, int currentWordIndex, int existsPreceedingWordPOStype)
+bool SANIpropagateLightUnoptimisedClass::findPreceedingWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const int currentWordIndex, const int existsPreceedingWordPOStype)
 {
 	bool result = false;
 	
@@ -1096,7 +1096,7 @@ bool SANIpropagateLightUnoptimisedClass::findPreceedingWordInSentence(vector<LRP
 
 
 
-bool SANIpropagateLightUnoptimisedClass::printBackpropParseTree(SANIGroupParseTree* group, int level)
+bool SANIpropagateLightUnoptimisedClass::printBackpropParseTree(SANIGroupParseTree* group, const int level)
 {
 	bool print = true;
 	bool performancePreprocess = false;
@@ -1108,7 +1108,7 @@ bool SANIpropagateLightUnoptimisedClass::printBackpropParseTree(SANIGroupParseTr
 
 
 
-bool SANIpropagateLightUnoptimisedClass::groupActivationCompleted(SANIGroupNeuralNetwork* group)
+bool SANIpropagateLightUnoptimisedClass::groupActivationCompleted(const SANIGroupNeuralNetwork* group)
 {	
 	bool groupActivationCompleted = true;
 	

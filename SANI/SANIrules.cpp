@@ -26,7 +26,7 @@
  * File Name: SANIrules.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Rules
  * /
@@ -323,7 +323,7 @@ bool SANIrulesClass::extractSANIGroups(vector<SANIGroupType*>* SANIGroupTypes)
 }
 
 
-bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFirstComponentTag, SANIGroupNeuralNetwork* groupOwner, vector<SANIComponentNeuralNetwork*>* componentsList, bool parseSubcomponent, SANIComponentNeuralNetwork* subComponentOwner)
+bool SANIrulesClass::parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFirstComponentTag, constEffective SANIGroupNeuralNetwork* groupOwner, vector<SANIComponentNeuralNetwork*>* componentsList, const bool parseSubcomponent, constEffective SANIComponentNeuralNetwork* subComponentOwner)
 {
 	bool result = true;
 	
@@ -790,7 +790,7 @@ bool SANIrulesClass::connectGroupsReferences(vector<SANIGroupType*>* SANIGroupTy
 	}
 	return result;
 }
-bool SANIrulesClass::connectComponentsReferences(vector<SANIGroupType*>* SANIGroupTypes, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents)
+bool SANIrulesClass::connectComponentsReferences(vector<SANIGroupType*>* SANIGroupTypes, const vector<SANIComponentNeuralNetwork*>* components, const bool subcomponents)
 {
 	bool result = true;
 	for(int j=0; j<components->size(); j++)
@@ -1018,7 +1018,7 @@ bool SANIrulesClass::extractSANIrulesTokens(vector<XMLparserTag*>* SANIrulesToke
 	return result;
 }
 
-bool SANIrulesClass::isClassTagWrapper(string word, string layerNameToFind, string classNameToFind, string classTypeNameToFind, vector<XMLparserTag*>* SANIrulesTokenLayers)
+bool SANIrulesClass::isClassTagWrapper(const string word, const string layerNameToFind, const string classNameToFind, const string classTypeNameToFind, vector<XMLparserTag*>* SANIrulesTokenLayers)
 {
 	if(classTypeNameToFind == "")
 	{
@@ -1031,7 +1031,7 @@ bool SANIrulesClass::isClassTagWrapper(string word, string layerNameToFind, stri
 	}
 }
 
-bool SANIrulesClass::isClassTag(string word, string layerNameToFind, string classNameToFind, string* classTypeNameFound, vector<XMLparserTag*>* SANIrulesTokenLayers)
+bool SANIrulesClass::isClassTag(const string word, const string layerNameToFind, const string classNameToFind, string* classTypeNameFound, vector<XMLparserTag*>* SANIrulesTokenLayers)
 {
 	bool classTagFound = false;
 	bool result = false;
@@ -1126,7 +1126,7 @@ bool SANIrulesClass::isClassTag(string word, string layerNameToFind, string clas
 	return classTagFound;
 }
 
-bool SANIrulesClass::isClassTag(string word, string layerNameToFind, string classNameToFind, string classTypeNameToFind, vector<XMLparserTag*>* SANIrulesTokenLayers)
+bool SANIrulesClass::isClassTag(const string word, const string layerNameToFind, const string classNameToFind, const string classTypeNameToFind, vector<XMLparserTag*>* SANIrulesTokenLayers)
 {
 	bool classTagFound = false;
 	bool result = false;

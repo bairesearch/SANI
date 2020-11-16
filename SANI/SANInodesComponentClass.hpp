@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -271,7 +271,7 @@ public:
 class SANInodesComponentClass
 {
 	#ifdef SANI_SUPPORT_COMPONENTS_SUB
-	public: bool componentHasSubcomponents(SANIComponent* component);
+	public: bool componentHasSubcomponents(const SANIComponent* component);
 	#endif
 };
 

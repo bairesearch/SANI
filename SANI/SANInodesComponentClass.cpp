@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -188,7 +188,7 @@ SANIComponentParseTree::~SANIComponentParseTree(void)
 
 
 #ifdef SANI_SUPPORT_COMPONENTS_SUB
-bool SANInodesComponentClass::componentHasSubcomponents(SANIComponent* component)
+bool SANInodesComponentClass::componentHasSubcomponents(const SANIComponent* component)
 {
 	bool hasSubcomponents = false;
 	if((component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR) || (component->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_REPEAT))

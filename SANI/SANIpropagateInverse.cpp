@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Inverse
  * /
@@ -38,7 +38,7 @@
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3	//or USE_SANI
 #ifdef SANI_INVERSE
 
-bool SANIpropagateInverseClass::executePosRelTranslatorNeuralNetworkInverse(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets)
+bool SANIpropagateInverseClass::executePosRelTranslatorNeuralNetworkInverse(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets)
 {
 	bool result = false;
 
@@ -122,7 +122,7 @@ bool SANIpropagateInverseClass::executePosRelTranslatorNeuralNetworkInverse(vect
 	return result;
 }
 
-bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupType* groupType, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent)
+bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, const SANIGroupType* groupType, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, const string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType, SANIComponentParseTree* previousParseTreeComponent)
 {
 	bool result = false;
 	
@@ -216,7 +216,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroupType(vector<XMLparserTag*>
 	return result;
 }
 
-bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, int layer, const string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = true;
 
@@ -273,7 +273,7 @@ bool SANIpropagateInverseClass::generateParseTreeGroup(vector<XMLparserTag*>* SA
 	return foundWordMatch;
 }
 
-bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, bool subcomponents, int subcomponentsType, bool subcomponentsOptional, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIComponentNeuralNetwork*>* components, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIGroupParseTree* currentParseTreeGroup, int* performance, const bool subcomponents, const int subcomponentsType, const bool subcomponentsOptional, int layer, const string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = true;
 	
@@ -592,7 +592,7 @@ bool SANIpropagateInverseClass::generateRulesGroupTreeComponents(vector<XMLparse
 	return foundWordMatch;
 }
 
-bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
+bool SANIpropagateInverseClass::generateRulesGroupTreeComponent(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* component, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, SANIComponentParseTree* currentParseTreeComponent, int* performance, int layer, const string previousGroupType, int numberOfConsecutiveTimesPreviousGroupType)
 {
 	bool foundWordMatch = false;
 
@@ -967,7 +967,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 	return foundWordMatchTemp;
 }
 
-bool SANIpropagateInverseClass::verifyPOStype(LRPpreprocessorPlainTextWord* currentWord, uchar wordPOStype)
+bool SANIpropagateInverseClass::verifyPOStype(const LRPpreprocessorPlainTextWord* currentWord, const uchar wordPOStype)
 {
 	bool result = false;
 							
@@ -988,7 +988,7 @@ bool SANIpropagateInverseClass::verifyPOStype(LRPpreprocessorPlainTextWord* curr
 
 
 							
-bool SANIpropagateInverseClass::updatePerformance(int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent)
+bool SANIpropagateInverseClass::updatePerformance(int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent)
 {
 	bool result = false;
 	
@@ -1025,7 +1025,7 @@ bool SANIpropagateInverseClass::updatePerformance(int performanceTemp, int* perf
 	return result;
 }
 
-bool SANIpropagateInverseClass::deleteAllSubgroupsRecurse(SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANIpropagateInverseClass::deleteAllSubgroupsRecurse(const SANIGroupParseTree* currentParseTreeGroup, int layer)
 {
 	bool result = true;
 	
@@ -1052,7 +1052,7 @@ bool SANIpropagateInverseClass::deleteAllSubgroupsRecurse(SANIGroupParseTree* cu
 	return result;
 }
 
-bool SANIpropagateInverseClass::deleteParseComponent(SANIComponentParseTree* currentParseTreeComponent)
+bool SANIpropagateInverseClass::deleteParseComponent(const SANIComponentParseTree* currentParseTreeComponent)
 {
 	bool result = true;
 	
@@ -1072,7 +1072,7 @@ bool SANIpropagateInverseClass::deleteParseComponent(SANIComponentParseTree* cur
 
 
 
-void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, int minIndexOfMatchesFoundBackup)
+void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup)
 {	
 	for(int w=0; w<sentenceContentsSubset->size(); w++)
 	{
@@ -1084,7 +1084,7 @@ void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector
 	}
 }
 
-void SANIpropagateInverseClass::restoreAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, int minIndexOfMatchesFoundNew)
+void SANIpropagateInverseClass::restoreAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundNew)
 {	
 	//cout << "restoreAllWordsAlreadyFoundMatchInComponent: minIndexOfMatchesFoundNew = " << minIndexOfMatchesFoundNew << endl;
 	//exit(EXIT_ERROR);

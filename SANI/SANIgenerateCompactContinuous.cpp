@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -38,7 +38,7 @@
 
 #ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_CONTINUOUS
 
-bool SANIgenerateCompactContinuousClass::findAndReconcileVariationWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool supportVariableFirstComponents)
+bool SANIgenerateCompactContinuousClass::findAndReconcileVariationWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, const vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
 {
 	bool result = true;
 	
@@ -54,7 +54,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileVariationWrapper(SANItr
 	return result;
 }
 			
-bool SANIgenerateCompactContinuousClass::findAndReconcileVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool supportVariableFirstComponents)
+bool SANIgenerateCompactContinuousClass::findAndReconcileVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
 {
 	bool result = true;
 	
@@ -71,7 +71,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileVariation(SANItranslato
 	return result;
 }
 
-bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool supportVariableFirstComponents)
+bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
 {
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
 	cout << "SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation" << endl;
@@ -449,7 +449,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 }
 
 
-bool SANIgenerateCompactContinuousClass::addNeuronToList(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron, int* indexInSequence, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
+bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron, int* indexInSequence, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
 {	
 	bool result = true;
 	
@@ -593,7 +593,7 @@ bool SANIgenerateCompactContinuousClass::addVariableFirstComponent(vector<SANIGr
 }
 #endif
 #ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-bool SANIgenerateCompactContinuousClass::prepareVariableLastComponent(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupParseTree* partiallyActivatedNeuronWithMaxWordIndexCoverage, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
+bool SANIgenerateCompactContinuousClass::prepareVariableLastComponent(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, constEffective SANIGroupParseTree* partiallyActivatedNeuronWithMaxWordIndexCoverage, constEffective SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
 {	
 	bool result = true;
 
@@ -611,7 +611,7 @@ bool SANIgenerateCompactContinuousClass::prepareVariableLastComponent(vector<SAN
 	
 	return result;	
 }
-bool SANIgenerateCompactContinuousClass::addVariableLastComponent(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
+bool SANIgenerateCompactContinuousClass::addVariableLastComponent(const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, const SANIGroupNeuralNetwork* neuron, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
 {	
 	bool result = true;
 
@@ -655,7 +655,7 @@ bool SANIgenerateCompactContinuousClass::addVariableLastComponent(vector<SANIGro
 
 
 
-bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork** grammaticalSentenceNeuron, bool createTopLevelNeuron)
+bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork** grammaticalSentenceNeuron, const bool createTopLevelNeuron)
 {
 	bool result = false;
 	
@@ -855,7 +855,7 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidateWrapper(S
 	return result;
 }
 	
-bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidate(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron, SANIComponentNeuralNetwork** candidateComponent2)
+bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidate(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupNeuralNetwork* currentNeuron, SANIComponentNeuralNetwork** candidateComponent2)
 {
 	bool result = false;
 	
@@ -1078,7 +1078,7 @@ bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammatica
 
 
 //NB indexToSplitVector = lastActivatedComponent (the last component index in the first part of component to be splitted) (do not assume normal order: "first" and "last" definitions respect (forwardPropogationSentenceData->parseSentenceReverse))
-SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, int indexToSplitVector)
+SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector)
 {
 	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewGroup();	
 	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	
@@ -1109,7 +1109,7 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActi
 #ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 //indexToSplitVector1 = firstActivatedComponent (unordered; always assume normal order: "first" and "last" definitions do not respect (forwardPropogationSentenceData->parseSentenceReverse))
 //indexToSplitVector2 = lastActivatedComponent (unordered; always assume normal order: "first" and "last" definitions do not respect (forwardPropogationSentenceData->parseSentenceReverse))
-SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponentUnordered(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, int indexToSplitVector1, int indexToSplitVector2)
+SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponentUnordered(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector1, int indexToSplitVector2)
 {
 	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewGroup();	
 	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	

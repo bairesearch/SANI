@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - identify and connect regions
  * /
@@ -62,7 +62,7 @@ bool SANIgenerateCompactIdentifyClass::clearHiddenLayerGroupsTemp()
 	newHiddenLayerGroupsTemp.clear();
 }
 
-bool SANIgenerateCompactIdentifyClass::setGeneratedForLastSentence(SANItranslatorVariablesClass* translatorVariables)
+bool SANIgenerateCompactIdentifyClass::setGeneratedForLastSentence(const SANItranslatorVariablesClass* translatorVariables)
 {
 	if(translatorVariables->currentPreprocessorSentenceInList->sentenceIndexOriginal == translatorVariables->maxNumberSentences)
 	{
@@ -179,7 +179,7 @@ bool SANIgenerateCompactIdentifyClass::identifyStartEndOfSentenceWordDetected(SA
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS
-bool SANIgenerateCompactIdentifyClass::identifyVariableComponentsWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* topLevelParseTreeGroup)
+bool SANIgenerateCompactIdentifyClass::identifyVariableComponentsWrapper(const SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupParseTree* topLevelParseTreeGroup)
 {
 	bool result = true;
 								
@@ -198,7 +198,7 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableComponentsWrapper(SANItra
 	return result;
 }
 
-bool SANIgenerateCompactIdentifyClass::identifyVariableComponents(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+bool SANIgenerateCompactIdentifyClass::identifyVariableComponents(vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool result = true;
 	
@@ -316,7 +316,7 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableComponents(vector<SANIGro
 	return result;
 }
 
-bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool identifyVariableFirstOrLastComponent, SANIGroupNeuralNetwork* generatedNeuron, SANIComponentNeuralNetwork* variableComponentOfGeneratedNeuron, SANIComponentNeuralNetwork* nonvariableComponentOfGeneratedNeuron, SANIGroupNeuralNetwork* variableComponentOfGeneratedNeuronSource, SANIGroupNeuralNetwork* nonvariableComponentOfGeneratedNeuronSource)
+bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool identifyVariableFirstOrLastComponent, SANIGroupNeuralNetwork* generatedNeuron, const SANIComponentNeuralNetwork* variableComponentOfGeneratedNeuron, const SANIComponentNeuralNetwork* nonvariableComponentOfGeneratedNeuron, SANIGroupNeuralNetwork* variableComponentOfGeneratedNeuronSource, SANIGroupNeuralNetwork* nonvariableComponentOfGeneratedNeuronSource)
 {
 	bool result = false;
 	
@@ -689,7 +689,7 @@ bool SANIgenerateCompactIdentifyClass::findAndLinkCentralVariationCandidates(SAN
 		}	
 	}
 }
-bool SANIgenerateCompactIdentifyClass::populateSecondComponentOfOutputNeuronSourceVector(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, vector<SANIGroupNeuralNetwork*>* secondComponentOfOutputNeuronSourceVector)
+bool SANIgenerateCompactIdentifyClass::populateSecondComponentOfOutputNeuronSourceVector(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupNeuralNetwork* group, vector<SANIGroupNeuralNetwork*>* secondComponentOfOutputNeuronSourceVector)
 {
 	bool result = true;
 	
@@ -723,7 +723,7 @@ bool SANIgenerateCompactIdentifyClass::populateSecondComponentOfOutputNeuronSour
 #endif
 	
 #ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
-bool SANIgenerateCompactIdentifyClass::linkSimiliarSubnets(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* topLevelParseTreeGroup)
+bool SANIgenerateCompactIdentifyClass::linkSimiliarSubnets(SANItranslatorVariablesClass* translatorVariables, const vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* topLevelParseTreeGroup)
 {
 	bool result = true;
 	
@@ -746,7 +746,7 @@ bool SANIgenerateCompactIdentifyClass::linkSimiliarSubnets(SANItranslatorVariabl
 }
 
 #ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
-bool SANIgenerateCompactIdentifyClass::updateNetworkRecency(int timeIndex, SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANIgenerateCompactIdentifyClass::updateNetworkRecency(int timeIndex, SANIGroupParseTree* currentParseTreeGroup, const int layer)
 {
 	//this function only updates recency of nodes in successfully parsed/generated parse tree
 	
@@ -772,7 +772,7 @@ bool SANIgenerateCompactIdentifyClass::updateNetworkRecency(int timeIndex, SANIG
 #endif
 
 #ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
-bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates1(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates1(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, const int layer)
 {
 	bool result = true;
 	
@@ -821,7 +821,7 @@ bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates1(SANIFo
 	return result;
 }
 
-bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates2(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* referenceSetCandidate1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, int layer)
+bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates2(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, constEffective SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* referenceSetCandidate1, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, const int layer)
 {
 	bool result = true;
 	
@@ -858,7 +858,7 @@ bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates2(SANIFo
 
 
 
-bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates3(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate2, SANIGroupNeuralNetwork* referenceSetCandidate1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, int layer)
+bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidates3(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, constEffective SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate2, SANIGroupNeuralNetwork* referenceSetCandidate1, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, const int layer)
 {
 	bool result = true;
 
@@ -952,7 +952,7 @@ bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidatesWrapperI
 }
 */
 
-bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidatesCompareVectors(SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate1, SANIGroupNeuralNetwork* referenceSetCandidate2, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector2)
+bool SANIgenerateCompactIdentifyClass::findAndLinkReferenceSetCandidatesCompareVectors(constEffective SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate1, constEffective SANIGroupNeuralNetwork* referenceSetCandidate2, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector2)
 {
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY_RECENCY
 	int totalMatchRecencyV2 = 0;
@@ -1086,7 +1086,7 @@ bool SANIgenerateCompactIdentifyClass::createReferenceSetCandidateVector(SANIGro
 
 #ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
 #ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
-bool SANIgenerateCompactIdentifyClass::markFirstComponentSubNeurons(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron)
+bool SANIgenerateCompactIdentifyClass::markFirstComponentSubNeurons(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron)
 {	
 	bool result = true;
 	

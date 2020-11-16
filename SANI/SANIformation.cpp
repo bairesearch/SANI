@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3a 16-November-2020
+ * Project Version: 1o3b 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -206,13 +206,13 @@ bool SANIformationClass::createInputNeuronLayer(vector<XMLparserTag*>* SANIrules
 }
 
 #ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
-bool SANIformationClass::createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, int* numberOfGroupsInSection)
+bool SANIformationClass::createInputNeuronLayerSectionWordOrig(const SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, const int* numberOfGroupsInSection)
 {
 	bool result = true;
 	//initialise section as null
 	return result;
 }
-bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
+bool SANIformationClass::addInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
 {
 	bool result = true;
 	
@@ -247,7 +247,7 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlain
 	
 	return result;
 }
-bool SANIformationClass::findInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
+bool SANIformationClass::findInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
 {
 	bool result = false;
 	
@@ -391,7 +391,7 @@ bool SANIformationClass::createInputNeuronLayerSectionExplicitWord(SANIGroupNeur
 	
 	return result;
 }
-bool SANIformationClass::createInputNeuronLayerSectionExplicitWord(vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, vector<string>* explicitWordList)
+bool SANIformationClass::createInputNeuronLayerSectionExplicitWord(const vector<SANIComponentNeuralNetwork*>* components, const bool subcomponents, vector<string>* explicitWordList)
 {
 	bool result = true;
 	
@@ -583,7 +583,7 @@ bool SANIformationClass::createInputNeuronLayerSectionTokensLayer(vector<XMLpars
 
 
 #ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
-bool SANIformationClass::createNeuronLayerIntro(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
+bool SANIformationClass::createNeuronLayerIntro(const vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes)
 {
 	bool result = true;
 	
@@ -678,7 +678,7 @@ bool SANIformationClass::createNeuronLayerIntro(vector<XMLparserTag*>* SANIrules
 	return result;
 }
 
-bool SANIformationClass::createNeuronLayerGroupType(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, SANIGroupType* groupType)
+bool SANIformationClass::createNeuronLayerGroupType(const vector<XMLparserTag*>* SANIrulesTokenLayers, SANIComponentNeuralNetwork* higherLevelComponent, const SANIGroupType* groupType)
 {
 	bool result = true;
 	
@@ -718,7 +718,7 @@ bool SANIformationClass::createNeuronLayerGroupType(vector<XMLparserTag*>* SANIr
 }
 
 
-bool SANIformationClass::createNeuronLayerGroup(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group)
+bool SANIformationClass::createNeuronLayerGroup(const vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group)
 {
 	bool result = true;
 	
@@ -734,7 +734,7 @@ bool SANIformationClass::createNeuronLayerGroup(vector<XMLparserTag*>* SANIrules
 	return result;
 }
 
-bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* SANIrulesTokenLayers, SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents, SANIComponentNeuralNetwork* higherLevelComponent)
+bool SANIformationClass::createNeuronLayerComponents(const vector<XMLparserTag*>* SANIrulesTokenLayers, const SANIGroupNeuralNetwork* group, const vector<SANIComponentNeuralNetwork*>* components, const bool subcomponents, const SANIComponentNeuralNetwork* higherLevelComponent)
 {
 	bool result = true;
 	
@@ -863,7 +863,7 @@ bool SANIformationClass::createNeuronLayerComponents(vector<XMLparserTag*>* SANI
 
 
 
-bool SANIformationClass::findTokensLayerClassType(string layerName, string layerClassName, string layerClassTypeName, SANIGroupNeuralNetwork** groupFound)
+bool SANIformationClass::findTokensLayerClassType(const string layerName, const string layerClassName, const string layerClassTypeName, SANIGroupNeuralNetwork** groupFound)
 {	
 	bool result = false;
 	SANIGroupNeuralNetwork* layerClassGroupFound = NULL;
@@ -889,7 +889,7 @@ bool SANIformationClass::findTokensLayerClassType(string layerName, string layer
 	return result;
 }
 
-bool SANIformationClass::findTokensLayerClass(string layerName, string layerClassName, SANIGroupNeuralNetwork** layerClassGroupFound)
+bool SANIformationClass::findTokensLayerClass(const string layerName, const string layerClassName, SANIGroupNeuralNetwork** layerClassGroupFound)
 {
 	bool result = false;	
 	for(unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionTokensLayerMap.begin(); iter != inputLayerSectionTokensLayerMap.end(); iter++)
@@ -917,7 +917,7 @@ bool SANIformationClass::findTokensLayerClass(string layerName, string layerClas
 #endif
 
 			
-bool SANIformationClass::findWordInList(string word, vector<string>* explicitWordList)
+bool SANIformationClass::findWordInList(const string word, vector<string>* explicitWordList)
 {
 	bool result = false;
 	vector<string>::iterator it = find(explicitWordList->begin(), explicitWordList->end(), word);
@@ -928,7 +928,7 @@ bool SANIformationClass::findWordInList(string word, vector<string>* explicitWor
 	return result;
 }
 
-bool SANIformationClass::findWordInGroupMap(string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound)
+bool SANIformationClass::findWordInGroupMap(string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, constEffective SANIGroupNeuralNetwork** groupFound)
 {
 	bool result = false;
 	unordered_map<string,SANIGroupNeuralNetwork*>::iterator it = wordMap->find(word);
@@ -942,7 +942,7 @@ bool SANIformationClass::findWordInGroupMap(string word, unordered_map<string,SA
 
 
 				
-SANIGroupNeuralNetwork* SANIformationClass::getInputGroupLayerSection(SANIGroupNeuralNetwork* firstGroupInInputLayerSection, int groupIndexInSection)
+SANIGroupNeuralNetwork* SANIformationClass::getInputGroupLayerSection(SANIGroupNeuralNetwork* firstGroupInInputLayerSection, const int groupIndexInSection)
 {
 	SANIGroupNeuralNetwork* currentGroupInInputLayerSection = firstGroupInInputLayerSection;
 	for(int i=0; i<groupIndexInSection; i++)
@@ -1040,14 +1040,14 @@ ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetw
 }
 
 #ifdef SANI_SEQUENCE_GRAMMAR	//requires component->SANIbackGroupConnectionList
-void SANIformationClass::deleteANNconnections(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* component)
+void SANIformationClass::deleteANNconnections(const SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* component)
 {				
-	SANIGroupNeuralNetwork* groupTarget = component->ownerGroup;
+	const SANIGroupNeuralNetwork* groupTarget = component->ownerGroup;
 
 	//code derived from SANIformationClass::createANNconnection;
 	for(int l=0; l<component->SANIbackGroupConnectionList.size(); l++)
 	{
-		SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
+		const SANIGroupNeuralNetwork* groupSource = component->SANIbackGroupConnectionList[l];
 		(groupSource->neuronReference->frontANNneuronConnectionList).clear();
 	}
 	(groupTarget->neuronReference->backANNneuronConnectionList).clear();
