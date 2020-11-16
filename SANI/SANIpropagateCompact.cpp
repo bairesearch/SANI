@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9a 05-November-2020
+ * Project Version: 1n9b 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -516,7 +516,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupSelect(SANItrans
 	bool result = false;
 
 	//now search for existing sequence in network
-
+			
 	for(int i=0; i<group->SANIfrontComponentConnectionList.size(); i++)
 	{
 		#ifndef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
@@ -525,6 +525,13 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupSelect(SANItrans
 		#endif
 			SANIComponentNeuralNetwork* currentComponent = (group->SANIfrontComponentConnectionList)[i];
 			SANIGroupNeuralNetwork* ownerGroup = currentComponent->ownerGroup;
+	
+			if(ownerGroup->currentParseTreeGroupTemp->components.size() > 100)
+			{
+				cout << "err2" << endl;
+				cerr << "ownerGroup->currentParseTreeGroupTemp->components.size() = " << ownerGroup->currentParseTreeGroupTemp->components.size() << endl;
+				exit(EXIT_ERROR);
+			}
 	
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_DETECT_LOCAL_VARATION
 			if((forwardPropogationSentenceData->findingCandidateComponent2))
@@ -1316,7 +1323,7 @@ bool SANIpropagateCompactClass::propagateVariableEndComponentRemoveLastParseTree
 				SANIGroupParseTree* parseTreeGroupRecord = ownerGroup->currentParseTreeGroupTemp;	//record reference to ownerGroup->currentParseTreeGroupTemp before resetting
 
 				//SANIpropagateOperations.resetGroupActivation(ownerGroup);	//not required as last component values will shortly be overwritten
-				SANIpropagateOperations.resetGroupParseTreeGroupRef(ownerGroup, false);	
+				SANIpropagateOperations.resetGroupParseTreeGroupRef(ownerGroup, false);
 
 				*(ownerGroup->currentParseTreeGroupTemp) = *(parseTreeGroupRecord);	//replicate	//CHECKTHIS
 				//or ownerGroup->currentParseTreeGroupTemp = new SANIGroupParseTree(*(parseTreeGroupRecord));	//NO: not allowed because ownerGroup->currentParseTreeGroupTemp has already been added to ownerGroup->parseTreeGroupMemory?

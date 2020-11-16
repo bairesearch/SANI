@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9a 05-November-2020
+ * Project Version: 1n9b 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -1660,7 +1660,10 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTestsWrapper(SANIGro
 				previousActiveComponentInParseTreeIndex = ownerGroupParseTreeGroup->components.size() - 2;	
 				#endif
 			}
-
+			
+			//cout << "lastActiveComponentInParseTreeIndex = " << lastActiveComponentInParseTreeIndex << endl;
+			//cout << "ownerGroupParseTreeGroup->components.size() = " << ownerGroupParseTreeGroup->components.size() << endl;
+			
 			SANIComponentParseTree* lastActiveComponentInParseTree = (ownerGroupParseTreeGroup->components)[lastActiveComponentInParseTreeIndex];
 			lastActiveComponentInParseTreeParseTreeGroupRef = lastActiveComponentInParseTree->parseTreeGroupRef;
 			
@@ -2524,9 +2527,7 @@ bool SANIpropagateOperationsClass::resetAllNeurons(vector<SANIGroupType*>* SANIG
 bool SANIpropagateOperationsClass::resetAllNeuronComponents(vector<SANIGroupType*>* SANIGroupTypes, const int groupBoolIndexType)
 {
 	bool result = true;
-	
-	//cout << "SANIGroupTypes->size() = " << SANIGroupTypes->size() << endl;
-	
+		
 	for(int i=0; i<SANIGroupTypes->size(); i++)
 	{
 		SANIGroupType* groupType = SANIGroupTypes->at(i);
@@ -2764,7 +2765,7 @@ bool SANIpropagateOperationsClass::resetGroupParseTreeGroupRef(SANIGroupNeuralNe
 bool SANIpropagateOperationsClass::resetGroupParseTreeGroupRef(SANIGroupNeuralNetwork* group, const bool deleteExistingParseTreeGroupRef)
 {	
 	bool result = true;
-	
+			
 	if(deleteExistingParseTreeGroupRef)
 	{
 		if(group->currentParseTreeGroupTemp != NULL)

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9a 05-November-2020
+ * Project Version: 1n9b 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -2487,7 +2487,22 @@ bool SANIpropagateCompactGenerateClass::directWireLowLevelPOSneuronToGrammatical
         				i2--;
 				}
 			}
-
+			
+			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_CLEAN_PARSE_TREE_MEMORY
+			//required when SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron:directWireLowLevelPOSneuronToGrammaticalSentenceNeuron is executed before deinitialiseParseTreeGroupList
+			for(int i2=0; i2<parseTreeGroupListPointer->size(); i2++)
+			{
+				SANIGroupParseTree* parseTreeGroupTemp = (*parseTreeGroupListPointer)[i2];
+				if(parseTreeGroupTemp == singleComponentNeuron->currentParseTreeGroupTemp)
+				{
+					//cout << "(parseTreeGroupTemp == singleComponentNeuron->currentParseTreeGroupTemp)" << endl;
+					SANInodes.deleteGroup(parseTreeGroupTemp);
+					parseTreeGroupListPointer->erase(parseTreeGroupListPointer->begin()+i2);
+					i2--;
+				}
+			}
+			#endif
+						
 			SANInodes.deleteGroup(singleComponentNeuron);	
 		}
 	}
