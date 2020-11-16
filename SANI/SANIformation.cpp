@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -917,7 +917,7 @@ bool SANIformationClass::findTokensLayerClass(string layerName, string layerClas
 #endif
 
 			
-bool SANIformationClass::findWordInList(const string word, vector<string>* explicitWordList)
+bool SANIformationClass::findWordInList(string word, vector<string>* explicitWordList)
 {
 	bool result = false;
 	vector<string>::iterator it = find(explicitWordList->begin(), explicitWordList->end(), word);
@@ -928,7 +928,7 @@ bool SANIformationClass::findWordInList(const string word, vector<string>* expli
 	return result;
 }
 
-bool SANIformationClass::findWordInGroupMap(const string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound)
+bool SANIformationClass::findWordInGroupMap(string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound)
 {
 	bool result = false;
 	unordered_map<string,SANIGroupNeuralNetwork*>::iterator it = wordMap->find(word);
@@ -1011,7 +1011,7 @@ ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetw
 	return createANNconnection(group, higherLevelComponent, 0);
 	#endif
 }
-ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent, const double connectionStrength)
+ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent, double connectionStrength)
 {
 	vector<ANNneuronConnection*>* ANNbackNeuronConnectionList = &(higherLevelComponent->ANNbackNeuronConnectionList);
 	SANIGroupNeuralNetwork* higherLevelGroup = higherLevelComponent->ownerGroup;

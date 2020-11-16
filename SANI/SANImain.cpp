@@ -26,7 +26,7 @@
  * File Name: SANImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Main
  * /
@@ -84,7 +84,7 @@ static char errmessage[] = "Usage:  SANI.exe [options]\n\n\twhere options are an
 "\n\n\t-version         : print version"
 "\n\n\tThis program performs SANI (Sequentially Activated Neuronal Input neural network) operations - creates sequentially activated neural network based upon text file; outputs sequential network to SANI sequential network file (.xml), outputs neural network to ANN neural network file (.xml); prints neural network to raster image (.ppm), 3D vector graphics (.ldr), or 2D vector graphics (.svg).\n\n";
 
-int main(const int argc, const char** argv)
+int main(int argc, char** argv)
 {
 	bool result = true;
 
@@ -304,7 +304,7 @@ int main(const int argc, const char** argv)
 
 	if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 	{
-		cout << "SANI.exe - Project Version: 1o2a 08-November-2020" << endl;
+		cout << "SANI.exe - Project Version: 1o3a 16-November-2020" << endl;
 		exit(EXIT_OK);
 	}
 

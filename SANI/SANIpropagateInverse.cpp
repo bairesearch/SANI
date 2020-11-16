@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Inverse
  * /
@@ -38,7 +38,7 @@
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3	//or USE_SANI
 #ifdef SANI_INVERSE
 
-bool SANIpropagateInverseClass::executePosRelTranslatorNeuralNetworkInverse(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, const bool parseIsolatedSubreferenceSets)
+bool SANIpropagateInverseClass::executePosRelTranslatorNeuralNetworkInverse(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets)
 {
 	bool result = false;
 
@@ -988,7 +988,7 @@ bool SANIpropagateInverseClass::verifyPOStype(LRPpreprocessorPlainTextWord* curr
 
 
 							
-bool SANIpropagateInverseClass::updatePerformance(const int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent)
+bool SANIpropagateInverseClass::updatePerformance(int performanceTemp, int* performance, SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* currentParseTreeGroupTemp, bool passedTemp, int* minIndexOfMatchesFoundBackupOptimum, vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, int minIndexOfMatchesFoundBackup, SANIComponentParseTree* previousParseTreeComponent)
 {
 	bool result = false;
 	
@@ -1072,7 +1072,7 @@ bool SANIpropagateInverseClass::deleteParseComponent(SANIComponentParseTree* cur
 
 
 
-void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundBackup)
+void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, int minIndexOfMatchesFoundBackup)
 {	
 	for(int w=0; w<sentenceContentsSubset->size(); w++)
 	{
@@ -1084,7 +1084,7 @@ void SANIpropagateInverseClass::clearAllWordsAlreadyFoundMatchInComponent(vector
 	}
 }
 
-void SANIpropagateInverseClass::restoreAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, const int minIndexOfMatchesFoundNew)
+void SANIpropagateInverseClass::restoreAllWordsAlreadyFoundMatchInComponent(vector<LRPpreprocessorPlainTextWord*>* sentenceContentsSubset, int minIndexOfMatchesFoundNew)
 {	
 	//cout << "restoreAllWordsAlreadyFoundMatchInComponent: minIndexOfMatchesFoundNew = " << minIndexOfMatchesFoundNew << endl;
 	//exit(EXIT_ERROR);

@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -92,7 +92,7 @@ int SANInodesClass::assignGroupIndex(SANIGroupNeuralNetwork* group)
 }
 #endif
 
-bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, SANIGroupType** groupTypeFound)
+bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, string groupTypeName, SANIGroupType** groupTypeFound)
 {
 	bool result = false;
 	for(int i=0; i<SANIGroupTypes->size(); i++)
@@ -107,7 +107,7 @@ bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const
 	}
 	return result;
 }
-bool SANInodesClass::findGroup(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, const string groupName, SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound)
+bool SANInodesClass::findGroup(vector<SANIGroupType*>* SANIGroupTypes, string groupTypeName, string groupName, SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound)
 {
 	bool result = false;
 	for(int i=0; i<SANIGroupTypes->size(); i++)
@@ -204,7 +204,7 @@ bool SANInodesClass::removeLastOptionalComponents(vector<SANIGroupType*>* SANIGr
 	return result;
 }	
 
-bool SANInodesClass::removeOptionalComponent(SANIGroupType* groupType, int* groupIndex, const int groupTypeGroupsSizeOrig, SANIGroupNeuralNetwork* group, const int optionalComponentIndex)
+bool SANInodesClass::removeOptionalComponent(SANIGroupType* groupType, int* groupIndex, int groupTypeGroupsSizeOrig, SANIGroupNeuralNetwork* group, int optionalComponentIndex)
 {
 	bool result = true;
 	
@@ -558,7 +558,7 @@ SANIGroupActivationMemory* SANInodesClass::copyGroup(SANIGroupActivationMemory* 
 
 
 #ifdef SANI_FORWARD
-bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, const bool isSubcomponent, SANIComponentNeuralNetwork* ownerComponent)
+bool SANInodesClass::updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool isSubcomponent, SANIComponentNeuralNetwork* ownerComponent)
 {
 	bool result = true;
 	

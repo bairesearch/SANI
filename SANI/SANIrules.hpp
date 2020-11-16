@@ -26,7 +26,7 @@
  * File Name: SANIrules.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Rules
  * /
@@ -313,7 +313,7 @@ class SANIrulesClass
 	public: bool extractSANIrules(vector<SANIGroupType*>* SANIGroupTypes, vector<XMLparserTag*>* SANIrulesTokenLayers);
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 		public: bool extractSANIGroups(vector<SANIGroupType*>* SANIGroupTypes);
-			private: bool parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFirstComponentTag, SANIGroupNeuralNetwork* groupOwner, vector<SANIComponentNeuralNetwork*>* componentsList, const bool parseSubcomponent, SANIComponentNeuralNetwork* subComponentOwner);
+			private: bool parseComponents(XMLparserTag* firstTxtRelTranslatorRulesFirstComponentTag, SANIGroupNeuralNetwork* groupOwner, vector<SANIComponentNeuralNetwork*>* componentsList, bool parseSubcomponent, SANIComponentNeuralNetwork* subComponentOwner);
 			private: bool connectGroupsReferences(vector<SANIGroupType*>* SANIGroupTypes);
 				private: bool connectComponentsReferences(vector<SANIGroupType*>* SANIGroupTypes, vector<SANIComponentNeuralNetwork*>* components, bool subcomponents);
 		public: bool extractSANIrulesTokens(vector<XMLparserTag*>* SANIrulesTokenLayers);

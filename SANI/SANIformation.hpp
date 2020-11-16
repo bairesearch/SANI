@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -110,8 +110,8 @@ class SANIformationClass
 	private: bool findTokensLayerClassType(string layerName, string layerClassName, string layerClassTypeName, SANIGroupNeuralNetwork** groupFound);		
 		private: bool findTokensLayerClass(string layerName, string layerClassName, SANIGroupNeuralNetwork** layerClassGroupFound);
 	#endif
-	private: bool findWordInList(const string word, vector<string>* explicitWordList);
-	public: bool findWordInGroupMap(const string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound);
+	private: bool findWordInList(string word, vector<string>* explicitWordList);
+	public: bool findWordInGroupMap(string word, unordered_map<string,SANIGroupNeuralNetwork*>* wordMap, SANIGroupNeuralNetwork** groupFound);
 	public: SANIGroupNeuralNetwork* getInputGroupLayerSection(SANIGroupNeuralNetwork* firstGroupInInputLayerSection, int groupIndexInSection);
 	private: void addGroupToLayer(SANIGroupNeuralNetwork** currentGroupInLayer, int* numberOfGroupsInSection);
 	#ifndef SANI_SIMPLE_WORD_POS_TYPE_INPUT_ONLY
@@ -121,7 +121,7 @@ class SANIformationClass
 	public: bool createGroupANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent);
 			#ifdef SANI_ANN
 			public: ANNneuronConnection* createANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent);
-				public: ANNneuronConnection* createANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent, const double connectionStrength);
+				public: ANNneuronConnection* createANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent, double connectionStrength);
 					private: ANNneuronConnection* createANNconnection(SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelGroup);
 			#ifdef SANI_SEQUENCE_GRAMMAR
 			public: void deleteANNconnections(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* component);

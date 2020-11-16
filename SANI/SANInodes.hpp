@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -166,12 +166,12 @@ class SANInodesClass
 	public: int assignGroupIndex(SANIGroupNeuralNetwork* group);
 	#endif
 	
-	public: bool findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, SANIGroupType** groupTypeFound);
-	public: bool findGroup(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, const string groupName, SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound);
+	public: bool findGroupType(vector<SANIGroupType*>* SANIGroupTypes, string groupTypeName, SANIGroupType** groupTypeFound);
+	public: bool findGroup(vector<SANIGroupType*>* SANIGroupTypes, string groupTypeName, string groupName, SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound);
 	
 	#ifdef SANI_REMOVE_LAST_OPTIONAL_COMPONENTS
 	public: bool removeLastOptionalComponents(vector<SANIGroupType*>* SANIGroupTypes);
-		private: bool removeOptionalComponent(SANIGroupType* groupType, int* groupIndex, const int groupTypeGroupsSizeOrig, SANIGroupNeuralNetwork* group, const int optionalComponentIndex);	
+		private: bool removeOptionalComponent(SANIGroupType* groupType, int* groupIndex, int groupTypeGroupsSizeOrig, SANIGroupNeuralNetwork* group, int optionalComponentIndex);	
 	#endif
 	public: SANIGroupNeuralNetwork* copyGroup(SANIGroupNeuralNetwork* group);
 		public: bool copyComponents(vector<SANIComponentNeuralNetwork*>* components, vector<SANIComponentNeuralNetwork*>* componentsNew);
@@ -180,7 +180,7 @@ class SANInodesClass
 		public: bool copyComponents(vector<SANIComponentParseTree*>* components, vector<SANIComponentParseTree*>* componentsNew);
 	public: SANIGroupActivationMemory* copyGroup(SANIGroupActivationMemory* group);
 	#ifdef SANI_FORWARD
-	public: bool updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, const bool isSubcomponent, SANIComponentNeuralNetwork* ownerComponent);
+	public: bool updateComponentsOwnerGroupAndIndexes(SANIGroupNeuralNetwork* group, vector<SANIComponentNeuralNetwork*>* components, bool isSubcomponent, SANIComponentNeuralNetwork* ownerComponent);
 	#endif
 
 

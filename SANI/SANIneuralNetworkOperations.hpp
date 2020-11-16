@@ -26,7 +26,7 @@
  * File Name: SANIneuralNetworkOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Neural Network Operations
  * /
@@ -71,8 +71,8 @@ class SANIneuralNetworkOperationsClass
 	private: ANNxmlConversionClass ANNxmlConversion;
 	private: SHAREDvarsClass SHAREDvars;
 
-	public: bool readNeuralNetXMLfile(const string xmlFileName, ANNneuron* firstInputNeuronInNetwork);
-	public: bool writeNeuralNetXMLfile(const string xmlFileName, ANNneuron* firstInputNeuronInNetwork);
+	public: bool readNeuralNetXMLfile(string xmlFileName, ANNneuron* firstInputNeuronInNetwork);
+	public: bool writeNeuralNetXMLfile(string xmlFileName, ANNneuron* firstInputNeuronInNetwork);
 			
 	#ifdef SANI_ANN
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_CONTINUOUSLY_OUTPUT_NETWORK

@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - identify and connect regions
  * /
@@ -746,7 +746,7 @@ bool SANIgenerateCompactIdentifyClass::linkSimiliarSubnets(SANItranslatorVariabl
 }
 
 #ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
-bool SANIgenerateCompactIdentifyClass::updateNetworkRecency(const int timeIndex, SANIGroupParseTree* currentParseTreeGroup, int layer)
+bool SANIgenerateCompactIdentifyClass::updateNetworkRecency(int timeIndex, SANIGroupParseTree* currentParseTreeGroup, int layer)
 {
 	//this function only updates recency of nodes in successfully parsed/generated parse tree
 	

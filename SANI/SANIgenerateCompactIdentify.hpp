@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o2a 08-November-2020
+ * Project Version: 1o3a 16-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify - identify and connect regions
  * /
@@ -92,7 +92,7 @@ class SANIgenerateCompactIdentifyClass
 	#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
 	public: bool linkSimiliarSubnets(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* topLevelParseTreeGroup);
 		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
-		private: bool updateNetworkRecency(const int timeIndex, SANIGroupParseTree* currentParseTreeGroup, int layer);
+		private: bool updateNetworkRecency(int timeIndex, SANIGroupParseTree* currentParseTreeGroup, int layer);
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
 		private: bool findAndLinkReferenceSetCandidates1(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, int layer);
