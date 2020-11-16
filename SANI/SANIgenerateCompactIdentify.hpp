@@ -23,18 +23,18 @@
 
 /*******************************************************************************
  *
- * File Name: SANIpropagateCompactIdentify.hpp
+ * File Name: SANIgenerateCompactIdentify.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
- * Description: Propagate Compact Identify - identify and connect regions
+ * Description: Generate Compact Identify - identify and connect regions
  * /
  *******************************************************************************/
 
 
-#ifndef HEADER_SANI_PROPAGATE_COMPACT_IDENTIFY
-#define HEADER_SANI_PROPAGATE_COMPACT_IDENTIFY
+#ifndef HEADER_SANI_GENERATE_COMPACT_IDENTIFY
+#define HEADER_SANI_GENERATE_COMPACT_IDENTIFY
 
 #include "SHAREDglobalDefs.hpp"
 #ifdef USE_GIA
@@ -49,18 +49,22 @@
 #include "SANInodesGroupClass.hpp"
 #include "SANIposRelTranslatorVariables.hpp"
 #include "SANIpropagateOperations.hpp"
+#include "SANIpropagateCompactOperations.hpp"
+#include "SANIpropagateCompactGenerateOperations.hpp"
 
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR
 
-class SANIpropagateCompactIdentifyClass
+class SANIgenerateCompactIdentifyClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: SANInodesClass SANInodes;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANIpropagateOperationsClass SANIpropagateOperations;
+	private: SANIpropagateCompactOperationsClass SANIpropagateCompactOperations;
+	private: SANIpropagateCompactGenerateOperationsClass SANIpropagateCompactGenerateOperations;
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
 	public: bool addGroupToHiddenLayerGroupsTemp(SANIGroupNeuralNetwork* newGroup);

@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -44,14 +44,14 @@
 #endif
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
+#include "LRPpreprocessorSentenceClass.hpp"
+#include "LRPpreprocessorWordClass.hpp"
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 #include "SANIrules.hpp"
 #endif
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
 #include "SANInodes.hpp"
-#include "LRPpreprocessorSentenceClass.hpp"
-#include "LRPpreprocessorWordClass.hpp"
 #include "ANNdisplay.hpp"
 
 #ifdef SANI_FORWARD

@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -204,14 +204,14 @@ class SANInodesClass
 	public: int countParseTreeLeafSizeUnoptimised(SANIGroupParseTree* currentParseTreeGroup);
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 	public: bool adjustNetworkDepth(SANIGroupNeuralNetwork* group);
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	public: bool adjustNetworkDepthReset(SANIGroupNeuralNetwork* group);
 	#endif
 	public: bool getNeuralNetworkDepth(SANIGroupNeuralNetwork* currentNeuron, int* maxDepth);
 		public: bool getNeuralNetworkDepth(SANIComponentNeuralNetwork* component, int* maxDepth);
 	public: bool countNeuralNetworkMaxLeafSizeAndDepth(SANIGroupNeuralNetwork* currentGroup, int* maxLeafSize, int* maxDepth);
 		public: bool countNeuralNetworkMaxLeafSizeAndDepth(SANIComponentNeuralNetwork* component, int* maxLeafSize, int* maxDepth);
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	public: bool countNeuralNetworkMaxLeafSizeAndDepthReset(SANIGroupNeuralNetwork* currentNeuron);
 		public: bool countNeuralNetworkMaxLeafSizeAndDepthReset(SANIComponentNeuralNetwork* component);
 	#endif
@@ -230,7 +230,6 @@ class SANInodesClass
 
 	#endif
 	
-
 	public: bool deleteGroup(SANIGroupNeuralNetwork* group);
 		public: bool deleteComponents(vector<SANIComponentNeuralNetwork*>* components);
 	public: bool deleteGroup(SANIGroupParseTree* group);

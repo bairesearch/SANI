@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -270,7 +270,7 @@ public:
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 	bool marked;
 	#endif	
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	bool counted;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
@@ -631,6 +631,32 @@ public:
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_DISALLOW_IDENTICAL_INPUTS
 	SANIGroupNeuralNetwork* highLevelNeuronPriorTemp;
+	#endif
+	
+	//moved from SANIpropagate static variables:
+	#ifdef SANI_PARSE_SAVE_PARSE_TREE
+	SANIGroupParseTree* topLevelParseTreeGroupLocal;
+	#endif
+	//#ifdef SANI_HEAVY_OPTIMISED
+	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS
+	bool maxIteration;
+	#endif
+	//#endif
+	//#ifdef SANI_HEAVY_OPTIMISED or SANI_LIGHT_OPTIMISED or SANI_COMPACT
+	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT	
+	int parseTreeMaxWeight;
+	#endif
+	//#endif
+	//#ifdef SANI_LIGHT_OPTIMISED or SANI_COMPACT
+	#ifdef SANI_FREE_MEMORY
+	vector<SANIGroupParseTree*> parseTreeGroupListLocal;
+	vector<SANIComponentParseTree*> parseTreeComponentListExtra;
+	#endif
+	//#endif
+	#ifdef SANI_LIGHT_UNOPTIMISED
+	#ifdef SANI_LIGHT_BIO
+	vector<SANIGroupParseTree*> parseTreeGroupsArray;
+	#endif
 	#endif
 };
 

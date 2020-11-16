@@ -26,7 +26,7 @@
  * File Name: SANIrules.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Rules
  * /
@@ -51,7 +51,7 @@
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
 #ifdef SANI_SEQUENCE_GRAMMAR
-//#include "SANIpropagateCompactGenerate.hpp"
+//#include "SANIgenerateCompact.hpp"
 #endif
 
 
@@ -307,7 +307,7 @@ class SANIrulesClass
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	#ifdef SANI_SEQUENCE_GRAMMAR
-	//private: SANIpropagateCompactGenerateClass SANIpropagateCompactGenerate;
+	//private: SANIgenerateCompactClass SANIgenerateCompact;
 	#endif
 
 	public: bool extractSANIrules(vector<SANIGroupType*>* SANIGroupTypes, vector<XMLparserTag*>* SANIrulesTokenLayers);

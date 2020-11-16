@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightOptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Optimised - ~O(n)
  * /
@@ -41,20 +41,6 @@
 
 
 
-#ifdef SANI_PARSE_SAVE_PARSE_TREE
-static SANIGroupParseTree* topLevelParseTreeGroupLocalLight;
-#endif
-
-#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
-static int parseTreeMaxWeight;
-#endif
-
-#ifdef SANI_FREE_MEMORY
-static vector<SANIGroupParseTree*> parseTreeGroupListLight;
-static vector<SANIComponentParseTree*> parseTreeComponentListExtra;
-#endif
-
-
 bool SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance)
 {
 	bool result = false;
@@ -64,11 +50,11 @@ bool SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork(SANI
 	bool sentenceValidActivationPath = false;
 
 	#ifdef SANI_PARSE_SAVE_PARSE_TREE
-	topLevelParseTreeGroupLocalLight = NULL;
+	forwardPropogationSentenceData->topLevelParseTreeGroupLocal = NULL;
 	#endif
 
 	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
-	parseTreeMaxWeight = 0;
+	forwardPropogationSentenceData->parseTreeMaxWeight = 0;
 	#endif
 	
 	//sentence specific variables:
@@ -96,7 +82,7 @@ bool SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork(SANI
 	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_NEURON_COMPONENT_CONNECTION_ACTIVE); //this is required for SANI_LIGHT_OPTIMISED
 	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);	//this is required to initialise currentParseTreeGroup for every group (only required for first execution of SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork)
 	#ifdef SANI_FREE_MEMORY
-	SANIpropagateOperations.initialiseParseTreeGroupList(SANIGroupTypes, &parseTreeGroupListLight);
+	SANIpropagateOperationsParseTree.initialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListLocal));
 	#endif
 
 	SANIGroupParseTree* activationPathWordFirstParseTreeGroup = NULL;
@@ -130,15 +116,15 @@ bool SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork(SANI
 		result = true;
 		
 		#ifdef SANI_PARSE_SAVE_PARSE_TREE
-		*topLevelParseTreeGroup = topLevelParseTreeGroupLocalLight;
-		//cout << "topLevelParseTreeGroupLocalLight" << endl;
+		*topLevelParseTreeGroup = forwardPropogationSentenceData->topLevelParseTreeGroupLocal;
+		//cout << "forwardPropogationSentenceData->topLevelParseTreeGroupLocal" << endl;
 		
 		//#ifdef SANI_DEBUG_PROPAGATE
 		#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS_POS_TYPES
 		cout << "topLevelGroup" << endl;
-		printBackpropParseTree(topLevelParseTreeGroupLocalLight, 1);
+		printBackpropParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 1);
 		cout << "end printBackpropParseTree" << endl;
-		//cout << "topLevelParseTreeGroupLocalLight->groupName = " << topLevelParseTreeGroupLocalLight->groupName << endl;
+		//cout << "forwardPropogationSentenceData->topLevelParseTreeGroupLocal->groupName = " << forwardPropogationSentenceData->topLevelParseTreeGroupLocal->groupName << endl;
 		#endif	
 		#endif	
 		
@@ -165,9 +151,9 @@ bool SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork(SANI
 		int performanceNOTUSED = 0;
 		bool print = false;
 		bool performancePreprocess = false;
-		SANIpropagateOperations.traceBackpropParseTree(topLevelParseTreeGroupLocalLight, 1, print, performancePreprocess, &performanceNOTUSED, NULL);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
+		SANIpropagateOperationsParseTree.traceBackpropParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 1, print, performancePreprocess, &performanceNOTUSED, NULL);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
 		SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);
-		SANIpropagateOperations.resetNeuronBackprop(topLevelParseTreeGroupLocalLight, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	//added GIA3g6aTEMP32 
+		SANIpropagateOperationsParseTree.resetNeuronBackprop(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	//added GIA3g6aTEMP32 
 		
 		/*
 		for(int w=0; w<sentenceContents->size(); w++)
@@ -192,15 +178,15 @@ bool SANIpropagateLightOptimisedClass::executePosRelTranslatorNeuralNetwork(SANI
 	*/
 	
 	#ifdef SANI_FREE_MEMORY
-	SANIpropagateOperations.deinitialiseParseTreeGroupList(SANIGroupTypes, &parseTreeGroupListLight);
+	SANIpropagateOperationsParseTree.deinitialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListLocal));
 	#endif
 	#ifdef SANI_FREE_MEMORY
-	for(int i2=0; i2<parseTreeComponentListExtra.size(); i2++)
+	for(int i2=0; i2<(forwardPropogationSentenceData->parseTreeComponentListExtra).size(); i2++)
 	{
-		SANIComponentParseTree* parseTreeComponentTemp = parseTreeComponentListExtra[i2];
+		SANIComponentParseTree* parseTreeComponentTemp = (forwardPropogationSentenceData->parseTreeComponentListExtra)[i2];
 		delete parseTreeComponentTemp;
 	}
-	parseTreeComponentListExtra.clear();
+	(forwardPropogationSentenceData->parseTreeComponentListExtra).clear();
 	#endif
 	#ifdef SANI_FREE_MEMORY
 	for(int w=0; w<sentenceContents->size(); w++)
@@ -729,7 +715,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupSelect(SA
 
 								if(firstMandatoryComponentActive)
 								{
-									if(SANIpropagateOperations.doesRequireResetGroupActivation(firstComponent, indexOfFirstComponentInGroup, ownerGroup, forwardPropogationWordData))
+									if(SANIpropagateOperations.doesRequireResetGroupActivation(forwardPropogationSentenceData, firstComponent, indexOfFirstComponentInGroup, ownerGroup, forwardPropogationWordData))
 									{
 										requireResetGroupActivation = true;
 										//cout << "requireResetGroupActivation" << endl;
@@ -746,7 +732,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupSelect(SA
 									if(secondComponent->neuronComponentConnectionActive)
 									#endif
 									{
-										if(SANIpropagateOperations.doesRequireResetGroupActivation(secondComponent, indexOfSecondComponentInGroup, ownerGroup, forwardPropogationWordData))
+										if(SANIpropagateOperations.doesRequireResetGroupActivation(forwardPropogationSentenceData, secondComponent, indexOfSecondComponentInGroup, ownerGroup, forwardPropogationWordData))
 										{
 											requireResetGroupActivation = true;
 										}
@@ -816,9 +802,9 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupSelect(SA
 								clearParseTreeGroup = false;
 								#endif
 								SANIpropagateOperations.resetGroupActivation(ownerGroup);
-								SANIpropagateOperations.resetGroupParseTreeGroupRef(ownerGroup, clearParseTreeGroup);
+								SANIpropagateOperationsParseTree.resetGroupParseTreeGroupRef(ownerGroup, clearParseTreeGroup);
 								#ifdef SANI_FREE_MEMORY
-								parseTreeGroupListLight.push_back(ownerGroup->currentParseTreeGroupTemp);
+								(forwardPropogationSentenceData->parseTreeGroupListLocal).push_back(ownerGroup->currentParseTreeGroupTemp);
 								#endif
 							}
 							#endif
@@ -868,7 +854,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupSelect(SA
 									#ifdef SANI_FREE_MEMORY
 									ownerGroup->currentParseTreeGroupTemp = currentParseTreeGroupOrig;
 									#else
-									SANIpropagateOperations.restoreGroupParseTreeGroupRef(ownerGroup, currentParseTreeGroupOrig);
+									SANIpropagateOperationsParseTree.restoreGroupParseTreeGroupRef(ownerGroup, currentParseTreeGroupOrig);
 									#endif
 								}
 								#endif
@@ -947,7 +933,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 	SANIComponentNeuralNetwork* finalActiveComponent = NULL;	//NOTUSED
 	bool firstActiveComponentInGroup = false;	//NOTUSED
 	
-	if(SANIpropagateOperations.propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(ownerComponent, &(ownerGroup->components), forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, &activationSequenceCompleted, &firstActiveComponentInGroup, &previousActiveComponent, &finalActiveComponent, existingActivationFoundStartComponent))
+	if(SANIpropagateOperations.propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, ownerComponent, &(ownerGroup->components), &activationSequenceCompleted, &firstActiveComponentInGroup, &previousActiveComponent, &finalActiveComponent, existingActivationFoundStartComponent))
 	{	
 		#ifdef SANI_DEBUG_PROPAGATE_EXTRA3
 		SANInodes.printParseTreeDebugIndentation(layer+1);
@@ -964,7 +950,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 			//*existingActivationFoundStartComponent = false;	//added GIA3g11aTEMP62
 			if(ownerComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_OR)
 			{
-				if(SANIpropagateOperations.propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(currentComponent, &(ownerComponent->subComponents), existingActivationFoundStartComponent))
+				if(SANIpropagateOperations.propagateWordThroughNetworkGroupVerifyComponentSequenceOrActivationReady(forwardPropogationWordData, forwardPropogationSentenceData, currentComponent, &(ownerComponent->subComponents), existingActivationFoundStartComponent))
 				{
 					subComponentsPassed = true;
 					#ifdef SANI_DEBUG_PROPAGATE
@@ -974,7 +960,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 			}
 			else if(ownerComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_REPEAT)
 			{
-				if(SANIpropagateOperations.propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(currentComponent, &(ownerComponent->subComponents), forwardPropogationWordData, &repeatDetected, existingActivationFoundStartComponent))
+				if(SANIpropagateOperations.propagateWordThroughNetworkGroupVerifyComponentSequenceRepeatActivationReady(forwardPropogationWordData, forwardPropogationSentenceData, currentComponent, &(ownerComponent->subComponents), &repeatDetected, existingActivationFoundStartComponent))
 				{
 					subComponentsPassed = true;
 					#ifdef SANI_DEBUG_PROPAGATE
@@ -1025,7 +1011,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 					#endif
 					
 					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
-					if(SANIpropagateOperations.componentWordConnectivityTestsWrapper(ownerGroup, activationPathWordCurrentParseTreeGroup, forwardPropogationWordData, *existingActivationFoundStartComponent))
+					if(SANIpropagateOperations.componentWordConnectivityTestsWrapper(forwardPropogationWordData, forwardPropogationSentenceData, ownerGroup, activationPathWordCurrentParseTreeGroup, *existingActivationFoundStartComponent))
 					{
 					#endif
 						#ifdef SANI_DEBUG_PROPAGATE_EXTRA3
@@ -1218,7 +1204,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 		}
 		//delete oldParseComponent;
 		#ifdef SANI_FREE_MEMORY
-		parseTreeComponentListExtra.push_back(oldParseComponent);	//mark overwritten component for deletion
+		(forwardPropogationSentenceData->parseTreeComponentListExtra).push_back(oldParseComponent);	//mark overwritten component for deletion
 		#endif
 		#else
 		cerr << "SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent: SANI_ALLOW_MULTIPLE_ACTIVATIONS: !SANI_LIGHT_OPTIMISED_ALLOW_MULTIPLE_ACTIVATIONS_TAKE_LAST_ACTIVATION_AS_PARSETREE is not coded (planned implementation: store multiple parseTrees for each component activation)" << endl; 
@@ -1238,7 +1224,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 				previousParseComponent = currentParseTreeGroupTemp->components.back();
 				currentParseTreeGroupTemp->parseTreeMaxWordIndex = previousParseComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;	//CHECKTHIS
 			}
-			//updateParseTreeMaxMinWordIndexOfParent(currentParseTreeGroupTemp, previousParseComponent);
+			//SANIpropagateOperationsParseTree.updateParseTreeMaxMinWordIndexOfParent(currentParseTreeGroupTemp, previousParseComponent);
 			#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT_DYNAMIC_BIO
 			SANIGroupParseTree* childGroup = previousParseComponent->parseTreeGroupRef;
 			if(childGroup != NULL)
@@ -1283,7 +1269,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 		currentParseTreeGroupTemp->parseTreeTotalWeight = ownerGroup->groupWeight;
 		#endif
 	}
-	updateParseTreeMaxMinWordIndexOfParent(currentParseTreeGroupTemp, newParseComponent, activationPathWordCurrentParseTreeGroup);
+	SANIpropagateOperationsParseTree.updateParseTreeMaxMinWordIndexOfParent(currentParseTreeGroupTemp, newParseComponent, activationPathWordCurrentParseTreeGroup);
 	#endif
 	
 	
@@ -1375,21 +1361,21 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 			{
 			#endif
 				#ifdef SANI_PARSE_PERFORMANCE
-				if(SANIpropagateOperations.updatePerformance(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
+				if(SANIpropagateOperationsParse.updatePerformance(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
 				{
 					//cout << "forwardPropogationSentenceData->performance = " << forwardPropogationSentenceData->performance << endl;
 				#endif
 				
 					#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
 					int maxWeight;
-					SANIpropagateOperations.calculatePerformanceWeightOfParseTree(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, &maxWeight);
+					SANIpropagateOperationsParseTree.calculatePerformanceWeightOfParseTree(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, &maxWeight);
 					/*
 					cout << "maxWeight = " << maxWeight << endl;
-					cout << "parseTreeMaxWeight2 = " << parseTreeMaxWeight << endl;
+					cout << "parseTreeMaxWeight2 = " << forwardPropogationSentenceData->parseTreeMaxWeight << endl;
 					*/
-					if(maxWeight >= parseTreeMaxWeight)
+					if(maxWeight >= forwardPropogationSentenceData->parseTreeMaxWeight)
 					{
-						parseTreeMaxWeight = maxWeight;
+						forwardPropogationSentenceData->parseTreeMaxWeight = maxWeight;
 					#endif
 						/*
 						cout << "topLevelGroup && SANIpropagateOperations.isSentenceWordDataFullyConnected; TEMP EXIT" << endl;
@@ -1403,21 +1389,21 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 						
 						#ifdef SANI_PARSE_SAVE_PARSE_TREE
 						#ifdef SANI_REPLICATE_TOP_LEVEL_PARSE_TREE
-						SANInodes.deleteParseTree(topLevelParseTreeGroupLocalLight, 0);
-						topLevelParseTreeGroupLocalLight = SANInodes.replicateParseTree(activationPathWordCurrentParseTreeGroupOwner, 0);
+						SANInodes.deleteParseTree(forwardPropogationSentenceData->topLevelParseTreeGroupLocal, 0);
+						forwardPropogationSentenceData->topLevelParseTreeGroupLocal = SANInodes.replicateParseTree(activationPathWordCurrentParseTreeGroupOwner, 0);
 						#else
-						//OLD: topLevelParseTreeGroupLocalLight = activationPathWordCurrentParseTreeGroupOwner;
+						//OLD: forwardPropogationSentenceData->topLevelParseTreeGroupLocal = activationPathWordCurrentParseTreeGroupOwner;
 						//copy currentParseTreeGroupTemp so it cant be overwritten;
-						topLevelParseTreeGroupLocalLight = SANInodes.copyGroup(activationPathWordCurrentParseTreeGroupOwner);
+						forwardPropogationSentenceData->topLevelParseTreeGroupLocal = SANInodes.copyGroup(activationPathWordCurrentParseTreeGroupOwner);
 						#endif
 						#endif
 						
 						#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS_POS_TYPES
 						cout << "1topLevelGroup" << endl;
 						#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
-						cout << "parseTreeMaxWeight1 = " << parseTreeMaxWeight << endl;
+						cout << "parseTreeMaxWeight1 = " << forwardPropogationSentenceData->parseTreeMaxWeight << endl;
 						#endif
-						cout << "topLevelParseTreeGroupLocalLight->groupName = " << activationPathWordCurrentParseTreeGroupOwner->groupName << endl;
+						cout << "forwardPropogationSentenceData->topLevelParseTreeGroupLocal->groupName = " << activationPathWordCurrentParseTreeGroupOwner->groupName << endl;
 						printBackpropParseTree(activationPathWordCurrentParseTreeGroupOwner, 3);
 						#endif
 						/*
@@ -1430,7 +1416,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkGroupComponent
 					}
 					else
 					{
-						//cout << "parseTreeMaxWeight2 = " << parseTreeMaxWeight << endl;
+						//cout << "parseTreeMaxWeight2 = " << forwardPropogationSentenceData->parseTreeMaxWeight << endl;
 					}
 					#endif
 				#ifdef SANI_PARSE_PERFORMANCE
@@ -1847,7 +1833,7 @@ bool SANIpropagateLightOptimisedClass::existingActivatedComponentCapturesLastWor
 
 	if(parseTreeGroupToFindWordIndexMax1 != NULL)
 	{
-		if(!SANIpropagateOperations.getMinMaxWordIndexInParseTree(parseTreeGroupToFindWordIndexMax1, calculateMaxOrMin, &wordIndexMax1, 0))
+		if(!SANIpropagateOperationsParseTree.getMinMaxWordIndexInParseTree(parseTreeGroupToFindWordIndexMax1, calculateMaxOrMin, &wordIndexMax1, 0))
 		{
 			//cout << "SANIpropagateOperationsClass::existingActivatedComponentCapturesLastWordInSentence error{}: !getMinMaxWordIndexInParseTree(parseTreeGroupToFindWordIndexMax1, )" << endl;	
 			//exit(EXIT_ERROR);
@@ -1862,7 +1848,7 @@ bool SANIpropagateLightOptimisedClass::existingActivatedComponentCapturesLastWor
 	
 	if(parseTreeGroupToFindWordIndexMax2 != NULL)
 	{
-		if(!SANIpropagateOperations.getMinMaxWordIndexInParseTree(parseTreeGroupToFindWordIndexMax2, calculateMaxOrMin, &wordIndexMax2, 0))
+		if(!SANIpropagateOperationsParseTree.getMinMaxWordIndexInParseTree(parseTreeGroupToFindWordIndexMax2, calculateMaxOrMin, &wordIndexMax2, 0))
 		{
 			//newParseComponent->neuronComponentConnectionActiveWordRecord has not yet been defined
 			//cout << "SANIpropagateOperationsClass::existingActivatedComponentCapturesLastWordInSentence error{} !getMinMaxWordIndexInParseTree(parseTreeGroupToFindWordIndexMax2, ) && " << endl;
@@ -2297,76 +2283,13 @@ bool SANIpropagateLightOptimisedClass::parseTreeContainsGroup(SANIGroupParseTree
 }
 #endif
 
-	
-void SANIpropagateLightOptimisedClass::updateParseTreeMaxMinWordIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup)
-{
-	#ifdef SANI_PARSE_GENERATE_PARSE_TREE
-	if(parentComponent->parseTreeGroupRef != NULL)
-	#else
-	if(childGroup != NULL)
-	#endif
-	{	
-		//has children
-		#ifdef SANI_PARSE_GENERATE_PARSE_TREE
-		childGroup = parentComponent->parseTreeGroupRef;	//not required
-		#endif
-		if(childGroup->parseTreeMaxWordIndex > parentGroup->parseTreeMaxWordIndex)
-		{
-			parentGroup->parseTreeMaxWordIndex = childGroup->parseTreeMaxWordIndex;
-		}
-		if(childGroup->parseTreeMinWordIndex < parentGroup->parseTreeMinWordIndex)
-		{
-			parentGroup->parseTreeMinWordIndex = childGroup->parseTreeMinWordIndex;
-		}
-		
-		#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT_DYNAMIC_BIO
-		if(childGroup->parseTreeMaxWeight > parentGroup->parseTreeMaxWeight)
-		{
-			parentGroup->parseTreeMaxWeight = childGroup->parseTreeMaxWeight;
-		}
-		if(childGroup->parseTreeMinWeight < parentGroup->parseTreeMinWeight)
-		{
-			parentGroup->parseTreeMinWeight = childGroup->parseTreeMinWeight;
-		}
-		parentGroup->parseTreeTotalWeight = parentGroup->parseTreeTotalWeight + childGroup->parseTreeTotalWeight;
-		#endif
-	}
-	else
-	{
-		if(parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex > parentGroup->parseTreeMaxWordIndex)
-		{
-			parentGroup->parseTreeMaxWordIndex = parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;
-		}
-		if(parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex < parentGroup->parseTreeMinWordIndex)
-		{
-			parentGroup->parseTreeMinWordIndex = parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;
-		}
-	
-		/*//FUTURE; take into account component weights;
-		#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT_DYNAMIC_BIO
-		if(parentComponent->parseTreeMaxWeight > parentGroup->parseTreeMaxWeight)
-		{
-			parentGroup->parseTreeMaxWeight = parentComponent->parseTreeMaxWeight;
-		}
-		if(parentGroup->parseTreeMinWeight < parentGroup->parseTreeMinWeight)
-		{
-			parentGroup->parseTreeMinWeight = parentComponent->parseTreeMinWeight;
-		}
-		parentGroup->parseTreeTotalWeight = parentGroup->parseTreeTotalWeight + parentComponent->parseTreeTotalWeight;	
-		#endif	
-		*/
-	}
-}
-
-
-
 bool SANIpropagateLightOptimisedClass::printBackpropParseTree(SANIGroupParseTree* group, int level)
 {
 	bool print = true;
 	bool performancePreprocess = false;
 	int performanceNOTUSED = 0;
-	SANIpropagateOperations.traceBackpropParseTree(group, 1, print, performancePreprocess, &performanceNOTUSED, NULL);
-	SANIpropagateOperations.resetNeuronBackprop(group, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
+	SANIpropagateOperationsParseTree.traceBackpropParseTree(group, 1, print, performancePreprocess, &performanceNOTUSED, NULL);
+	SANIpropagateOperationsParseTree.resetNeuronBackprop(group, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
 }
 
 

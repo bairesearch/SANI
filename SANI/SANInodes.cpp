@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -739,7 +739,7 @@ bool SANInodesClass::adjustNetworkDepth(SANIGroupNeuralNetwork* group)
 	
 	int maxDepth = group->networkDepth;
 	
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	if(!(group->counted))
 	{
 		group->counted = true;
@@ -755,13 +755,13 @@ bool SANInodesClass::adjustNetworkDepth(SANIGroupNeuralNetwork* group)
 			adjustNetworkDepth(ownerGroup);
 
 		}
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	}
 	#endif
 	
 	return result;
 }
-#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 bool SANInodesClass::adjustNetworkDepthReset(SANIGroupNeuralNetwork* group)
 {
 	bool result = true;
@@ -813,7 +813,7 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepth(SANIGroupNeuralNetwor
 {
 	bool result = true;	
 
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	if(!(currentNeuron->counted))
 	{
 		currentNeuron->counted = true;
@@ -841,7 +841,7 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepth(SANIGroupNeuralNetwor
 				*maxDepth = max(*maxDepth, depth);
 			}
 		}
-	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	}
 	#endif
 	
@@ -869,7 +869,7 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepth(SANIComponentNeuralNe
 	
 	return result;
 }
-#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
+#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepthReset(SANIGroupNeuralNetwork* currentNeuron)
 {
 	bool result = true;	
@@ -1646,5 +1646,7 @@ bool SANInodesClass::calculateComponentTypeString(SANIGroupNeuralNetwork* compon
 	*/
 }
 #endif
+
+
 
 #endif

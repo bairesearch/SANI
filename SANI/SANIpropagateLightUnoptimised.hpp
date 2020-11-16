@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightUnoptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Unoptimised - ~O(n^2)
  * /
@@ -44,6 +44,9 @@
 #endif
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
+#include "LRPpreprocessorSentenceClass.hpp"
+#include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #include "SANIrules.hpp"
 #include "SANInodes.hpp"
 #include "SANInodesGroupClass.hpp"
@@ -56,9 +59,6 @@
 #include "GIAposRelTranslatorParserOperations.hpp"
 #endif
 #endif
-#include "LRPpreprocessorSentenceClass.hpp"
-#include "LRPpreprocessorWordClass.hpp"
-#include "LRPpreprocessorPOStagger.hpp"
 #include "ANNdisplay.hpp"
 
 

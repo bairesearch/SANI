@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightOptimised.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n9b 05-November-2020
+ * Project Version: 1o1a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Optimised - ~O(n)
  * /
@@ -44,10 +44,14 @@
 #endif
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
+#include "LRPpreprocessorSentenceClass.hpp"
+#include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #include "SANInodes.hpp"
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
 #include "SANIpropagateOperations.hpp"
+#include "SANIpropagateOperationsParseTree.hpp"
 #include "SANIformation.hpp"
 #include "SANIposRelTranslatorVariables.hpp"
 #ifdef USE_GIA
@@ -58,9 +62,6 @@
 #ifdef SANI_PARSE_SIMULTANEOUS
 #include "SANIparser.hpp"
 #endif
-#include "LRPpreprocessorSentenceClass.hpp"
-#include "LRPpreprocessorWordClass.hpp"
-#include "LRPpreprocessorPOStagger.hpp"
 #include "ANNdisplay.hpp"
 
 
@@ -80,6 +81,7 @@ class SANIpropagateLightOptimisedClass
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANIpropagateOperationsClass SANIpropagateOperations;
+	private: SANIpropagateOperationsParseTreeClass SANIpropagateOperationsParseTree;
 	private: SANIformationClass SANIformation;
 	#ifdef SANI_PARSE
 	private: GIAposRelTranslatorParserOperationsClass GIAposRelTranslatorParserOperations;
@@ -131,8 +133,6 @@ class SANIpropagateLightOptimisedClass
 										private: bool verifyOwnerParseTreeGroupDoesntContainNewActivationComponentParseTree(SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, int layer);
 											private: bool parseTreeContainsGroup(SANIGroupParseTree* currentParseTreeGroup, SANIGroupParseTree* parseTreeGroupToFind, int level);
 										#endif
-
-										private: void updateParseTreeMaxMinWordIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup);
 										
 	private: bool printBackpropParseTree(SANIGroupParseTree* group, int level);
 	private: bool groupActivationCompleted(SANIGroupNeuralNetwork* group);
