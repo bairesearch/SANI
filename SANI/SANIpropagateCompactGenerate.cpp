@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerate.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n8a 02-November-2020
+ * Project Version: 1n9a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate - unsupervised training of sequence grammar parse network
  * /
@@ -510,8 +510,6 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariationLimi
 	#ifndef SANI_SEQUENCE_GRAMMAR_GENERATE_INCREMENTALLY_SECTIONED_PREVENT_INTRASENTENCE_MATCHING_SECTIONED_RESET_AT_END
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
 	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.clear();
-	cout << "1 clearing forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory" << endl;
-	exit(EXIT_ERROR);
 	#endif
 	#endif
 	#endif
@@ -1064,8 +1062,6 @@ bool SANIpropagateCompactGenerateClass::findAndReconcileIncrementalVariation(SAN
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
 	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.clear();
-	cout << "clearing forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory" << endl;
-	exit(EXIT_ERROR);
 	#endif
 	
 	/*

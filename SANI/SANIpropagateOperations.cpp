@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1n8a 02-November-2020
+ * Project Version: 1n9a 05-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -738,6 +738,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		for(int j=0; j<component->SANIbackGroupConnectionList.size(); j++)
 		{
 			SANIGroupNeuralNetwork* subGroup = (component->SANIbackGroupConnectionList)[j];
+			#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 			if(groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient(subGroup))
 			{	
 				passCriteria = false;
@@ -745,6 +746,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 			}
 			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 			groupContainsNeuronWithinProspectiveAlternateSubgroupReset(subGroup);
+			#endif
 			#endif
 		}
 	}
@@ -765,6 +767,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 		#else
 			SANIGroupNeuralNetwork* secondComponentSubGroup = (secondComponent->SANIbackGroupConnectionList)[0];	//assume second component only has 1 reference
 		#endif
+			#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 			if(groupContainsNeuronWithinProspectiveAlternateSubgroupEfficient(secondComponentSubGroup))
 			{	
 				passCriteria = false;
@@ -773,6 +776,7 @@ bool SANIpropagateOperationsClass::calculateVariableComponentPassCriteria(SANICo
 			}
 			#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 			groupContainsNeuronWithinProspectiveAlternateSubgroupReset(secondComponentSubGroup);
+			#endif
 			#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_SHARED
 		}
