@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3b 16-November-2020
+ * Project Version: 1o4a 17-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -90,15 +90,15 @@ class SANIposRelTranslatorPermutationsClass
 #else
 	#ifdef SANI_HEAVY
 	#ifdef SANI_HEAVY_UNOPTIMISED
-	private: SANIpropagateHeavyUnoptimisedClass SANIpropagate;
+	private: SANIpropagateHeavyUnoptimisedClass SANIpropagateHeavyUnoptimised;
 	#else
-	private: SANIpropagateHeavyOptimisedClass SANIpropagate;
+	private: SANIpropagateHeavyOptimisedClass SANIpropagateHeavyOptimised;
 	#endif
 	#else
 	#ifdef SANI_LIGHT_UNOPTIMISED
-	private: SANIpropagateLightUnoptimisedClass SANIpropagate;	
+	private: SANIpropagateLightUnoptimisedClass SANIpropagateLightUnoptimised;	
 	#else
-	private: SANIpropagateLightOptimisedClass SANIpropagate;	
+	private: SANIpropagateLightOptimisedClass SANIpropagateLightOptimised;	
 	#endif
 	#endif
 #endif

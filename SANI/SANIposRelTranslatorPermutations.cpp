@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o3b 16-November-2020
+ * Project Version: 1o4a 17-November-2020
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -512,7 +512,19 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			bool createNewConnections = true; 
 			if(SANIgenerateCompact.generatePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp, createNewConnections))
 			#else
-			if(SANIpropagate.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			#ifdef SANI_HEAVY
+			#ifdef SANI_HEAVY_UNOPTIMISED
+			if(SANIpropagateHeavyUnoptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			#else
+			if(SANIpropagateHeavyOptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			#endif
+			#else
+			#ifdef SANI_LIGHT_UNOPTIMISED
+			if(SANIpropagateLightUnoptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			#else
+			if(SANIpropagateLightOptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			#endif
+			#endif
 			#endif
 			#else	
 			if(SANIpropagateInverse.executePosRelTranslatorNeuralNetworkInverse(SANIrulesTokenLayers, SANIGroupTypes, sentenceContents, firstParseTreeGroupTemp, &performanceTemp, parseIsolatedSubreferenceSets))
@@ -599,12 +611,12 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 				parserEnabled = false; 
 				performanceTemp = 0;
 				//derive optimum pathway (store in parseTree)
-				if(!SANIpropagate.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+				if(!SANIpropagateLightOptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
 				{
 					result = false;	
 				}
 				//mark optimum pathway
-				if(!SANIpropagate.demarkateOptimumPathwayBackprop(firstParseTreeGroup))
+				if(!SANIpropagateLightOptimised.demarkateOptimumPathwayBackprop(firstParseTreeGroup))
 				{
 					result = false;
 				}
@@ -626,7 +638,7 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			#else
 			result = false;
 			performanceTemp = 0;
-			if(SANIpropagate.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			if(SANIpropagateLightOptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
 			{
 				result = true;	
 				*performance = sentenceContents->size();	//hard set to maximum performance
@@ -657,7 +669,7 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			int performanceTemp = 0;
 			
 			result = false;	
-			if(SANIpropagate.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			if(SANIpropagateLightOptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
 			{
 				result = true;	
 				*performance = sentenceContents->size();	//hard set to maximum performance
