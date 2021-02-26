@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o4a 17-November-2020
+ * Project Version: 1o5a 25-February-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -85,7 +85,7 @@ class SANIformationClass
 	public: bool createSANI(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
 		private: bool createInputNeuronLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
-			private: bool createInputNeuronLayerSectionWordOrig(const SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, const int* numberOfGroupsInSection);
+			private: bool createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, const int* numberOfGroupsInSection);
 			public: bool addInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
 			public: bool findInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
 			#else

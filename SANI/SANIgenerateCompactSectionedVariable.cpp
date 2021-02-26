@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedVariable.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o4a 17-November-2020
+ * Project Version: 1o5a 25-February-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Variable components - unsupervised training of sequence grammar parse network
  * /
