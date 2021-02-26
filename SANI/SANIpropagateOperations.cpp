@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o5b 25-February-2021
+ * Project Version: 1o5c 25-February-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /

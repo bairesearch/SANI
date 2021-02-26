@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o5b 25-February-2021
+ * Project Version: 1o5c 25-February-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate Operations - unsupervised training of sequence grammar parse network
  * /
@@ -893,7 +893,7 @@ bool SANIpropagateCompactGenerateOperationsClass::verifyNeverSplitGroupBetweenTw
 				}
 				SANIComponentNeuralNetwork* lastActivatedComponent = (activatedNeuronWithMaxWordIndexCoverage->groupRef)->components[lastActivatedIndex];		//BAD: activatedNeuronWithMaxWordIndexCoverage->components[lastActivatedIndex]->componentRef;
 				SANIComponentNeuralNetwork* firstNonActivatedComponent = (activatedNeuronWithMaxWordIndexCoverage->groupRef)->components[firstUnactivatedIndex];	//BAD: activatedNeuronWithMaxWordIndexCoverage->components[firstUnactivatedIndex]->componentRef;
-				#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
+				#ifdef SANI_SEQUENCE_GRAMMAR
 				#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS_ADVANCED
 				bool foundComponentSourceMatch = false;
 				for(int i=0; i<lastActivatedComponent->SANIbackGroupConnectionList.size(); i++)
@@ -916,7 +916,11 @@ bool SANIpropagateCompactGenerateOperationsClass::verifyNeverSplitGroupBetweenTw
 				SANIGroupNeuralNetwork* firstNonActivatedComponentSource = firstNonActivatedComponent->SANIbackGroupConnectionList[0];
 				int lastActivatedComponentSourceSize = lastActivatedComponent->SANIbackGroupConnectionList.size();
 				int firstNonActivatedComponentSourceSize = firstNonActivatedComponent->SANIbackGroupConnectionList.size();
+				#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
 				if(!((lastActivatedComponentSourceSize == 1) && (firstNonActivatedComponentSourceSize == 1)) || (lastActivatedComponentSource == firstNonActivatedComponentSource))	//updated SANI1m6e, old @SANI1m2b: if(((lastActivatedComponentSourceSize == 1) && (firstNonActivatedComponentSourceSize == 1)) && (lastActivatedComponentSource == firstNonActivatedComponentSource))
+				#else
+				if((lastActivatedComponentSource == firstNonActivatedComponentSource))
+				#endif
 				#endif
 				#else
 				if(lastActivatedComponent->groupRef == firstNonActivatedComponent->groupRef)
