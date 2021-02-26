@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: SANIglobalsDefs.hpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o5a 25-February-2021
+ * Project Version: 1o5b 25-February-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -49,7 +49,7 @@
 		#define SANI_FORWARD	//mandatory
 		#define SANI_SEQUENCE_GRAMMAR	//SANI1j2a
 		#ifdef SANI_SEQUENCE_GRAMMAR	
-			#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS	//SANI1k1a
+			//#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS	//SANI1k1a
 			#define SANI_SEMANTIC_NETWORK	//SANI1m1a	//store semantic network within SANI parse tree rather than generating from SANI parse tree
 		#endif
 	#else
@@ -246,7 +246,7 @@
 	
 	#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 		//#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS	//not yet defined
-			//#define SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS	//SANI1m2a/b, updated SANI1m6e	//incomplete
+			#define SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS	//SANI1m2a/b, updated SANI1m6e	//incomplete
 			#ifdef SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS
 				//#define SANI_SEQUENCE_GRAMMAR_NEVER_SPLIT_GROUP_BETWEEN_TWO_IDENTICAL_COMPONENTS_SUPPORT_VARIABLE_FIRST_COMPONENTS_ADVANCED	//SANI1m6e	//incomplete
 			#endif
@@ -361,7 +361,7 @@
 		//#define SANI_SEQUENCE_GRAMMAR_ENSURE_ONLY_ONE_TOP_LEVEL_NEURON_FOUND_PER_SENTENCE	//SANI1l4a	//CHECKTHIS	//this ensures that multiple grammatically valid parse trees are not generated for any sentence POS permutation	//note this is not required if the algorithm can select the highest weighted valid parse tree
 	#endif
 	
-	//#define SANI_DEBUG_SEQUENCE_GRAMMAR_SINGLE_POS_PERMUTATION
+	#define SANI_DEBUG_SEQUENCE_GRAMMAR_SINGLE_POS_PERMUTATION
 	//#define SANI_DEBUG_SEQUENCE_GRAMMAR_MAX_POS_PERMUTATIONS
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_MAX_POS_PERMUTATIONS
 		#define SANI_DEBUG_SEQUENCE_GRAMMAR_MAX_POS_PERMUTATIONS_NUM (9)		

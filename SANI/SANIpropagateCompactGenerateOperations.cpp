@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: SANIpropagateCompactGenerateOperations.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2020 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o5a 25-February-2021
+ * Project Version: 1o5b 25-February-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate Operations - unsupervised training of sequence grammar parse network
  * /
@@ -351,7 +351,7 @@ bool SANIpropagateCompactGenerateOperationsClass::updateActivatedNeuronWithMaxWo
 bool SANIpropagateCompactGenerateOperationsClass::updateActivatedNeuronWithMaxWordIndexCoverage(SANIGroupNeuralNetwork* ownerGroup, SANIGroupParseTree* currentParseTreeGroupTemp, const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool missingStartComponentFound, bool missingOrVariableStartComponentFound, bool missingOrVariableEndComponentFound, bool candidateCoveragePartial)
 {
 	bool result = true;
-	
+		
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_SIMPLIFY2
 	bool activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = missingOrVariableStartComponentFound;
 	#else
