@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o5c 25-February-2021
+ * Project Version: 1p1a 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify - identify and connect regions
  * /
@@ -51,6 +51,9 @@
 #include "SANIpropagateOperations.hpp"
 #include "SANIpropagateCompactOperations.hpp"
 #include "SANIpropagateCompactGenerateOperations.hpp"
+#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
+#include "SANIgenerateCompactIdentifyReferenceSets.hpp"
+#endif
 
 
 
@@ -65,6 +68,9 @@ class SANIgenerateCompactIdentifyClass
 	private: SANIpropagateOperationsClass SANIpropagateOperations;
 	private: SANIpropagateCompactOperationsClass SANIpropagateCompactOperations;
 	private: SANIpropagateCompactGenerateOperationsClass SANIpropagateCompactGenerateOperations;
+	#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
+	private: SANIgenerateCompactIdentifyReferenceSetsClass SANIgenerateCompactIdentifyReferenceSets;
+	#endif
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
 	public: bool addGroupToHiddenLayerGroupsTemp(SANIGroupNeuralNetwork* newGroup);
@@ -86,21 +92,6 @@ class SANIgenerateCompactIdentifyClass
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_CENTRAL_COMPONENTS
 		private: bool findAndLinkCentralVariationCandidates(SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
 			private: bool populateSecondComponentOfOutputNeuronSourceVector(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupNeuralNetwork* group, vector<SANIGroupNeuralNetwork*>* secondComponentOfOutputNeuronSourceVector);
-		#endif
-	#endif
-	
-	#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
-	public: bool linkSimiliarSubnets(SANItranslatorVariablesClass* translatorVariables, const vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* topLevelParseTreeGroup);
-		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_SUCCESSFULLY_PARSED_NEURONS
-		private: bool updateNetworkRecency(int timeIndex, SANIGroupParseTree* currentParseTreeGroup, const int layer);
-		#endif
-		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
-		private: bool findAndLinkReferenceSetCandidates1(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentParseTreeGroup, const int layer);
-			private: bool findAndLinkReferenceSetCandidates2(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, constEffective SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* referenceSetCandidate1, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, const int layer);
-				private: bool findAndLinkReferenceSetCandidates3(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, constEffective SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate2, SANIGroupNeuralNetwork* referenceSetCandidate1, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, const int layer);
-					private: bool findAndLinkReferenceSetCandidatesCompareVectors(constEffective SANIGroupNeuralNetwork** referenceSetCandidate2best, SANIGroupNeuralNetwork* referenceSetCandidate1, constEffective SANIGroupNeuralNetwork* referenceSetCandidate2, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector1, const vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector2);
-					private: bool createReferenceSetCandidateVector(SANIGroupParseTree* currentParseTreeGroup, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector);
-					private: bool createReferenceSetCandidateVector(SANIGroupNeuralNetwork* currentNeuron, vector<SANIGroupNeuralNetwork*>* referenceSetCandidateVector);			
 		#endif
 	#endif
 	

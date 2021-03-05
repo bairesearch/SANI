@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1o5c 25-February-2021
+ * Project Version: 1p1a 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -138,6 +138,13 @@ public:
 };
 #endif
 
+
+class SANIGroupNeuralNetwork;
+class SANIComponentNeuralNetwork;
+class SANIComponentParseTree;
+class SANIGroupActivationMemory;
+class SANIGroupParseTree;
+
 #ifdef SANI_FORWARD
 class SANIForwardPropogationSignalData
 {
@@ -173,6 +180,14 @@ public:
 	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
 	bool firstPOSval;
 	#endif
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
+	double activationSignalStrength;
+	vector<LRPpreprocessorPlainTextWord*> wordsCaptured;
+	multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance;	//multimap<int64_t, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance;
+	int maxNumberWordsCaptured;
+	int firstWordPropagatedIndex;
+	#endif
 };
 
 class SANIForwardPropogationWordData
@@ -203,10 +218,6 @@ public:
 #endif
 
 
-class SANIComponentNeuralNetwork;
-class SANIComponentParseTree;
-class SANIGroupActivationMemory;
-class SANIGroupParseTree;
 
 
 class SANIGroup
@@ -396,7 +407,14 @@ public:
 	bool endOfSentenceWordDetected;
 	bool markToErase;
 	#endif
-		
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
+	multimap<double, SANIGroupNeuralNetwork*> directNeuronAssociationList;	
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
+	double activationSignalStrength;
+	vector<LRPpreprocessorPlainTextWord*> wordsCaptured;
+	#endif
+	#endif
 };
 
 
@@ -658,6 +676,7 @@ public:
 	vector<SANIGroupParseTree*> parseTreeGroupsArrayPropagate;
 	#endif
 	#endif
+	
 };
 
 #endif
