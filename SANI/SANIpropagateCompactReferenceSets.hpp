@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1b 04-March-2021
+ * Project Version: 1p1c 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -78,8 +78,9 @@ class SANIpropagateCompactReferenceSetsClass
 					private: bool propagateWordThroughNetworkGroupSelect(SANItranslatorVariablesClass* translatorVariables, const SANIGroupNeuralNetwork* group, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup);
 						private: bool propagateWordThroughNetworkGroupComponentWrapper(SANItranslatorVariablesClass* translatorVariables, const SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* currentComponent, SANIGroupNeuralNetwork* ownerGroup, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int layer, SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const int groupFrontComponentConnectionListIndex, bool* sequentialActivationFound, bool* existingActivationFoundStartComponent);
 							private: bool propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIComponentNeuralNetwork* testComponent, vector<SANIComponentNeuralNetwork*>* components, SANIGroupNeuralNetwork* ownerGroup, bool* successorComponentAlreadyActivated, bool* firstComponentInGroup);
-							private: void appendToWordsCaptured(vector<LRPpreprocessorPlainTextWord*>* wordsCaptured, const SANIComponentNeuralNetwork* currentComponent);
 							private: void calculateNeuronActivationSignal(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* testComponent, double* componentActivationSignal, int* numberComponentsActivated);
+								private: void appendToWordsCaptured(vector<LRPpreprocessorPlainTextWord*>* wordsCaptured, const SANIComponentNeuralNetwork* currentComponent);
+									private: void appendToWordsCaptured(vector<LRPpreprocessorPlainTextWord*>* wordsCaptured, LRPpreprocessorPlainTextWord* wordCaptured);
 							private: double calculateActivationSignalStrength(double componentActivationSignal, double fractionOfComponentsActivated, bool componentActivationOrderSequential, double fractionOfComponentWordsCaptured, bool componentWordsOrderSequential, double neuronPopularity, double neuronRecencyAge);
 							private: bool verifyWordsCapturedSequentiality(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIGroupNeuralNetwork* ownerGroup);
 

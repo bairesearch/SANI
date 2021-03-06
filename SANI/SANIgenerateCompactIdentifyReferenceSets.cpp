@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1b 04-March-2021
+ * Project Version: 1p1c 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -70,6 +70,8 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::linkSimiliarSubnets(SANItran
 #ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS
 bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimiters(SANItranslatorVariablesClass* translatorVariables, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup)
 {
+	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_NEURON_COMPONENT_CONNECTION_ACTIVE); //this is required to clear the neuron/component activations of past SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork generateSentenceNetworkNodes/testSentenceNetworkNodes propagations
+
 	//determine referenceSetStartCodonType for each word:	
 	for(int w=0; w<forwardPropogationSentenceData->sentenceContents->size(); w++)
 	{
@@ -137,12 +139,16 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 		LRPpreprocessorPlainTextWord* currentWord = forwardPropogationSentenceData->sentenceContents->at(w);
 		
 		string currentWordText = currentWord->tagName;
+		//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
 		cout << "currentWordText = " << currentWordText << endl;
+		//#endif
 		
 		if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE)
 		{
+			//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
 			cout << "SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE" << endl;
-					
+			//#endif
+			
 			vector<multimap<double, SANIGroupNeuralNetwork*>> propagatedGroupsListPerformanceTupleArray(sentenceLength);	//dynamic array declaration (check Windows C++ compatibility; available on g++ compiler)
 	
 			//initiate SANI propagation of tuple following 
@@ -152,7 +158,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 			bool stillPropagatingPotentialRefSet = true;
 			while(stillPropagatingPotentialRefSet)
 			{
-				int tupleLastIndex = i+tupleSize-1;
+				int tupleLastIndex = tupleFirstIndex+tupleSize-1;
 				LRPpreprocessorPlainTextWord* nextWordInTuple = forwardPropogationSentenceData->sentenceContents->at(tupleLastIndex);
 				
 				
@@ -166,7 +172,10 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 				//	//do not stop reference set propagation on detection of a determiner; eg the dog that rides the apple has a pie
 				//}
 				
-					
+				//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+				cout << "\n\nSANIpropagateCompactReferenceSets.performPropagationIndex: tupleFirstIndex = " << tupleFirstIndex << ", tupleLastIndex = " << tupleLastIndex << endl;
+				//#endif
+				
 				SANIpropagateCompactReferenceSets.performPropagationIndex(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, &(propagatedGroupsListPerformanceTupleArray[tupleSize]), tupleLastIndex, tupleFirstIndex);
 					//SANIforwardPropagateWithPartialSignals(nextWordInTuple);
 					//storeMostLikelyCandidates(currentWord, mostLikelyCandidateRefSets);
@@ -341,6 +350,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyMostLikelyReferenceS
 				//when calculating identifyMostLikelyReferenceSetCandidate, ignore (newly created) parse tree graph node representing the sentence reference set;
 				if(!findNeuronInParseTree(topLevelParseTreeGroup, maxPerformanceGroup, 0)) //do not use newHiddenLayerGroupsTemp as it only contains newly generated nodes
 				{
+					//cout << "!findNeuronInParseTree" << endl;
 					stillSearchingForReferenceSetCandidate = false;
 					propagatedGroupsListPerformanceMaxOfEachTupleArray[t] = make_pair(maxPerformance, maxPerformanceGroup);
 				}

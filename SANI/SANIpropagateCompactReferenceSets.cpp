@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1b 04-March-2021
+ * Project Version: 1p1c 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -105,10 +105,12 @@ bool SANIpropagateCompactReferenceSetsClass::performPropagationIndex(SANItransla
 	cout << "\n\n \e[33m SANIpropagateCompactReferenceSetsClass::performPropagationIndex: i = " << i << ", firstLayerNeuronIndex = " << firstLayerNeuronIndex << " - " << (*(forwardPropogationSentenceData->sentenceContents))[firstLayerNeuronIndex]->tagName << " \e[0m" << endl;
 	#endif
 
+	//cout << "SANIpropagateCompactReferenceSetsClass::performPropagationIndex: indexInSequence = " << indexInSequence << ", firstWordPropagatedIndex = " << firstWordPropagatedIndex << endl;
+	
 	//group specific variables:
 	SANIForwardPropogationSignalData forwardPropogationSignalData;
 	forwardPropogationSignalData.firstWordPropagatedIndex = firstWordPropagatedIndex;	//CHECKTHIS: note this has not been adjusted for forwardPropogationSentenceData->parseSentenceReverse, but it is not currently used so it should not be a problem
-	forwardPropogationSignalData.maxNumberWordsCaptured = indexInSequence-firstWordPropagatedIndex;	//this is used by SANIpropagateCompactReferenceSets for determining ideal number of wordsCaptured by reference set candidate
+	forwardPropogationSignalData.maxNumberWordsCaptured = indexInSequence-firstWordPropagatedIndex+1;	//this is used by SANIpropagateCompactReferenceSets for determining ideal number of wordsCaptured by reference set candidate
 	
 	forwardPropogationSignalData.propagatedGroupsListPerformance = propagatedGroupsListPerformance;
 
@@ -346,24 +348,33 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkGroupCom
 	bool componentWordsOrderSequential = false;
 	double neuronPopularity = 0.0;
 	double neuronRecencyAge = 0.0;
-		
+	
+	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_ACTIVATED_USE
 	fractionOfComponentsActivated = numberComponentsActivated/totalNumberComponents;
+	//cout << "fractionOfComponentsActivated = " << fractionOfComponentsActivated << endl;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_ACTIVATION_SEQUENTIALITY_USE
 	componentActivationOrderSequential = *sequentialActivationFound;
+	//cout << "componentActivationOrderSequential = " << componentActivationOrderSequential << endl;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_WORDS_CAPTURED_USE
 	fractionOfComponentWordsCaptured = ownerGroup->wordsCaptured.size()/double(forwardPropogationSignalData->maxNumberWordsCaptured);
+	//cout << "ownerGroup->wordsCaptured.size() = " << ownerGroup->wordsCaptured.size() << endl;
+	//cout << "forwardPropogationSignalData->maxNumberWordsCaptured = " << forwardPropogationSignalData->maxNumberWordsCaptured << endl;
+	//cout << "fractionOfComponentWordsCaptured = " << fractionOfComponentWordsCaptured << endl;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_WORDS_SEQUENTIALITY_USE
 	componentWordsOrderSequential = verifyWordsCapturedSequentiality(forwardPropogationSentenceData, forwardPropogationSignalData, ownerGroup);
+	//cout << "componentWordsOrderSequential = " << componentWordsOrderSequential << endl;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_NEURON_POPULARITY_USE
 	neuronPopularity = ownerGroup->groupStrength;
+	//cout << "neuronPopularity = " << neuronPopularity << endl;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_RECENCY_USE
 	neuronRecencyAge = translatorVariables->currentPreprocessorSentenceInList->sentenceIndexOriginal - ownerGroup->timeIndex;
+	//cout << "neuronRecencyAge = " << neuronRecencyAge << endl;
 	#endif
 	
 	double activationSignalStrength = calculateActivationSignalStrength(componentActivationSignal, fractionOfComponentsActivated, componentActivationOrderSequential, fractionOfComponentWordsCaptured, componentWordsOrderSequential, neuronPopularity, neuronRecencyAge);
@@ -451,21 +462,9 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkGroupVer
 	return sequentialActivationFound;
 }
 
-void SANIpropagateCompactReferenceSetsClass::appendToWordsCaptured(vector<LRPpreprocessorPlainTextWord*>* wordsCaptured, const SANIComponentNeuralNetwork* currentComponent)
-{	
-	//wordsCaptured.insert(wordsCaptured.end(), currentComponent->wordsCaptured.begin(), currentComponent->wordsCaptured.end());	//append
 
-	//perform uniqueness test before appending words;
-	for(int i=0; i<currentComponent->wordsCaptured.size(); i++)
-	{
-		LRPpreprocessorPlainTextWord* wordCaptured = currentComponent->wordsCaptured[i];
-		
-		if(find(wordsCaptured->begin(), wordsCaptured->end(), wordCaptured) == wordsCaptured->end())	//element not in vector
-		{
-			wordsCaptured->push_back(wordCaptured);
-		}
-	}
-}
+
+
 
 void SANIpropagateCompactReferenceSetsClass::calculateNeuronActivationSignal(SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* ownerGroup, SANIComponentNeuralNetwork* testComponent, double* componentActivationSignal, int* numberComponentsActivated)
 {
@@ -487,33 +486,87 @@ void SANIpropagateCompactReferenceSetsClass::calculateNeuronActivationSignal(SAN
 		{
 			*numberComponentsActivated = *numberComponentsActivated + 1;
 			if(currentComponent != testComponent)
-			{
-				*componentActivationSignal = *componentActivationSignal + currentComponent->activationSignalStrength;
-				
-				appendToWordsCaptured(&(ownerGroup->wordsCaptured), currentComponent);
+			{				
+				if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+				{
+					*componentActivationSignal = *componentActivationSignal + SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_INPUT_SIGNAL;
+					appendToWordsCaptured(&(ownerGroup->wordsCaptured), currentComponent->candidateStringMatch);
+				}
+				else
+				{
+					//cout << "currentComponent->activationSignalStrength = " << currentComponent->activationSignalStrength << endl;
+					*componentActivationSignal = *componentActivationSignal + currentComponent->activationSignalStrength;
+
+					appendToWordsCaptured(&(ownerGroup->wordsCaptured), currentComponent);
+				}
 			}
 		}
 		if(currentComponent == testComponent)
 		{
 			*numberComponentsActivated = *numberComponentsActivated + 1;
 
-			currentComponent->activationSignalStrength = forwardPropogationSignalData->activationSignalStrength;
-			*componentActivationSignal = *componentActivationSignal + currentComponent->activationSignalStrength;
-
-			currentComponent->wordsCaptured = forwardPropogationSignalData->wordsCaptured;
-			appendToWordsCaptured(&(ownerGroup->wordsCaptured), currentComponent);
+			if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+			{
+				*componentActivationSignal = *componentActivationSignal + SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_INPUT_SIGNAL;
+				appendToWordsCaptured(&(ownerGroup->wordsCaptured), currentComponent->candidateStringMatch);
+			}
+			else
+			{
+				currentComponent->activationSignalStrength = forwardPropogationSignalData->activationSignalStrength;
+				*componentActivationSignal = *componentActivationSignal + currentComponent->activationSignalStrength;
+			
+				currentComponent->wordsCaptured = forwardPropogationSignalData->wordsCaptured;
+				appendToWordsCaptured(&(ownerGroup->wordsCaptured), currentComponent);
+			}
 		}
 	}
 }
 
+void SANIpropagateCompactReferenceSetsClass::appendToWordsCaptured(vector<LRPpreprocessorPlainTextWord*>* wordsCaptured, const SANIComponentNeuralNetwork* currentComponent)
+{	
+	//wordsCaptured.insert(wordsCaptured.end(), currentComponent->wordsCaptured.begin(), currentComponent->wordsCaptured.end());	//append
+
+	//perform uniqueness test before appending words;
+	for(int i=0; i<currentComponent->wordsCaptured.size(); i++)
+	{
+		LRPpreprocessorPlainTextWord* wordCaptured = currentComponent->wordsCaptured[i];
+		
+		appendToWordsCaptured(wordsCaptured, wordCaptured);
+	}
+}
+
+void SANIpropagateCompactReferenceSetsClass::appendToWordsCaptured(vector<LRPpreprocessorPlainTextWord*>* wordsCaptured, LRPpreprocessorPlainTextWord* wordCaptured)
+{			
+	if(find(wordsCaptured->begin(), wordsCaptured->end(), wordCaptured) == wordsCaptured->end())	//element not in vector
+	{
+		wordsCaptured->push_back(wordCaptured);
+		#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+		cout << "SANIpropagateCompactReferenceSetsClass::appendToWordsCaptured - adding to wordsCaptured: " << wordCaptured->tagName << endl;
+		#endif
+	}
+	else
+	{
+		#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+		cout << "SANIpropagateCompactReferenceSetsClass::appendToWordsCaptured - wordCaptured already added" << endl;
+		#endif
+	}
+}
+
+
 
 double SANIpropagateCompactReferenceSetsClass::calculateActivationSignalStrength(double componentActivationSignal, double fractionOfComponentsActivated, bool componentActivationOrderSequential, double fractionOfComponentWordsCaptured, bool componentWordsOrderSequential, double neuronPopularity, double neuronRecencyAge)
 {
-	double activationSignalStrength = componentActivationSignal;
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "\nSANIpropagateCompactReferenceSetsClass::calculateActivationSignalStrength" << endl;
+	cout << "componentActivationSignal = " << componentActivationSignal << endl;
+	#endif
 	
 	double fractionOfComponentsActivatedModifier = 1.0;
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_ACTIVATED_USE
 	fractionOfComponentsActivatedModifier = fractionOfComponentsActivated*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_ACTIVATED;
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "fractionOfComponentsActivatedModifier = " << fractionOfComponentsActivatedModifier << endl;
+	#endif
 	#endif
 	
 	double componentActivationOrderSequentialModifier = 1.0;
@@ -522,11 +575,17 @@ double SANIpropagateCompactReferenceSetsClass::calculateActivationSignalStrength
 	{
 		componentActivationOrderSequentialModifier = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_ACTIVATION_SEQUENTIALITY;
 	}
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "componentActivationOrderSequentialModifier = " << componentActivationOrderSequentialModifier << endl;
+	#endif
 	#endif
 	
 	double fractionOfComponentWordsCapturedModifier = 1.0;
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_WORDS_CAPTURED_USE
 	fractionOfComponentWordsCapturedModifier = fractionOfComponentWordsCaptured*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_WORDS_CAPTURED;
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "fractionOfComponentWordsCapturedModifier = " << fractionOfComponentWordsCapturedModifier << endl;
+	#endif
 	#endif
 	
 	double componentWordsOrderSequentialModifier = 1.0;
@@ -535,20 +594,33 @@ double SANIpropagateCompactReferenceSetsClass::calculateActivationSignalStrength
 	{
 		componentWordsOrderSequentialModifier = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_WORDS_SEQUENTIALITY;
 	}
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "componentWordsOrderSequentialModifier = " << componentWordsOrderSequentialModifier << endl;
+	#endif
 	#endif
 	
 	double neuronPopularityModifier = 1.0;
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_NEURON_POPULARITY_USE
 	neuronPopularityModifier = neuronPopularity*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_NEURON_POPULARITY;
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "neuronPopularityModifier = " << neuronPopularityModifier << endl;
+	#endif
 	#endif
 	
 	double neuronRecencyAgeModifier = 1.0;
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_RECENCY_USE
 	double neuronRecencyAgeModifier = 1.0/(neuronRecencyAge*SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY_COMPONENTS_RECENCY);
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "neuronRecencyAgeModifier = " << neuronRecencyAgeModifier << endl;
+	#endif
 	#endif
 		
 	double activationSignalStrengthModifier = fractionOfComponentsActivatedModifier*componentActivationOrderSequentialModifier*fractionOfComponentWordsCapturedModifier*componentWordsOrderSequentialModifier*neuronPopularityModifier*neuronRecencyAgeModifier;
-	activationSignalStrength = activationSignalStrength * activationSignalStrengthModifier;
+	double activationSignalStrength = componentActivationSignal * activationSignalStrengthModifier;
+	
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+	cout << "activationSignalStrength = " << activationSignalStrength << endl;
+	#endif
 	
 	return activationSignalStrength;
 }

@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1b 04-March-2021
+ * Project Version: 1p1c 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -1511,13 +1511,13 @@ bool SANInodesClass::printNeuralNetwork(const SANIGroupNeuralNetwork* currentNeu
 		{
 			SANIGroupNeuralNetwork* componentSource = (component->SANIbackGroupConnectionList)[j];
 			
-			//if(!(componentSource->inputLayerNeuron))	//optional
-			//{
+			if(!(componentSource->inputLayerNeuron))	//optional
+			{
 				if(!printNeuralNetwork(componentSource, layer+1))
 				{
 					result = false;
 				}
-			//}
+			}
 			
 		}
 	}	
@@ -1561,6 +1561,9 @@ bool SANInodesClass::printNeuralNetwork(const SANIGroupNeuralNetwork* currentNeu
 #ifndef GIA_POS_REL_TRANSLATOR_RULES_USE	
 bool SANInodesClass::printNeuralNetworkInputNeuron(const SANIGroupNeuralNetwork* inputNeuron, const int layer)
 {
+	printParseTreeDebugIndentation(layer);
+	cout << "inputNeuron->groupIndex = " << inputNeuron->groupIndex << endl;
+	
 	//CHECKTHIS
 	/*
 	printParseTreeDebugIndentation(layer);

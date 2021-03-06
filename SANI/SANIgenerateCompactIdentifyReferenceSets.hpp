@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1b 04-March-2021
+ * Project Version: 1p1c 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -50,6 +50,7 @@
 #ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
 #include "SANIpropagateCompactReferenceSets.hpp"
 #endif
+#include "SANIpropagateOperations.hpp"
 #include "LRPpreprocessorWordIdentification.hpp"
 #include "LRPpreprocessorWordClass.hpp"
 
@@ -80,6 +81,7 @@ class SANIgenerateCompactIdentifyReferenceSetsClass
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
 	private: SANIpropagateCompactReferenceSetsClass SANIpropagateCompactReferenceSets;
 	#endif
+	private: SANIpropagateOperationsClass SANIpropagateOperations;
 	private: LRPpreprocessorWordIdentificationClass LRPpreprocessorWordIdentification;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	
