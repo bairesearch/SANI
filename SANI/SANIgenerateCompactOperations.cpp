@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1a 04-March-2021
+ * Project Version: 1p1b 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Operations - unsupervised training of sequence grammar parse network
  * /
@@ -118,7 +118,7 @@ bool SANIgenerateCompactOperationsClass::addVariableComponentToGroup(const SANIF
 bool SANIgenerateCompactOperationsClass::addComponentToGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, const bool componentTypeString, bool insertAtStart)
 {
 	bool result = true;
-
+	
 	SANIComponentNeuralNetwork* newComponent = new SANIComponentNeuralNetwork();
 
 	newComponent->ownerGroup = higherLevelComponentGroupOwner;
@@ -402,12 +402,14 @@ bool SANIgenerateCompactOperationsClass::updateHighLevelNeuronHierachy(vector<SA
 {
 	bool result = true;
 	
+	//cout << "\nSANIgenerateCompactOperationsClass::updateHighLevelNeuronHierachy" << endl;
+	
 	bool foundHigherLevelWithoutNeuronNeuronPrior = false;
 	int i = lowestLayerNeuronIndex;
 	while(!foundHigherLevelWithoutNeuronNeuronPrior)
 	{
 		if((i < highLevelNeuronPriorArray->size()) && ((*highLevelNeuronPriorArray)[i] != NULL))
-		{
+		{			
 			SANIGroupNeuralNetwork* highLevelNeuronPriorCurrent = (*highLevelNeuronPriorArray)[i];
 
 			//combine grammaticalSentenceNeuronSub and highLevelNeuronPriorArray[i], to create neuron in layer i+1

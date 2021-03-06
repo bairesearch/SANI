@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedUnique.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1a 04-March-2021
+ * Project Version: 1p1b 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Unique components - unsupervised training of sequence grammar parse network
  * /
@@ -173,6 +173,7 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 	SANIpropagateOperations.setParseSentenceReverse(true, forwardPropogationSentenceData);
 	
 	int indexInSequence = *indexInSequenceStart;
+	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 	cout << "(*(forwardPropogationSentenceData->sentenceContents))[*indexInSequenceStart]->tagName = " << (*(forwardPropogationSentenceData->sentenceContents))[*indexInSequenceStart]->tagName << endl;
 	#endif
@@ -257,7 +258,8 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 		{
 			//case a	
 			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-			cout << "A createOrAppendFirstLevelHiddenLayerGroup, indexInSequence = " << indexInSequence << ", groupIndex = " << currentLayerNeuronGroupStart->groupIndex << ", LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] = " << LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] << endl;
+			string neuronName = currentLayerNeuronGroupStart->neuronReference->SANIneuronName;
+			cout << "A createOrAppendFirstLevelHiddenLayerGroup, indexInSequence = " << indexInSequence << ", groupIndex = " << currentLayerNeuronGroupStart->groupIndex << ", neuronName = " << neuronName << ", LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] = " << LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] << endl;
 			#endif
 			
 			foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
@@ -274,9 +276,9 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 
 			//case c
 			//fully activated group coverage+weight is > partially activated group coverage+weight
-			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-			cout << "B addNeuronToListSectioned, indexInSequence = " << indexInSequence  << ", nextIndexInSequence = " << SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSentenceData) << ", groupIndexes = " << SANIpropagateOperations.printParseTreeGroupIndicesFlat(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage) << endl;
-			#endif
+			//#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
+			cout << "B addNeuronToListSectioned, indexInSequence = " << indexInSequence  << ", nextIndexInSequence = " << SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSentenceData) << ", groupIndexes = " << SANInodes.printParseTreeGroupIndicesFlat(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage) << endl;
+			//#endif
 
 			addNeuronToListSectioned(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef, &indexInSequence);
 		}			
@@ -418,7 +420,7 @@ bool SANIgenerateCompactSectionedUniqueClass::connectListOfHighLevelNeuronsToNew
 
 	SANIGroupNeuralNetwork* currentHighLevelNeuron = (*listOfHighLevelNeurons)[0];
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-	cout << currentHighLevelNeuron->groupIndex << " ";
+	cout << "currentHighLevelNeuron->groupIndex = " << currentHighLevelNeuron->groupIndex << " ";
 	#endif
 
 
@@ -507,6 +509,7 @@ bool SANIgenerateCompactSectionedUniqueClass::connectListOfHighLevelNeuronsToNew
 			#endif
 
 			bool componentTypeString = SANInodes.calculateComponentTypeString(currentHighLevelNeuron);
+			
 			SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, componentTypeString, false);
 
 			#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH

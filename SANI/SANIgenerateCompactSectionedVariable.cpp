@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedVariable.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1a 04-March-2021
+ * Project Version: 1p1b 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Variable components - unsupervised training of sequence grammar parse network
  * /
@@ -592,7 +592,7 @@ bool SANIgenerateCompactSectionedVariableClass::findAndReconcileIncrementalVaria
 				//case c
 				//fully activated group coverage+weight is > partially activated group coverage+weight
 				#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-				cout << "B addNeuronToListSectioned, indexInSequence = " << indexInSequence  << ", nextIndexInSequence = " << SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSentenceData) << ", groupIndexes = " << SANIpropagateOperations.printParseTreeGroupIndicesFlat(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage) << endl;
+				cout << "B addNeuronToListSectioned, indexInSequence = " << indexInSequence  << ", nextIndexInSequence = " << SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSentenceData) << ", groupIndexes = " << SANInodes.printParseTreeGroupIndicesFlat(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage) << endl;
 				#endif
 
 				addNeuronToListSectioned(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef, &indexInSequence);

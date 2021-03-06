@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1a 04-March-2021
+ * Project Version: 1p1b 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -213,9 +213,9 @@ bool SANIformationClass::createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNe
 	return result;
 }
 bool SANIformationClass::addInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
-{
+{	
 	bool result = true;
-	
+		
 	int* numberOfGroupsInSection = &numberOfInputGroupsInSectionWordOrig;
 
 	SANIGroupNeuralNetwork* currentGroupInInputLayerSectionWordOrig = getFirstGroupInInputLayerSectionWordOrig();
@@ -238,8 +238,10 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(const LRPpreprocesso
 	currentGroupInInputLayerSectionWordOrig->initiateANNneuron(wordOrig + ", groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex));	//OLD: groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex)
 	#endif
 	#endif
-	addGroupToLayer(&currentGroupInInputLayerSectionWordOrig, numberOfGroupsInSection);
+	
 	inputLayerSectionWordOrigMap.insert(pair<string, SANIGroupNeuralNetwork*>(wordOrig, currentGroupInInputLayerSectionWordOrig));
+
+	addGroupToLayer(&currentGroupInInputLayerSectionWordOrig, numberOfGroupsInSection);
 	#ifdef SANI_DEBUG_CREATE
 	cout << "SANIformationClass::createInputNeuronLayerSectionWordOrig{} addGroupToLayer(currentGroupInInputLayerSectionWordOrig, numberOfGroupsInSection);  i = " << i << endl;
 	#endif
@@ -1014,6 +1016,7 @@ ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetw
 ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent, double connectionStrength)
 {
 	vector<ANNneuronConnection*>* ANNbackNeuronConnectionList = &(higherLevelComponent->ANNbackNeuronConnectionList);
+	//cout << "ANNbackNeuronConnectionList->size() = " << ANNbackNeuronConnectionList->size() << endl;
 	SANIGroupNeuralNetwork* higherLevelGroup = higherLevelComponent->ownerGroup;
 
 	ANNneuronConnection* newANNneuronConnection = createANNconnection(group, higherLevelGroup);
@@ -1029,7 +1032,7 @@ ANNneuronConnection* SANIformationClass::createANNconnection(SANIGroupNeuralNetw
 {
 	ANNneuron* neuron1 = group->neuronReference;
 	ANNneuron* neuron2 = higherLevelGroup->neuronReference;
-	
+		
 	ANNneuronConnection* newANNneuronConnection = new ANNneuronConnection();
 	newANNneuronConnection->backNeuron = neuron1;
 	newANNneuronConnection->frontNeuron = neuron2;

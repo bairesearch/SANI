@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1a 04-March-2021
+ * Project Version: 1p1b 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -97,6 +97,16 @@ bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork(SANItransla
 			}
 			#endif
 			
+			#ifdef SANI_DEBUG_RULES_PRINT_PARSE_TREE
+			cout << "SANI_DEBUG_RULES_PRINT_PARSE_TREE: SANInodes.printParseTree" << endl;			
+			SANInodes.printParseTree(*topLevelParseTreeGroup, 0);
+			#endif
+			#ifdef SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK
+			cout << "SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK: SANInodes.printNeuralNetwork" << endl;
+			SANInodes.printNeuralNetwork((*topLevelParseTreeGroup)->groupRef, 0);
+			#endif
+			
+						
 			#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
 			SANIgenerateCompactIdentify.setGeneratedForLastSentence(translatorVariables);
 			#endif
