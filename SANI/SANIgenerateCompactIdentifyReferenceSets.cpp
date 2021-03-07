@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1c 04-March-2021
+ * Project Version: 1p1d 04-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -139,13 +139,13 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 		LRPpreprocessorPlainTextWord* currentWord = forwardPropogationSentenceData->sentenceContents->at(w);
 		
 		string currentWordText = currentWord->tagName;
-		//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+		//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
 		cout << "currentWordText = " << currentWordText << endl;
 		//#endif
 		
 		if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE)
 		{
-			//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
+			//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
 			cout << "SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE" << endl;
 			//#endif
 			
@@ -161,19 +161,20 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 				int tupleLastIndex = tupleFirstIndex+tupleSize-1;
 				LRPpreprocessorPlainTextWord* nextWordInTuple = forwardPropogationSentenceData->sentenceContents->at(tupleLastIndex);
 				
+				/*
+				if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_INDEFINITE)
+				{
+					//stop propagation on detection of an indeterminer
+					stillPropagatingPotentialRefSet = false;
+				}
+				if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE)
+				{
+					//do not stop reference set propagation on detection of a determiner; eg the dog that rides the apple has a pie
+				}
+				*/
 				
-				//if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_INDEFINITE)
-				//{
-				//	//stop propagation on detection of an indeterminer
-				//	stillPropagatingPotentialRefSet = false;
-				//}
-				//if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE)
-				//{
-				//	//do not stop reference set propagation on detection of a determiner; eg the dog that rides the apple has a pie
-				//}
-				
-				//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_PENALTY
-				cout << "\n\nSANIpropagateCompactReferenceSets.performPropagationIndex: tupleFirstIndex = " << tupleFirstIndex << ", tupleLastIndex = " << tupleLastIndex << endl;
+				//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
+				cout << "\n\nSANIpropagateCompactReferenceSets.performPropagationIndex: tupleFirstIndex = " << tupleFirstIndex << ", tupleLastIndex = " << tupleLastIndex << ", performPropagationIndex: " << forwardPropogationSentenceData->sentenceContents->at(tupleLastIndex)->tagName << endl;
 				//#endif
 				
 				SANIpropagateCompactReferenceSets.performPropagationIndex(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, &(propagatedGroupsListPerformanceTupleArray[tupleSize]), tupleLastIndex, tupleFirstIndex);
@@ -182,7 +183,11 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 				
 				tupleSize++; 
 				
+				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_IGNORE_EOS
+				if(tupleLastIndex+1 == forwardPropogationSentenceData->sentenceContents->size()-1)
+				#else
 				if(tupleLastIndex+1 == forwardPropogationSentenceData->sentenceContents->size())
+				#endif
 				{
 					stillPropagatingPotentialRefSet = false;	//reached end of sentence for tuple construction
 				}
@@ -218,56 +223,90 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 	}
 }
 
-void SANIgenerateCompactIdentifyReferenceSetsClass::createDirectAssociationConnection(SANIGroupNeuralNetwork* currentSentenceReferenceSet, SANIGroupNeuralNetwork* mostLikelyCandidateReferenceSetGroup, double mostLikelyCandidateReferenceSetSimilarity)
+bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyMostLikelyReferenceSetCandidate(vector<multimap<double, SANIGroupNeuralNetwork*>>* propagatedGroupsListPerformanceTupleArray, int tupleSizeMax, SANIGroupNeuralNetwork** mostLikelyCandidateReferenceSetGroup, int* mostLikelyCandidateReferenceSetPhraseLength, double* mostLikelyCandidateReferenceSetSimilarity, SANIGroupParseTree* topLevelParseTreeGroup)
 {
-	//perform uniqueness test before appending association;
-	bool directAssociationAlreadyCreated1 = false;
-	bool directAssociationAlreadyCreated2 = false;
-	double directNeuronAssociationExistingProbability1 = 0.0;
-	double directNeuronAssociationExistingProbability2 = 0.0;
-	for(multimap<double, SANIGroupNeuralNetwork*>::iterator directNeuronAssociationListIterator = currentSentenceReferenceSet->directNeuronAssociationList.begin(); directNeuronAssociationListIterator != currentSentenceReferenceSet->directNeuronAssociationList.end(); )
-	//for(int i=0; i<currentSentenceReferenceSet->directNeuronAssociations.size(); i++)
+	bool result = false;
+	
+	vector<pair<double, SANIGroupNeuralNetwork*>> propagatedGroupsListPerformanceMaxOfEachTupleArray(tupleSizeMax);	//dynamic array declaration (check Windows C++ compatibility; available on g++ compiler)
+	for(int t=1; t<tupleSizeMax; t++)
 	{
-		SANIGroupNeuralNetwork* directNeuronAssociation = directNeuronAssociationListIterator->second;	//directNeuronAssociations[i];
-		if(directNeuronAssociation == mostLikelyCandidateReferenceSetGroup)
+		propagatedGroupsListPerformanceMaxOfEachTupleArray[t].first = 0.0;	//set performance to zero for every element in the array
+	}
+	
+	for(int t=1; t<tupleSizeMax; t++)
+	{
+		multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance = &((*propagatedGroupsListPerformanceTupleArray)[t]);
+		
+		bool stillSearchingForReferenceSetCandidate = true;
+		
+		for(multimap<double, SANIGroupNeuralNetwork*>::reverse_iterator propagatedGroupsListPerformanceIterator = propagatedGroupsListPerformance->rbegin(); propagatedGroupsListPerformanceIterator != propagatedGroupsListPerformance->rend(); propagatedGroupsListPerformanceIterator++) 
 		{
-			directAssociationAlreadyCreated1 = true;
-			directNeuronAssociationExistingProbability1 = directNeuronAssociationListIterator->first;
-			currentSentenceReferenceSet->directNeuronAssociationList.erase(directNeuronAssociationListIterator);
-		}
-		else
+			double maxPerformance = propagatedGroupsListPerformanceIterator->first;	//get first in list [max performance]
+			SANIGroupNeuralNetwork* maxPerformanceGroup = propagatedGroupsListPerformanceIterator->second;	//get first in list [max performance]
+			//cout << "maxPerformance = " << maxPerformance << endl;
+			
+			if(stillSearchingForReferenceSetCandidate)
+			{
+				if(maxPerformance > SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_MINIMUM_ACTIVATION_SIGNAL)
+				{
+					//when calculating identifyMostLikelyReferenceSetCandidate, ignore (newly created) parse tree graph node representing the sentence reference set;
+					if(!findNeuronInParseTree(topLevelParseTreeGroup, maxPerformanceGroup, 0)) //do not use newHiddenLayerGroupsTemp as it only contains newly generated nodes
+					{
+						//cout << "maxPerformance = " << maxPerformance << endl;
+						
+						//cout << "!findNeuronInParseTree" << endl;
+						stillSearchingForReferenceSetCandidate = false;
+						propagatedGroupsListPerformanceMaxOfEachTupleArray[t] = make_pair(maxPerformance, maxPerformanceGroup);
+					}
+				}
+			}
+		
+			SANIpropagateCompactReferenceSets.clearSANIpropagateCompactReferenceSetsNetworkCache(maxPerformanceGroup);
+		}		
+	}
+	
+	double maxPerformance = 0.0;
+	for(int t=1; t<tupleSizeMax; t++)
+	{
+		pair<double, SANIGroupNeuralNetwork*> propagatedGroupsListPerformanceMaxTuple = propagatedGroupsListPerformanceMaxOfEachTupleArray[t];
+		if(propagatedGroupsListPerformanceMaxTuple.first > maxPerformance)
 		{
-			directNeuronAssociationListIterator++;
+			result = true;
+			cout << "\tSANIgenerateCompactIdentifyReferenceSetsClass::identifyMostLikelyReferenceSetCandidate: maxPerformance = " << maxPerformance << endl;
+			
+			maxPerformance = propagatedGroupsListPerformanceMaxTuple.first;
+			*mostLikelyCandidateReferenceSetGroup = propagatedGroupsListPerformanceMaxTuple.second;	//get first in list [max performance]
+			*mostLikelyCandidateReferenceSetPhraseLength = t;
+			*mostLikelyCandidateReferenceSetSimilarity = propagatedGroupsListPerformanceMaxTuple.first;
 		}
 	}
-	for(multimap<double, SANIGroupNeuralNetwork*>::iterator directNeuronAssociationListIterator = mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.begin(); directNeuronAssociationListIterator != mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.end(); )
-	//for(int i=0; i<mostLikelyCandidateReferenceSetGroup->directNeuronAssociations.size(); i++)
+	
+	return result;
+}
+		
+bool SANIgenerateCompactIdentifyReferenceSetsClass::findNeuronInParseTree(SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* neuronToFind, const int layer)
+{	
+	bool result = false;
+	
+	if(currentParseTreeGroup->groupRef == neuronToFind)
 	{
-		SANIGroupNeuralNetwork* directNeuronAssociation = directNeuronAssociationListIterator->second;	//directNeuronAssociations[i];
-		if(directNeuronAssociation == currentSentenceReferenceSet)
-		{
-			directAssociationAlreadyCreated2 = true;
-			directNeuronAssociationExistingProbability2 = directNeuronAssociationListIterator->first;
-			mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.erase(directNeuronAssociationListIterator);
-		}
-		else
-		{
-			directNeuronAssociationListIterator++;
-		}
+		result = true;
 	}
-	if((directAssociationAlreadyCreated1 && !directAssociationAlreadyCreated2) || (directAssociationAlreadyCreated2 && !directAssociationAlreadyCreated1))
-	{
-		cerr << "SANIgenerateCompactIdentifyReferenceSetsClass::createDirectAssociationConnection error: ((directAssociationAlreadyCreated1 && !directAssociationAlreadyCreated2) || (directAssociationAlreadyCreated2 && !directAssociationAlreadyCreated1))" << endl;
-		exit(EXIT_ERROR);
-	}
-	if(directAssociationAlreadyCreated1)
-	{
-		mostLikelyCandidateReferenceSetSimilarity = mostLikelyCandidateReferenceSetSimilarity + ((directNeuronAssociationExistingProbability1+directNeuronAssociationExistingProbability2)/2);	//note directNeuronAssociationExistingProbability1 should equal directNeuronAssociationExistingProbability2 under current implementation
+	
+	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	{				
+		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
+
+		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		{
+			if(findNeuronInParseTree(parseTreeComponent->parseTreeGroupRef, neuronToFind, layer+1))
+			{
+				result = true;
+			}
+		}
 	}
 
-	//create direct association:
-	currentSentenceReferenceSet->directNeuronAssociationList.insert(make_pair(mostLikelyCandidateReferenceSetSimilarity, mostLikelyCandidateReferenceSetGroup));
-	mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.insert(make_pair(mostLikelyCandidateReferenceSetSimilarity, currentSentenceReferenceSet));
+	return result;
 }
 
 bool SANIgenerateCompactIdentifyReferenceSetsClass::findCurrentSentenceReferenceSet(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int tupleFirstIndex, int referenceSetPhraseLength, SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork** currentSentenceReferenceSet, int* minNumberWordContiguityErrors, const int layer)
@@ -323,84 +362,61 @@ int SANIgenerateCompactIdentifyReferenceSetsClass::calculateNumberWordContiguity
 	return numberWordContiguityErrors;
 }
 
-bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyMostLikelyReferenceSetCandidate(vector<multimap<double, SANIGroupNeuralNetwork*>>* propagatedGroupsListPerformanceTupleArray, int tupleSizeMax, SANIGroupNeuralNetwork** mostLikelyCandidateReferenceSetGroup, int* mostLikelyCandidateReferenceSetPhraseLength, double* mostLikelyCandidateReferenceSetSimilarity, SANIGroupParseTree* topLevelParseTreeGroup)
+
+void SANIgenerateCompactIdentifyReferenceSetsClass::createDirectAssociationConnection(SANIGroupNeuralNetwork* currentSentenceReferenceSet, SANIGroupNeuralNetwork* mostLikelyCandidateReferenceSetGroup, double mostLikelyCandidateReferenceSetSimilarity)
 {
-	bool result = false;
-	
-	vector<pair<double, SANIGroupNeuralNetwork*>> propagatedGroupsListPerformanceMaxOfEachTupleArray(tupleSizeMax);	//dynamic array declaration (check Windows C++ compatibility; available on g++ compiler)
-	for(int t=1; t<tupleSizeMax; t++)
+	//perform uniqueness test before appending association;
+	bool directAssociationAlreadyCreated1 = false;
+	bool directAssociationAlreadyCreated2 = false;
+	double directNeuronAssociationExistingProbability1 = 0.0;
+	double directNeuronAssociationExistingProbability2 = 0.0;
+	for(multimap<double, SANIGroupNeuralNetwork*>::iterator directNeuronAssociationListIterator = currentSentenceReferenceSet->directNeuronAssociationList.begin(); directNeuronAssociationListIterator != currentSentenceReferenceSet->directNeuronAssociationList.end(); )
+	//for(int i=0; i<currentSentenceReferenceSet->directNeuronAssociations.size(); i++)
 	{
-		propagatedGroupsListPerformanceMaxOfEachTupleArray[t].first = 0.0;	//set performance to zero for every element in the array
-	}
-	
-	for(int t=1; t<tupleSizeMax; t++)
-	{
-		multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance = &((*propagatedGroupsListPerformanceTupleArray)[t]);
-		
-		bool stillSearchingForReferenceSetCandidate = true;
-		
-		for(multimap<double, SANIGroupNeuralNetwork*>::reverse_iterator propagatedGroupsListPerformanceIterator = propagatedGroupsListPerformance->rbegin(); propagatedGroupsListPerformanceIterator != propagatedGroupsListPerformance->rend(); propagatedGroupsListPerformanceIterator++) 
+		SANIGroupNeuralNetwork* directNeuronAssociation = directNeuronAssociationListIterator->second;	//directNeuronAssociations[i];
+		if(directNeuronAssociation == mostLikelyCandidateReferenceSetGroup)
 		{
-			double maxPerformance = propagatedGroupsListPerformanceIterator->first;	//get first in list [max performance]
-			SANIGroupNeuralNetwork* maxPerformanceGroup = propagatedGroupsListPerformanceIterator->second;	//get first in list [max performance]
-			//cout << "maxPerformance = " << maxPerformance << endl;
-			
-			if(stillSearchingForReferenceSetCandidate)
-			{
-				//when calculating identifyMostLikelyReferenceSetCandidate, ignore (newly created) parse tree graph node representing the sentence reference set;
-				if(!findNeuronInParseTree(topLevelParseTreeGroup, maxPerformanceGroup, 0)) //do not use newHiddenLayerGroupsTemp as it only contains newly generated nodes
-				{
-					//cout << "!findNeuronInParseTree" << endl;
-					stillSearchingForReferenceSetCandidate = false;
-					propagatedGroupsListPerformanceMaxOfEachTupleArray[t] = make_pair(maxPerformance, maxPerformanceGroup);
-				}
-			}
-		
-			SANIpropagateCompactReferenceSets.clearSANIpropagateCompactReferenceSetsNetworkCache(maxPerformanceGroup);
-		}		
-	}
-	
-	double maxPerformance = 0.0;
-	for(int t=1; t<tupleSizeMax; t++)
-	{
-		pair<double, SANIGroupNeuralNetwork*> propagatedGroupsListPerformanceMaxTuple = propagatedGroupsListPerformanceMaxOfEachTupleArray[t];
-		if(propagatedGroupsListPerformanceMaxTuple.first > maxPerformance)
+			directAssociationAlreadyCreated1 = true;
+			directNeuronAssociationExistingProbability1 = directNeuronAssociationListIterator->first;
+			currentSentenceReferenceSet->directNeuronAssociationList.erase(directNeuronAssociationListIterator);
+		}
+		else
 		{
-			result = true;
-			maxPerformance = propagatedGroupsListPerformanceMaxTuple.first;
-			*mostLikelyCandidateReferenceSetGroup = propagatedGroupsListPerformanceMaxTuple.second;	//get first in list [max performance]
-			*mostLikelyCandidateReferenceSetPhraseLength = t;
-			*mostLikelyCandidateReferenceSetSimilarity = propagatedGroupsListPerformanceMaxTuple.first;
+			directNeuronAssociationListIterator++;
 		}
 	}
-	
-	return result;
-}
-		
-bool SANIgenerateCompactIdentifyReferenceSetsClass::findNeuronInParseTree(SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* neuronToFind, const int layer)
-{	
-	bool result = false;
-	
-	if(currentParseTreeGroup->groupRef == neuronToFind)
+	for(multimap<double, SANIGroupNeuralNetwork*>::iterator directNeuronAssociationListIterator = mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.begin(); directNeuronAssociationListIterator != mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.end(); )
+	//for(int i=0; i<mostLikelyCandidateReferenceSetGroup->directNeuronAssociations.size(); i++)
 	{
-		result = true;
-	}
-	
-	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
-	{				
-		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
-
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		SANIGroupNeuralNetwork* directNeuronAssociation = directNeuronAssociationListIterator->second;	//directNeuronAssociations[i];
+		if(directNeuronAssociation == currentSentenceReferenceSet)
 		{
-			if(findNeuronInParseTree(parseTreeComponent->parseTreeGroupRef, neuronToFind, layer+1))
-			{
-				result = true;
-			}
+			directAssociationAlreadyCreated2 = true;
+			directNeuronAssociationExistingProbability2 = directNeuronAssociationListIterator->first;
+			mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.erase(directNeuronAssociationListIterator);
+		}
+		else
+		{
+			directNeuronAssociationListIterator++;
 		}
 	}
+	if((directAssociationAlreadyCreated1 && !directAssociationAlreadyCreated2) || (directAssociationAlreadyCreated2 && !directAssociationAlreadyCreated1))
+	{
+		cerr << "SANIgenerateCompactIdentifyReferenceSetsClass::createDirectAssociationConnection error: ((directAssociationAlreadyCreated1 && !directAssociationAlreadyCreated2) || (directAssociationAlreadyCreated2 && !directAssociationAlreadyCreated1))" << endl;
+		exit(EXIT_ERROR);
+	}
+	if(directAssociationAlreadyCreated1)
+	{
+		mostLikelyCandidateReferenceSetSimilarity = mostLikelyCandidateReferenceSetSimilarity + ((directNeuronAssociationExistingProbability1+directNeuronAssociationExistingProbability2)/2);	//note directNeuronAssociationExistingProbability1 should equal directNeuronAssociationExistingProbability2 under current implementation
+	}
 
-	return result;
+	//create direct association:
+	currentSentenceReferenceSet->directNeuronAssociationList.insert(make_pair(mostLikelyCandidateReferenceSetSimilarity, mostLikelyCandidateReferenceSetGroup));
+	mostLikelyCandidateReferenceSetGroup->directNeuronAssociationList.insert(make_pair(mostLikelyCandidateReferenceSetSimilarity, currentSentenceReferenceSet));
 }
+
+
+
 
 
 #endif
