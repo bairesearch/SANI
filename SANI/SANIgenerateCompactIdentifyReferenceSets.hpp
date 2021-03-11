@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1d 04-March-2021
+ * Project Version: 1p2a 09-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -53,6 +53,8 @@
 #include "SANIpropagateOperations.hpp"
 #include "LRPpreprocessorWordIdentification.hpp"
 #include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
+
 
 //copied from GIAsynRelTranslatorDefs.hpp [needs to be moved to LRP]
 #define GRAMMATICAL_DETERMINER_DEFINITE "the"
@@ -84,12 +86,19 @@ class SANIgenerateCompactIdentifyReferenceSetsClass
 	private: SANIpropagateOperationsClass SANIpropagateOperations;
 	private: LRPpreprocessorWordIdentificationClass LRPpreprocessorWordIdentification;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
-	
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
+
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
 	public: bool linkSimiliarSubnets(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* topLevelParseTreeGroup);
 		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS
 		private: bool identifyReferenceSetDelimiters(SANItranslatorVariablesClass* translatorVariables, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup);
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES
+			private: bool demarkatePosUnambiguousEntities(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup, LRPpreprocessorPlainTextWord* currentWord);
+			#endif
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_OF_REFERENCE_SET_DELIMITERS
+			private: bool demarkatePosReferenceSetDelimiters(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup, int lastIndexOfPreviousReferenceSet, int tupleFirstIndex);
+			#endif
 			private: bool identifyMostLikelyReferenceSetCandidate(vector<multimap<double, SANIGroupNeuralNetwork*>>* propagatedGroupsListPerformanceTupleArray, int tupleSizeMax, SANIGroupNeuralNetwork** mostLikelyCandidateReferenceSetGroup, int* mostLikelyCandidateReferenceSetPhraseLength, double* mostLikelyCandidateReferenceSetSimilarity, SANIGroupParseTree* topLevelParseTreeGroup);
 				private: bool findNeuronInParseTree(SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork* neuronToFind, const int layer);
 			private: bool findCurrentSentenceReferenceSet(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int tupleFirstIndex, int referenceSetPhraseLength, SANIGroupParseTree* currentParseTreeGroup, SANIGroupNeuralNetwork** currentSentenceReferenceSet, int* minNumberWordContiguityErrors, const int layer);

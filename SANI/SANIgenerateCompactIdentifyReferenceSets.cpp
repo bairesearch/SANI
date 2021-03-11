@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p1d 04-March-2021
+ * Project Version: 1p2a 09-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -70,8 +70,12 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::linkSimiliarSubnets(SANItran
 #ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS
 bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimiters(SANItranslatorVariablesClass* translatorVariables, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup)
 {
+	bool result = true;
+	
 	SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_NEURON_COMPONENT_CONNECTION_ACTIVE); //this is required to clear the neuron/component activations of past SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork generateSentenceNetworkNodes/testSentenceNetworkNodes propagations
 
+	bool determinerDetected = false;
+	
 	//determine referenceSetStartCodonType for each word:	
 	for(int w=0; w<forwardPropogationSentenceData->sentenceContents->size(); w++)
 	{
@@ -83,8 +87,14 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 		currentWordText = SHAREDvars.convertStringToLowerCase(&currentWordText);
 		//cout << "currentWordText = " << currentWordText << endl;
 
+		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES	//DOING
+		demarkatePosUnambiguousEntities(forwardPropogationSentenceData, SANIGroupTypes, topLevelParseTreeGroup, currentWord);
+		#endif
+		
 		if(LRPpreprocessorWordIdentification.determineIsDeterminer(currentWord))
 		{
+			determinerDetected = true;
+			
 			//definite detection
 			if(SHAREDvars.textInTextArray(currentWordText, grammaticalDeterminerDefiniteArray, GRAMMATICAL_DETERMINER_DEFINITE_NUMBER_OF_TYPES))
 			{
@@ -112,8 +122,11 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 			LRPpreprocessorMultiwordReductionWord* nounBaseFound = NULL;
 			if(LRPpreprocessorWordIdentification.determineNounPluralVariant(currentWordText, &nounBaseFound, &grammaticalBaseTenseForm))
 			{
-				//case: possible concept: Dogs are/have
-				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_CONCEPT;
+				if(!determinerDetected)
+				{
+					//case: possible concept: Dogs are/have
+					referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_CONCEPT;
+				}
 			}		
 		}
 		
@@ -123,6 +136,10 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 	//perform reference set propagation of tuples (size t:0->n) after start codon:
 	int sentenceLength = forwardPropogationSentenceData->sentenceContents->size();
 
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_OF_REFERENCE_SET_DELIMITERS
+	int lastIndexOfPreviousReferenceSet = INT_DEFAULT_VALUE;
+	#endif
+	
 	//for(int w=0; w<forwardPropogationSentenceData->sentenceContents->size(); w++)
 	for(int i=0; i<forwardPropogationSentenceData->sentenceContents->size(); i++)
 	{
@@ -143,7 +160,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 		cout << "currentWordText = " << currentWordText << endl;
 		//#endif
 		
-		if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE)
+		if((currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE) || (currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_INDEFINITE) || (currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_PROPERNOUN) || (currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_CONCEPT))
 		{
 			//#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
 			cout << "SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE" << endl;
@@ -154,7 +171,21 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 			//initiate SANI propagation of tuple following 
 			int tupleSizeMin = 1;
 			int tupleSize = tupleSizeMin;
-			int tupleFirstIndex = i+1;	//CHECKTHIS: +1: ignore determiner when searching for reference set? the sentence parse tree graph node will contain the determiner however, so there will likely always be a discrepancy between these
+			int tupleFirstIndex = -1;
+			if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_PROPERNOUN)
+			{
+				tupleFirstIndex = i;
+			}
+			else if(currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_CONCEPT)
+			{
+				//TODO: need to determine tupleFirstIndex (might be at current index i, e.g. "dogs" or before current index i, e.g. "red dogs")
+				cerr << "SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimiters: case (currentWord->referenceSetStartCodonDeterminerType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_CONCEPT) not yet coded" << endl;
+				exit(EXIT_ERROR);
+			}
+			else
+			{
+				tupleFirstIndex = i+1;	//CHECKTHIS: +1: ignore determiner when searching for reference set? the sentence parse tree graph node will contain the determiner however, so there will likely always be a discrepancy between these		
+			}
 			bool stillPropagatingPotentialRefSet = true;
 			while(stillPropagatingPotentialRefSet)
 			{
@@ -206,7 +237,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 				cout << "identifyMostLikelyReferenceSetCandidate" << endl;
 				
 				SANIGroupNeuralNetwork* currentSentenceReferenceSet = NULL;
-				int minNumberWordContiguityErrors = 1000; //large number
+				int minNumberWordContiguityErrors = REALLY_LARGE_INT; //large number
 				if(findCurrentSentenceReferenceSet(forwardPropogationSentenceData, tupleFirstIndex, mostLikelyCandidateReferenceSetPhraseLength, topLevelParseTreeGroup, &currentSentenceReferenceSet, &minNumberWordContiguityErrors, 0))
 				{
 					//create direct link between mostLikelyCandidateReferenceSetGroup and relevant parse tree graph node
@@ -214,6 +245,15 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 					cout << "createDirectAssociationConnection: mostLikelyCandidateReferenceSetGroup = " << mostLikelyCandidateReferenceSetGroup->groupIndex << endl;
 					createDirectAssociationConnection(currentSentenceReferenceSet, mostLikelyCandidateReferenceSetGroup, mostLikelyCandidateReferenceSetSimilarity);	//TODO: define this function and necessary datastructures
 				}
+				else
+				{
+					cout << "SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimiters: !findCurrentSentenceReferenceSet" << endl;
+					exit(EXIT_ERROR);
+				}	
+				
+				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_OF_REFERENCE_SET_DELIMITERS	//DOING
+				demarkatePosReferenceSetDelimiters(forwardPropogationSentenceData, SANIGroupTypes, topLevelParseTreeGroup, lastIndexOfPreviousReferenceSet, tupleFirstIndex);
+				#endif
 			}
 			else
 			{
@@ -221,8 +261,167 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 			}
 		}
 	}
+	
+	return result;
 }
 
+#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES
+bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntities(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup, LRPpreprocessorPlainTextWord* currentWord)
+{
+	bool result = true;
+	
+	bool contextWordPOSisAmbiguous = false;
+	bool identifiedEveryWordInDatabasePOSpermutationNOTUSED = true;
+	uint64_t contextWordPOSambiguityInfo = LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN;	//default value
+	uchar contextWordUnambiguousPOSindex = INT_DEFAULT_VALUE;	//LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;
+	if(!LRPpreprocessorPOStagger.determinePOSambiguityInfo(currentWord, &contextWordPOSambiguityInfo, &contextWordPOSisAmbiguous, &contextWordUnambiguousPOSindex, &identifiedEveryWordInDatabasePOSpermutationNOTUSED))
+	{
+		result = false;
+	}
+	
+	currentWord->POSambiguityInfo = contextWordPOSambiguityInfo;	
+	if(!contextWordPOSisAmbiguous)
+	{
+		currentWord->wordPOStypeInferred = contextWordUnambiguousPOSindex;
+		currentWord->unambiguousPOSindex = contextWordUnambiguousPOSindex;
+		
+		cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntities: currentWord = " << currentWord->tagName << ", currentWord->wordPOStypeInferred = " << currentWord->wordPOStypeInferred << endl;
+		
+		/*		
+		int indexOfReferenceSetDelimiter = i;
+		int referenceSetDelimiterPhraseLength = 1;
+		SANIGroupNeuralNetwork* referenceSetDelimiter = NULL;
+		int minNumberWordContiguityErrors = REALLY_LARGE_INT; //large number
+		if(findCurrentSentenceReferenceSet(forwardPropogationSentenceData, indexOfPreviousReferenceSetDelimiter, referenceSetDelimiterPhraseLength, topLevelParseTreeGroup, &referenceSetDelimiter, &minNumberWordContiguityErrors, 0))
+		{
+			referenceSetDelimiter->posValue = wordPOSVal
+			referenceSetDelimiter->posAmbiguousInfo = posAmbiguousInfo
+			referenceSetDelimiter->isPOSambiguous = isPOSambiguous;
+			if(!isPOSambiguous)
+			{
+				if(wordPOSVal == VERB or PREPOSITION)
+				{
+					int wordPOStype = currentWord->unambiguousPOSindex;
+					referenceSetDelimiter->GIAisRelationship = true;
+				}
+			}
+		}	
+		*/
+	}
+	
+	return result;
+}
+#endif
+		
+#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_OF_REFERENCE_SET_DELIMITERS
+bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDelimiters(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup, int lastIndexOfPreviousReferenceSet, int tupleFirstIndex)
+{
+	bool result = true;
+
+	if(lastIndexOfPreviousReferenceSet != INT_DEFAULT_VALUE)
+	{
+		int indexOfReferenceSetDelimiter = lastIndexOfPreviousReferenceSet+1;	//indexOfPreviousReferenceSetDelimiter
+		int referenceSetDelimiterPhraseLength = tupleFirstIndex-lastIndexOfPreviousReferenceSet;
+		
+		bool referenceSetDelimiterWordFoundAmbiguous = false;
+		bool referenceSetDelimiterWordFoundSingleAmbiguous = false;
+		int referenceSetDelimiterWordFoundSingleAmbiguousIndex = INT_DEFAULT_VALUE;
+		bool foundUnambiguousRelationshipEntity = false;
+		for(int i=indexOfReferenceSetDelimiter; i<indexOfReferenceSetDelimiter+referenceSetDelimiterPhraseLength; i++)
+		{
+			int w;
+			if(forwardPropogationSentenceData->parseSentenceReverse)
+			{
+				w = forwardPropogationSentenceData->sentenceContents->size()-1-i;
+			}
+			else
+			{
+				w = i;
+			}
+			LRPpreprocessorPlainTextWord* referenceSetDelimiterWord = forwardPropogationSentenceData->sentenceContents->at(w);
+
+			bool referenceSetDelimiterWordAmbiguous = false;
+			if(referenceSetDelimiterWord->unambiguousPOSindex == LRP_SHARED_POS_TYPE_UNDEFINED)	//ie ambiguous
+			{
+				referenceSetDelimiterWordAmbiguous = true;
+			}
+			
+			if(!referenceSetDelimiterWordAmbiguous)	//unambious
+			{
+				if(LRPpreprocessorWordIdentification.determineIsVerb(referenceSetDelimiterWord, LRP_PREPROCESSOR_GRAMMATICALLY_STRICT_VERB_VARIANTS_ONLY_VALUE_IRRELEVANT))
+				{
+					foundUnambiguousRelationshipEntity = true;
+				}
+				if(LRPpreprocessorWordIdentification.determineIsPreposition(referenceSetDelimiterWord))
+				{
+					foundUnambiguousRelationshipEntity = true;
+				}
+			}
+			if(referenceSetDelimiterWord->unambiguousPOSindex == LRP_SHARED_POS_TYPE_UNDEFINED)	//ie ambiguous
+			{
+				if(!referenceSetDelimiterWordFoundAmbiguous)
+				{
+					referenceSetDelimiterWordFoundAmbiguous = true;
+					referenceSetDelimiterWordFoundSingleAmbiguous = true;
+					referenceSetDelimiterWordFoundSingleAmbiguousIndex = w;
+				}
+				else
+				{
+					referenceSetDelimiterWordFoundSingleAmbiguous = false;
+				}
+			}
+		}
+		
+		if(foundUnambiguousRelationshipEntity)
+		{
+			/*
+			SANIGroupNeuralNetwork* referenceSetDelimiter = NULL;
+			int minNumberWordContiguityErrors = REALLY_LARGE_INT; //large number
+			if(findCurrentSentenceReferenceSet(forwardPropogationSentenceData, indexOfReferenceSetDelimiter, referenceSetDelimiterPhraseLength, topLevelParseTreeGroup, &referenceSetDelimiter, &minNumberWordContiguityErrors, 0))
+			{		
+				referenceSetDelimiter->GIAisRelationship = true;
+				referenceSetDelimiter->posValue = wordPOSVal	//either verb or preposition
+				referenceSetDelimiter->posAmbiguousInfo = posAmbiguousInfo
+				referenceSetDelimiter->isPOSambiguous = false;
+			}	
+			else
+			{
+				cout << "SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_OF_REFERENCE_SET_DELIMITERS: SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimiters: !findCurrentSentenceReferenceSet" << endl;
+				exit(EXIT_ERROR);
+			}	
+			*/		
+		}
+		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES
+		else
+		{
+			//set the ambigous relationship entity to unambious (as it has been inferred as the relationship entity within the referenceSetDelimiter text)
+			if(referenceSetDelimiterWordFoundSingleAmbiguous)
+			{
+				LRPpreprocessorPlainTextWord* referenceSetDelimiterWordAmbiguous = forwardPropogationSentenceData->sentenceContents->at(referenceSetDelimiterWordFoundSingleAmbiguousIndex);
+				if(LRPpreprocessorWordIdentification.determineIsVerb(referenceSetDelimiterWordAmbiguous, LRP_PREPROCESSOR_GRAMMATICALLY_STRICT_VERB_VARIANTS_ONLY_VALUE_IRRELEVANT))
+				{
+					cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDelimiters: referenceSetDelimiterWordAmbiguous = " << referenceSetDelimiterWordAmbiguous->tagName << ", LRP_PREPROCESSOR_POS_TYPE_VERB" << endl;
+
+					referenceSetDelimiterWordAmbiguous->POSambiguityInfo = SHAREDvars.setBitValue(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_VERB, true);
+					referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_VERB;
+					referenceSetDelimiterWordAmbiguous->unambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_VERB;
+				}
+				if(LRPpreprocessorWordIdentification.determineIsPreposition(referenceSetDelimiterWordAmbiguous))
+				{
+					cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDelimiters: referenceSetDelimiterWordAmbiguous = " << referenceSetDelimiterWordAmbiguous->tagName << ", LRP_PREPROCESSOR_POS_TYPE_PREPOSITION" << endl;
+
+					referenceSetDelimiterWordAmbiguous->POSambiguityInfo = SHAREDvars.setBitValue(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_PREPOSITION, true);
+					referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_PREPOSITION;
+					referenceSetDelimiterWordAmbiguous->unambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_PREPOSITION;
+				}
+			}
+		}
+		#endif
+	}
+}
+#endif
+				
+					
 bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyMostLikelyReferenceSetCandidate(vector<multimap<double, SANIGroupNeuralNetwork*>>* propagatedGroupsListPerformanceTupleArray, int tupleSizeMax, SANIGroupNeuralNetwork** mostLikelyCandidateReferenceSetGroup, int* mostLikelyCandidateReferenceSetPhraseLength, double* mostLikelyCandidateReferenceSetSimilarity, SANIGroupParseTree* topLevelParseTreeGroup)
 {
 	bool result = false;
