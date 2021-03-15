@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p2a 09-March-2021
+ * Project Version: 1p3a 15-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -1099,7 +1099,22 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 					connection->SANIcomponentIndex = k;
 					#endif
 					#else
-					createANNconnection(groupSource, component);
+					ANNneuronConnection* connection = createANNconnection(groupSource, component);
+					#endif
+					
+					#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_POS
+					if(component->refsetConnectionType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_REFSET_NORMAL)
+					{
+						connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_REFSET_NORMAL;
+					}
+					else if(component->refsetConnectionType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_REFSET_DELIMITER)
+					{
+						connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_REFSET_DELIMITER;
+					}
+					else if(component->refsetConnectionType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_UNKNOWN)
+					{
+						connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_UNKNOWN;
+					}
 					#endif
 				}
 				#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_ACTIVATION
@@ -1109,6 +1124,16 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 				}
 				#endif
 			}
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
+			for(multimap<double, SANIGroupNeuralNetwork*>::iterator directNeuronAssociationListIterator = group->directNeuronAssociationList.begin(); directNeuronAssociationListIterator != group->directNeuronAssociationList.end(); directNeuronAssociationListIterator++)
+			{
+				SANIGroupNeuralNetwork* directAssociation = directNeuronAssociationListIterator->second;
+				#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_POS
+				ANNneuronConnection* connection = createANNconnection(group, directAssociation);	//TODO: check direction (back/front) of direct association connection
+				connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_IDENTITY_REFSET;
+				#endif
+			}			
+			#endif
 			
 			#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_ACTIVATION
 			if(group->neuronActive)

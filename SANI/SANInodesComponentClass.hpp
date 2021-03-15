@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p2a 09-March-2021
+ * Project Version: 1p3a 15-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -209,11 +209,6 @@ public:
 	LRPpreprocessorPlainTextWord* candidateStringMatch;
 	SANIGroupType* groupTypeRef;	
 	SANIGroupNeuralNetwork* groupRef;
-	
-	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
-	double activationSignalStrength;
-	vector<LRPpreprocessorPlainTextWord*> wordsCaptured;
-	#endif
 };
 
 
@@ -243,6 +238,16 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	
 	bool neuralNetworkComponentHasTypeString;
 	#endif
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
+	double activationSignalStrength;
+	vector<LRPpreprocessorPlainTextWord*> wordsCaptured;
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS
+	int refsetConnectionType;
+	#endif
+	#endif
 };
 
 
@@ -262,7 +267,7 @@ public:
 	int groupFrontComponentConnectionListIndex;
 	int numberOfWordsCurrentlyParsed;
 	#endif
-	#ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
+	#ifdef SANI_PARSE_RECORD_COMPONENT_WORD_INDEX
 	int wordIndex;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	

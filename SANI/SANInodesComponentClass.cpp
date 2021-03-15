@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p2a 09-March-2021
+ * Project Version: 1p3a 15-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -129,10 +129,6 @@ SANIComponent::SANIComponent(void)
 	groupTypeRef = NULL;
 	groupRef = NULL;
 	
-	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
-	activationSignalStrength = 0.0;
-	//wordsCaptured = NULL;
-	#endif
 }
 SANIComponent::~SANIComponent(void)
 {
@@ -161,6 +157,16 @@ SANIComponentNeuralNetwork::SANIComponentNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	
 	neuralNetworkComponentHasTypeString = false;
 	#endif
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
+	activationSignalStrength = 0.0;
+	//wordsCaptured = NULL;
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS
+	refsetConnectionType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_UNKNOWN;
+	#endif
+	#endif
 }
 SANIComponentNeuralNetwork::~SANIComponentNeuralNetwork(void)
 {
@@ -179,7 +185,7 @@ SANIComponentParseTree::SANIComponentParseTree(void)
 	groupFrontComponentConnectionListIndex = INT_DEFAULT_VALUE;
 	numberOfWordsCurrentlyParsed = INT_DEFAULT_VALUE;
 	#endif
-	#ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
+	#ifdef SANI_PARSE_RECORD_COMPONENT_WORD_INDEX
 	wordIndex = INT_DEFAULT_VALUE;	//CHECKTHIS
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	

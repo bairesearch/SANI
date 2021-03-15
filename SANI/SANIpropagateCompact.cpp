@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p2a 09-March-2021
+ * Project Version: 1p3a 15-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -685,7 +685,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 	#ifdef SANI_PARSE_GENERATE_PARSE_TREE
 	newParseComponent->parseTreeGroupRef = activationPathWordCurrentParseTreeGroup;
 	#endif
-	#ifdef SANI_PARSE_SIMULTANEOUS_DELETE_INCOMPLETE_PATHS_SEMANTIC_RELATIONS
+	#ifdef SANI_PARSE_RECORD_COMPONENT_WORD_INDEX
 	newParseComponent->wordIndex = forwardPropogationWordData->w;
 	#endif
 	newParseComponent->wordPOStypeInferred = forwardPropogationWordData->wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
