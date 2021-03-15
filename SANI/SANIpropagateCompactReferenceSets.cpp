@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p3a 15-March-2021
+ * Project Version: 1p3b 15-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -90,7 +90,7 @@ bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetwor
 	return result;
 }
 
-bool SANIpropagateCompactReferenceSetsClass::performPropagationIndex(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance, const int indexInSequence, const int firstWordPropagatedIndex)
+bool SANIpropagateCompactReferenceSetsClass::performPropagationIndex(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance, const int firstWordPropagatedIndex, const int indexInSequence)
 {
 	int firstLayerNeuronIndex;
 	if(forwardPropogationSentenceData->parseSentenceReverse)
