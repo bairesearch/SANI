@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p3b 15-March-2021
+ * Project Version: 1p4a 17-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -328,7 +328,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 		result = false;
 	}	
 	#else
-	if(!SANInodes.currentWordAmbiguous(currentWord))
+	if(!SANInodes.currentWordPOSunknown(currentWord))
 	{
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 		int wordPOStype = currentWord->unambiguousPOSindex;
@@ -358,7 +358,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 	else
 	{
 		int wordPOStype = INT_DEFAULT_VALUE;
-		bool pass = SANInodes.getWordPOStypeFromAmbiguousWord(currentWord, &wordPOStype);
+		bool pass = SANInodes.getWordPOStypeFromWordPOSunknown(currentWord, &wordPOStype);
 		if(pass)
 		{
 			if(!propagateWordThroughNetworkGroupInit(translatorVariables, w, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))

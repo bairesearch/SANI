@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p3b 15-March-2021
+ * Project Version: 1p4a 17-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Operations - generic functions
  * /
@@ -503,7 +503,7 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 		}
 		for(int i=0; i<componentWmax1-componentWmin1+1; i++)
 		{
-			//must sync code with SANIpropagateCompactClass::propagateWordThroughNetworkIntro !currentWordAmbiguous exceptions
+			//must sync code with SANIpropagateCompactClass::propagateWordThroughNetworkIntro !currentWordPOSunknown exceptions
 			
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 			if(componentWordArray1[i]->tagName != componentWordArray2[i]->tagName)
@@ -511,7 +511,7 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 				result = false;
 			}
 			#else
-			if(!SANInodes.currentWordAmbiguous(componentWordArray1[i]) && !SANInodes.currentWordAmbiguous(componentWordArray2[i]))
+			if(!SANInodes.currentWordPOSunknown(componentWordArray1[i]) && !SANInodes.currentWordPOSunknown(componentWordArray2[i]))
 			{
 				if(componentWordArray1[i]->unambiguousPOSindex != componentWordArray2[i]->unambiguousPOSindex)
 				{
@@ -521,10 +521,10 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 			else
 			{				
 				#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES
-				if(SANInodes.currentWordAmbiguous(componentWordArray1[i]))
+				if(SANInodes.currentWordPOSunknown(componentWordArray1[i]))
 				{	
 					int wordPOStype1 = INT_DEFAULT_VALUE;
-					bool pass = SANInodes.getWordPOStypeFromAmbiguousWord(componentWordArray1[i], &wordPOStype1);
+					bool pass = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray1[i], &wordPOStype1);
 					if(pass)
 					{
 						if(componentWordArray2[i]->unambiguousPOSindex != wordPOStype1)
@@ -537,10 +537,10 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 						result = false;
 					}
 				}		
-				else if(SANInodes.currentWordAmbiguous(componentWordArray2[i]))
+				else if(SANInodes.currentWordPOSunknown(componentWordArray2[i]))
 				{
 					int wordPOStype2 = INT_DEFAULT_VALUE;
-					bool pass = SANInodes.getWordPOStypeFromAmbiguousWord(componentWordArray2[i], &wordPOStype2);
+					bool pass = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray2[i], &wordPOStype2);
 					if(pass)
 					{
 						if(componentWordArray1[i]->unambiguousPOSindex != wordPOStype2)
@@ -558,9 +558,9 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 					//both words are ambiguous
 
 					int wordPOStype1 = INT_DEFAULT_VALUE;
-					bool pass1 = SANInodes.getWordPOStypeFromAmbiguousWord(componentWordArray1[i], &wordPOStype1);
+					bool pass1 = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray1[i], &wordPOStype1);
 					int wordPOStype2 = INT_DEFAULT_VALUE;
-					bool pass2 = SANInodes.getWordPOStypeFromAmbiguousWord(componentWordArray2[i], &wordPOStype2);
+					bool pass2 = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray2[i], &wordPOStype2);
 					if(pass1 && pass2)
 					{
 						if(wordPOStype1 != wordPOStype2)

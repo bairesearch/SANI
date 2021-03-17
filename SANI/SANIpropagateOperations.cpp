@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p3b 15-March-2021
+ * Project Version: 1p4a 17-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -1016,7 +1016,7 @@ bool SANIpropagateOperationsClass::checkWordPOStype(const LRPpreprocessorPlainTe
 		result = true;
 	}
 	#else
-	if(!SANInodes.currentWordAmbiguous(currentWord))
+	if(!SANInodes.currentWordPOSunknown(currentWord))
 	{
 		if(SHAREDvars.getBitValue(currentWord->POSambiguityInfo, unambiguousPOSindex))
 		{

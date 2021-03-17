@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p3b 15-March-2021
+ * Project Version: 1p4a 17-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -1103,17 +1103,17 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 					#endif
 					
 					#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_POS
-					if(component->refsetConnectionType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_REFSET_NORMAL)
+					if(component->refsetConnectionType == LRP_SHARED_ENTITY_CONNECTION_TYPE_SAMEREFERENCESET)
 					{
-						connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_REFSET_NORMAL;
+						connection->SANIrefSetConnectionType = LRP_SHARED_ENTITY_CONNECTION_TYPE_SAMEREFERENCESET;
 					}
-					else if(component->refsetConnectionType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_REFSET_DELIMITER)
+					else if(component->refsetConnectionType == LRP_SHARED_ENTITY_CONNECTION_TYPE_DIFFREFERENCESET)
 					{
-						connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_REFSET_DELIMITER;
+						connection->SANIrefSetConnectionType = LRP_SHARED_ENTITY_CONNECTION_TYPE_DIFFREFERENCESET;
 					}
-					else if(component->refsetConnectionType == SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_UNKNOWN)
+					else if(component->refsetConnectionType == LRP_SHARED_ENTITY_CONNECTION_TYPE_UNDEFINED)
 					{
-						connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_UNKNOWN;
+						connection->SANIrefSetConnectionType = LRP_SHARED_ENTITY_CONNECTION_TYPE_UNDEFINED;
 					}
 					#endif
 				}
@@ -1130,7 +1130,7 @@ bool SANIformationClass::createANNconnectivity(vector<SANIGroupType*>* SANIGroup
 				SANIGroupNeuralNetwork* directAssociation = directNeuronAssociationListIterator->second;
 				#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_POS
 				ANNneuronConnection* connection = createANNconnection(group, directAssociation);	//TODO: check direction (back/front) of direct association connection
-				connection->SANIrefSetConnectionType = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_IDENTITY_REFSET;
+				connection->SANIrefSetConnectionType = LRP_SHARED_ENTITY_CONNECTION_TYPE_REFERENCE;	//ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_POS_CONNECTION_IDENTITY_REFSET
 				#endif
 			}			
 			#endif

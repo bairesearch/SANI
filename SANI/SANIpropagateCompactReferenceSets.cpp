@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p3b 15-March-2021
+ * Project Version: 1p4a 17-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -90,7 +90,7 @@ bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetwor
 	return result;
 }
 
-bool SANIpropagateCompactReferenceSetsClass::performPropagationIndex(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance, const int firstWordPropagatedIndex, const int indexInSequence)
+bool SANIpropagateCompactReferenceSetsClass::performPropagationIndex(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance, const int firstWordPropagatedIndex, const int indexInSequence, const bool detectConcepts)
 {
 	int firstLayerNeuronIndex;
 	if(forwardPropogationSentenceData->parseSentenceReverse)
@@ -114,6 +114,10 @@ bool SANIpropagateCompactReferenceSetsClass::performPropagationIndex(SANItransla
 	
 	forwardPropogationSignalData.propagatedGroupsListPerformance = propagatedGroupsListPerformance;
 
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_CONCEPTS
+	forwardPropogationSignalData.detectConcepts = detectConcepts;
+	#endif
+	
 	if(propagateWordThroughNetworkIntro(translatorVariables, firstLayerNeuronIndex, &forwardPropogationSignalData, forwardPropogationSentenceData))
 	{
 
@@ -145,7 +149,7 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkIntro(SA
 		result = false;
 	}	
 	#else
-	if(!SANInodes.currentWordAmbiguous(currentWord))
+	if(!SANInodes.currentWordPOSunknown(currentWord))
 	{
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 		int wordPOStype = currentWord->unambiguousPOSindex;
@@ -175,7 +179,7 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkIntro(SA
 	else
 	{
 		int wordPOStype = INT_DEFAULT_VALUE;
-		bool pass = SANInodes.getWordPOStypeFromAmbiguousWord(currentWord, &wordPOStype);
+		bool pass = SANInodes.getWordPOStypeFromWordPOSunknown(currentWord, &wordPOStype);
 		if(pass)
 		{
 			if(!propagateWordThroughNetworkGroupInit(translatorVariables, w, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData))
@@ -245,7 +249,7 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkGroup(SA
 	{
 		group->neuronPropagated = true;
 	#endif
-		
+	
 		if(propagateWordThroughNetworkGroupSelect(translatorVariables, group, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, layer, activationPathWordCurrentParseTreeGroup))
 		{
 			result = true;
@@ -276,23 +280,33 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkGroupSel
 		if(!ownerGroup->neuronPropagated)	//prevent circular loops
 		{
 		#endif	
-			#ifdef SANI_DEBUG_PROPAGATE_EXTRA2_REFSETS
-			SANInodes.printParseTreeDebugIndentation(layer+1);	
-			cout << "2a: propagateWordThroughNetworkGroup: ownerGroup->groupIndex = " <<  ownerGroup->groupIndex << ", currentComponent->componentIndex = " << currentComponent->componentIndex << endl;
+		
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_CONCEPTS
+			if(!(forwardPropogationSignalData->detectConcepts) || ownerGroup->SANIisConceptNeuron)
+			{
+			#endif			
+
+				#ifdef SANI_DEBUG_PROPAGATE_EXTRA2_REFSETS
+				SANInodes.printParseTreeDebugIndentation(layer+1);	
+				cout << "2a: propagateWordThroughNetworkGroup: ownerGroup->groupIndex = " <<  ownerGroup->groupIndex << ", currentComponent->componentIndex = " << currentComponent->componentIndex << endl;
+				#endif
+
+				if(group->inputLayerNeuron)	//if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
+				{
+					currentComponent->candidateStringMatch = forwardPropogationWordData->wordReference;
+				}
+
+				bool sequentialActivationFound = false;
+				bool existingActivationFoundStartComponent = false;
+				if(propagateWordThroughNetworkGroupComponentWrapper(translatorVariables, group, currentComponent, ownerGroup, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, layer, activationPathWordCurrentParseTreeGroup, i, &sequentialActivationFound, &existingActivationFoundStartComponent))
+				{
+					result = true;
+				}
+
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_CONCEPTS
+			}
 			#endif
-
-			if(group->inputLayerNeuron)	//if(currentComponent->componentType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING)
-			{
-				currentComponent->candidateStringMatch = forwardPropogationWordData->wordReference;
-			}
-
-			bool sequentialActivationFound = false;
-			bool existingActivationFoundStartComponent = false;
-			if(propagateWordThroughNetworkGroupComponentWrapper(translatorVariables, group, currentComponent, ownerGroup, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, layer, activationPathWordCurrentParseTreeGroup, i, &sequentialActivationFound, &existingActivationFoundStartComponent))
-			{
-				result = true;
-			}
-
+			
 		#ifdef SANI_PREVENT_CIRCULAR_CONNECTION_LOOPS
 		}
 		#endif
