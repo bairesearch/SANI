@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p4a 17-March-2021
+ * Project Version: 1p5a 19-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -46,6 +46,7 @@
 #include "XMLparserClass.hpp"
 #include "LRPpreprocessorSentenceClass.hpp"
 #include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #include "SANIposRelTranslatorVariables.hpp"
 #include "SANInodes.hpp"
 #include "SANInodesGroupClass.hpp"
@@ -69,6 +70,7 @@ class SANIpropagateCompactClass
 	private: XMLparserClassClass XMLparserClass;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 	private: SANInodesClass SANInodes;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;

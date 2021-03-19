@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p4a 17-March-2021
+ * Project Version: 1p5a 19-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -110,6 +110,11 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 		demarkatePosUnambiguousEntities(forwardPropogationSentenceData, SANIGroupTypes, topLevelParseTreeGroup, currentWord, i);
 		#endif
 		
+		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_PRONOUNS
+		bool pronounReferenceDetected = false;
+		bool pronounDeterminerDetected = false;
+		#endif
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_PREDETERMINERS
 		bool predeterminerDetected = false;
 		if(LRPpreprocessorWordIdentification.determineIsPredeterminer(currentWord))
@@ -163,6 +168,60 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 		}
 		else
 		{
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_PRONOUNS
+			//definite detection
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE))
+			{
+				//case: Demonstrative Pronoun: this (definite) robot rides a 
+				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE;
+				pronounDeterminerDetected = true;
+			}
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_INDEFINITE))
+			{
+				//case: Indefinite Pronoun: somebody (reference) rides a 
+				pronounReferenceDetected = true;
+			}	
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_INTERROGATIVE))
+			{
+				//case: Interrogative Pronoun: whomever (reference) rides a 
+				pronounReferenceDetected = true;
+			}
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT))
+			{
+				//case: Object Pronoun: Tom rides it (reference)
+				pronounReferenceDetected = true;
+			}
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT))
+			{
+				//case: Subject Pronoun: He (definite) rides a 
+				pronounReferenceDetected = true;
+			}
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ADJECTIVE))
+			{
+				//case: Possessive Adjective Pronoun: Our (definite) robot rides a 
+				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE;
+				pronounDeterminerDetected = true;
+			}
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ALONE))
+			{
+				//case: Possessive Alone Pronoun: Tom is ours (reference)
+				pronounReferenceDetected = true;
+			}
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_REFLEXIVE))
+			{
+				//case: Reflexive Pronoun: Tom rides himself (reference)
+				pronounReferenceDetected = true;
+			}
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_RELATIVE))
+			{
+				//case: Relative Pronoun: Tom is a man who (determiner) rides a 
+				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE;
+				pronounDeterminerDetected = true;
+			}
+			#endif
+			
+			/*
+			//propernouns are not determiners (reference sets do not follow propernouns)
 			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_PROPERNOUNS
 			//definite detection
 			if(LRPpreprocessorWordIdentification.determineIsLikelyPropernoun(currentWord))
@@ -171,6 +230,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE;
 			}	
 			#endif
+			*/
 			
 			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_CONCEPTS
 			//concept detection
@@ -184,10 +244,14 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 					referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_CONCEPT_SUBJECT_OR_OBJECT;
 				}
 			}	
-			#endif	
+			#endif
 		}
 		
 		currentWord->referenceSetStartCodonDeterminerType = referenceSetStartCodonType;
+		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_PRONOUNS
+		currentWord->pronounDeterminerDetected = pronounDeterminerDetected;
+		currentWord->pronounReferenceDetected = pronounReferenceDetected;
+		#endif
 		
 		#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_CONCEPTS
 		if(currentWord->tagName == GRAMMATICAL_AUXILIARY_BEING_PRESENT_SINGULAR)
@@ -487,8 +551,60 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 		result = false;
 	}
 
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_PROPERNOUNS
+	//definite detection
+	if(LRPpreprocessorWordIdentification.determineIsLikelyPropernoun(currentWord))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_NAME_PROPERNOUN;
+		contextWordPOSisAmbiguous = false;
+	}	
+	/*
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FIRST_MALE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FIRST_MALE;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FIRST_FEMALE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FIRST_FEMALE;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FAMILY))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FAMILY;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_PLACE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_PLACE;
+		contextWordPOSisAmbiguous = false;
+	}
+	*/
+	#endif
+	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_AUXILIARIES
 	//SANI interprets auxiliaries as unambiguous
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_POSSESSIVEENDING))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_POSSESSIVEENDING;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_BEING))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_BEING;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_HAVING))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_HAVING;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_DOING))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_DOING;
+		contextWordPOSisAmbiguous = false;
+	}
+	/*
 	if(LRPpreprocessorWordIdentification.determineIsPossessiveEnding(currentWord))
 	{
 		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_POSSESSIVEENDING;
@@ -509,30 +625,109 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_DOING;
 		contextWordPOSisAmbiguous = false;
 	}
+	*/
 	#endif
-
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_CONJUNCTIONS
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_COORDINATING))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_COORDINATING;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_SUBCOORDINATING))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_SUBCOORDINATING;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_CORRELATIVE_FIRST))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_CORRELATIVE_FIRST;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_CORRELATIVE_SECOND))
+	{
+		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_CORRELATIVE_SECOND;
+		contextWordPOSisAmbiguous = false;
+	}
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_PRONOUNS
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_INDEFINITE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_INDEFINITE;
+		contextWordPOSisAmbiguous = false;
+	}	
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_INTERROGATIVE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_INTERROGATIVE;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ADJECTIVE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ADJECTIVE;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ALONE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ALONE;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_REFLEXIVE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_REFLEXIVE;
+		contextWordPOSisAmbiguous = false;
+	}
+	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_RELATIVE))
+	{
+		contextWordUnambiguousPOSindex = LRP_SHARED_POS_TYPE_PRONOUN_RELATIVE;
+		contextWordPOSisAmbiguous = false;
+	}
+	#endif
+	
 	currentWord->POSambiguityInfo = contextWordPOSambiguityInfo;	
+		
 	if(!contextWordPOSisAmbiguous)
 	{
 		currentWord->wordPOStypeInferred = contextWordUnambiguousPOSindex;
 		currentWord->unambiguousPOSindex = contextWordUnambiguousPOSindex;
 
-		SANIGroupNeuralNetwork* referenceSetDelimiter = NULL;
-		if(getSANInodeContainingWord(forwardPropogationSentenceData, SANIGroupTypes, topLevelParseTreeGroup, i, &referenceSetDelimiter))
+		SANIGroupNeuralNetwork* nodeContainingWord = NULL;
+		if(getSANInodeContainingWord(forwardPropogationSentenceData, SANIGroupTypes, topLevelParseTreeGroup, i, &nodeContainingWord))
 		{
-			//cout << "getSANInodeContainingWord" << endl;
-			#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
-			cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntities: currentWord = " << currentWord->tagName << ", currentWord->wordPOStypeInferred = " << currentWord->wordPOStypeInferred << endl;
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_ENFORCE_SINGLE_UNIQUE_DIRECT_INPUT
+			if(verifySingleDirectInput(nodeContainingWord, i))
+			{
 			#endif
-					
-			/*
-			referenceSetDelimiter->posValue = contextWordUnambiguousPOSindex;
-			referenceSetDelimiter->posAmbiguousInfo = contextWordPOSambiguityInfo;
-			referenceSetDelimiter->isPOSambiguous = contextWordPOSisAmbiguous;
-			*/
 
-			#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_POS
-			setANNneuronSANIposType(referenceSetDelimiter, contextWordUnambiguousPOSindex);
+				//cout << "getSANInodeContainingWord" << endl;
+				#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
+				cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntities: currentWord = " << currentWord->tagName << ", currentWord->wordPOStypeInferred = " << currentWord->wordPOStypeInferred << endl;
+				#endif
+
+				/*
+				referenceSetDelimiter->posValue = contextWordUnambiguousPOSindex;
+				referenceSetDelimiter->posAmbiguousInfo = contextWordPOSambiguityInfo;
+				referenceSetDelimiter->isPOSambiguous = contextWordPOSisAmbiguous;
+				*/
+
+				#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_POS
+				setANNneuronSANIposType(nodeContainingWord, contextWordUnambiguousPOSindex);
+				#endif
+			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_ENFORCE_SINGLE_UNIQUE_DIRECT_INPUT
+			}
 			#endif
 		}	
 	}
@@ -540,6 +735,37 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 	return result;
 }
 
+#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_ENFORCE_SINGLE_UNIQUE_DIRECT_INPUT
+bool SANIgenerateCompactIdentifyReferenceSetsClass::verifySingleDirectInput(SANIGroupNeuralNetwork* nodeContainingWord, const int currentWordIndex)
+{
+	bool result = true;
+	SANIGroupNeuralNetwork* componentSourceFound = NULL;
+	
+	for(int i=0; i<nodeContainingWord->components.size(); i++)
+	{		
+		SANIComponentNeuralNetwork* component = (nodeContainingWord->components).at(i);
+		if(SANInodes.hasComponentTypeString(component))
+		{
+			SANIGroupNeuralNetwork* componentSource = component->SANIbackGroupConnectionList[0];
+			if(componentSourceFound == NULL)
+			{
+				componentSourceFound = componentSource;
+			}
+			else if(componentSource == componentSourceFound)
+			{
+			
+			}
+			else
+			{
+				result = false;
+			}	
+		}
+	}	
+	
+	return result;
+}
+#endif
+			
 //CHECKTHIS;
 bool SANIgenerateCompactIdentifyReferenceSetsClass::getSANInodeContainingWord(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupParseTree* topLevelParseTreeGroup, const int indexOfWord, SANIGroupNeuralNetwork** nodeContainingWord)
 {
@@ -560,63 +786,156 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::getSANInodeContainingWord(SA
 		
 		
 #ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_POS
-bool SANIgenerateCompactIdentifyReferenceSetsClass::setANNneuronSANIposType(SANIGroupNeuralNetwork* referenceSetDelimiter, const int contextWordUnambiguousPOSindex)
+bool SANIgenerateCompactIdentifyReferenceSetsClass::setANNneuronSANIposType(SANIGroupNeuralNetwork* nodeContainingWord, const int contextWordUnambiguousPOSindex)
 {
 	bool result = true;
 	
-	/*
-	if(contextWordUnambiguousPOSindex == )
-	{
-
-	}
 	if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_NOUN)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
 	}
-	*/
 	if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_VERB)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_ACTION;
-		//referenceSetDelimiter->GIAisRelationship = true;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_ACTION;
+		//nodeContainingWord->GIAisRelationship = true;
 	}	
 	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_PREPOSITION)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_CONDITION;
-		//referenceSetDelimiter->GIAisRelationship = true;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_CONDITION;
+		//nodeContainingWord->GIAisRelationship = true;
 	}
 	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_ADJECTIVE)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_QUALITY;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_QUALITY;
 	}
 	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_ADVERB)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_QUALITY;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_QUALITY;
 	}
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_PROPERNOUNS
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_NAME_PROPERNOUN)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}	
+	/*
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FIRST_MALE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FIRST_FEMALE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_FAMILY)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_NAME_PROPERNOUN_PLACE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	*/
+	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_AUXILIARIES
 	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_POSSESSIVEENDING)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_PROPERTY;
-		//referenceSetDelimiter->GIAisRelationship = true;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_PROPERTY;
+		//nodeContainingWord->GIAisRelationship = true;
 	}
 	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_BEING)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_DEFINITION;
-		//referenceSetDelimiter->GIAisRelationship = true;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_DEFINITION;
+		//nodeContainingWord->GIAisRelationship = true;
 	}
 	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_HAVING)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_PROPERTY;
-		//referenceSetDelimiter->GIAisRelationship = true;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_PROPERTY;
+		//nodeContainingWord->GIAisRelationship = true;
 	}
 	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_DOING)
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_ACTION;
-		//referenceSetDelimiter->GIAisRelationship = true;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_ACTION;
+		//nodeContainingWord->GIAisRelationship = true;
 	}
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_CONJUNCTIONS
+	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_COORDINATING)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_LOGIC_REFERENCE;
+		//nodeContainingWord->GIAisRelationship = true;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_SUBCOORDINATING)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_LOGIC_REFERENCE;
+		//nodeContainingWord->GIAisRelationship = true;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_CORRELATIVE_FIRST)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_LOGIC_REFERENCE;
+		//nodeContainingWord->GIAisRelationship = true;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_CORRELATIVE_SECOND)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_LOGIC_REFERENCE;
+		//nodeContainingWord->GIAisRelationship = true;
+	}	
+	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_PRONOUNS
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_INDEFINITE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_INTERROGATIVE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ADJECTIVE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}	
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ALONE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}	
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_REFLEXIVE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}	
+	else if(contextWordUnambiguousPOSindex == LRP_SHARED_POS_TYPE_PRONOUN_RELATIVE)
+	{
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_SUBSTANCE;
+		//nodeContainingWord->GIAisRelationship = false;
+	}	
 	#endif
 	else
 	{
-		referenceSetDelimiter->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_UNDEFINED_COLOUR;
+		nodeContainingWord->neuronReference->SANIentityType = LRP_SHARED_ENTITY_TYPE_UNDEFINED;
 	}
 	
 	return result;
@@ -736,7 +1055,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDeli
 			if(LRPpreprocessorWordIdentification.determineIsAuxiliaryBeing(referenceSetDelimiterWord))
 			{
 				//interpret "is" auxiliary as quality rather than definition
-				referenceSetDelimiterWord->POSambiguityInfo = SHAREDvars.setBitValue(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_SHARED_POS_TYPE_ADJECTIVE, true);
+				referenceSetDelimiterWord->POSambiguityInfo = LRPpreprocessorPOStagger.setPOSambiguityInfoBit(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_SHARED_POS_TYPE_ADJECTIVE, true);
 				referenceSetDelimiterWord->wordPOStypeInferred = LRP_SHARED_POS_TYPE_ADJECTIVE;
 				referenceSetDelimiterWord->unambiguousPOSindex = LRP_SHARED_POS_TYPE_ADJECTIVE;
 			}
@@ -755,7 +1074,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDeli
 				#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
 				cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDelimiters: referenceSetDelimiterWordAmbiguous = " << referenceSetDelimiterWordAmbiguous->tagName << ", LRP_PREPROCESSOR_POS_TYPE_VERB" << endl;
 				#endif
-				referenceSetDelimiterWordAmbiguous->POSambiguityInfo = SHAREDvars.setBitValue(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_VERB, true);
+				referenceSetDelimiterWordAmbiguous->POSambiguityInfo = LRPpreprocessorPOStagger.setPOSambiguityInfoBit(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_VERB, true);
 				referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_VERB;
 				referenceSetDelimiterWordAmbiguous->unambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_VERB;
 			}
@@ -764,7 +1083,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDeli
 				#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
 				cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDelimiters: referenceSetDelimiterWordAmbiguous = " << referenceSetDelimiterWordAmbiguous->tagName << ", LRP_PREPROCESSOR_POS_TYPE_PREPOSITION" << endl;
 				#endif
-				referenceSetDelimiterWordAmbiguous->POSambiguityInfo = SHAREDvars.setBitValue(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_PREPOSITION, true);
+				referenceSetDelimiterWordAmbiguous->POSambiguityInfo = LRPpreprocessorPOStagger.setPOSambiguityInfoBit(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_PREPOSITION, true);
 				referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_PREPOSITION;
 				referenceSetDelimiterWordAmbiguous->unambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_PREPOSITION;
 			}

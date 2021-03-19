@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p4a 17-March-2021
+ * Project Version: 1p5a 19-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -43,6 +43,7 @@
 #include "SANIglobalDefs.hpp"
 #endif
 #include "SHAREDvars.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #include "LRPpreprocessorSentenceClass.hpp"
 #include "LRPpreprocessorWordClass.hpp"
 #include "SANInodes.hpp"
@@ -59,6 +60,7 @@
 class SANIpropagateCompactReferenceSetsClass
 {
 	private: SHAREDvarsClass SHAREDvars;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
 	private: SANInodesClass SANInodes;

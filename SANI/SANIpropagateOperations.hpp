@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p4a 17-March-2021
+ * Project Version: 1p5a 19-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -47,6 +47,7 @@
 
 #include "SHAREDvars.hpp"
 #include "XMLparserClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #include "LRPpreprocessorSentenceClass.hpp"
 #include "LRPpreprocessorWordClass.hpp"
 #include "SANInodes.hpp"
@@ -58,11 +59,11 @@
 #include "SANIpropagateCompactGenerateOperations.hpp"
 #endif
 
-
 class SANIpropagateOperationsClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
 	private: SANInodesClass SANInodes;
