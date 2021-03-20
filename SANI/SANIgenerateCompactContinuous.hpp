@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -46,6 +46,7 @@
 #include "XMLparserClass.hpp"
 #include "LRPpreprocessorSentenceClass.hpp"
 #include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #include "SANInodes.hpp"
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
@@ -59,6 +60,10 @@
 
 
 
+#define SANI_SEQUENCE_GRAMMAR_REFSET_DELIMITER_POS_NUMBER_OF_TYPES (3)
+static int refsetDelimiterPOSarray[SANI_SEQUENCE_GRAMMAR_REFSET_DELIMITER_POS_NUMBER_OF_TYPES] = {LRP_SHARED_POS_TYPE_VERB, LRP_SHARED_POS_TYPE_PREPOSITION, LRP_SHARED_POS_TYPE_CONJUNCTION};
+	
+			
 #ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_CONTINUOUS
 
 class SANIgenerateCompactContinuousClass
@@ -67,6 +72,7 @@ class SANIgenerateCompactContinuousClass
 	private: XMLparserClassClass XMLparserClass;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 	private: SANInodesClass SANInodes;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
@@ -110,7 +116,12 @@ class SANIgenerateCompactContinuousClass
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 	private: SANIGroupNeuralNetwork* splitGroupAtLastActivatedComponentUnordered(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector1, int indexToSplitVector2);
 	#endif	
-
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
+	public: bool determineListHighLevelNeuronsDirectInput(SANIGroupNeuralNetwork* newNeuronSequenceGroup1, bool* highLevelListHasDirectInputRefSetPOS, bool* highLevelListHasDirectInputRefSetDelimiterPOS);
+	public: bool determineListHighLevelNeuronsDirectInput(vector<SANIGroupNeuralNetwork*>* listOfInputNeurons, bool* highLevelListHasDirectInputRefSetPOS, bool* highLevelListHasDirectInputRefSetDelimiterPOS);
+		private: bool wordHasRefsetDelimiterPOS(SANIGroupNeuralNetwork* inputNeuron);
+	#endif
 	
 };
 

@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -219,7 +219,13 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = false;
 		#endif
-						
+
+		#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
+		bool highLevelListHasDirectInputRefSetPOS = false;
+		bool highLevelListHasDirectInputRefSetDelimiterPOS = false;
+		determineListHighLevelNeuronsDirectInput(newNeuronSequenceGroup1, &highLevelListHasDirectInputRefSetPOS, &highLevelListHasDirectInputRefSetDelimiterPOS);
+		#endif
+				
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_DETECT_LOCAL_VARATION
 		if(findingCentralVariation)
 		{
@@ -296,6 +302,39 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 				#endif
 				
 				foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
+
+				#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
+				bool refsetDelimiterPOSfound = wordHasRefsetDelimiterPOS(currentLayerNeuronGroupStart);
+				bool highLevelListEnd = false;
+				if(refsetDelimiterPOSfound)
+				{
+					if(highLevelListHasDirectInputRefSetPOS)
+					{
+						highLevelListEnd = true;
+					}
+				}
+				else
+				{
+					if(highLevelListHasDirectInputRefSetDelimiterPOS)
+					{
+						highLevelListEnd = true;
+					}
+				}
+				if(highLevelListEnd)
+				{
+					cout << "highLevelListEnd" << endl;
+					creatingNewNeuronSequence1 = false;
+					neuronSequenceIndex1 = 0;
+					/*
+					SANIGroupNeuralNetwork* grammaticalSentenceNeuron = NULL;
+					if(connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSentenceData, newNeuronSequenceGroup1, &grammaticalSentenceNeuron, false))
+					{
+						listOfHighLevelNeuronsCurrent->clear();
+						listOfHighLevelNeuronsCurrent->push_back(grammaticalSentenceNeuron);
+					}
+					*/
+				}
+				#endif
 
 				createOrAppendFirstLevelHiddenLayerGroup(SANIGroupTypes, forwardPropogationSentenceData, currentLayerNeuronGroupStart, &creatingNewNeuronSequence1, &neuronSequenceIndex1, &newNeuronSequenceGroup1, listOfHighLevelNeuronsCurrent);
 				
@@ -448,6 +487,8 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	return foundAndReconciledMissingOrDifferentIncrementalNeurons;
 }
 
+
+		
 
 bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron, int* indexInSequence, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
 {	
@@ -934,7 +975,7 @@ bool SANIgenerateCompactContinuousClass::createOrAppendFirstLevelHiddenLayerGrou
 	cout << "SANIgenerateCompactContinuousClass::createOrAppendFirstLevelHiddenLayerGroup" << endl;
 	#endif
 
-	currentLayerNeuronGroupStart->inputLayerNeuron = true;
+	//currentLayerNeuronGroupStart->inputLayerNeuron = true;	//moved to SANIformation: @SANI1p6a
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 	listOfHighLevelNeurons->push_back(currentLayerNeuronGroupStart);	
@@ -1080,9 +1121,7 @@ bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammatica
 //NB indexToSplitVector = lastActivatedComponent (the last component index in the first part of component to be splitted) (do not assume normal order: "first" and "last" definitions respect (forwardPropogationSentenceData->parseSentenceReverse))
 SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector)
 {
-	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewGroup();	
-	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	
-	groupType->groups.push_back(newHiddenLayerNeuron);
+	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSentenceData, SANIGroupTypes);	
 		
 	vector<SANIComponentNeuralNetwork*>* components = &(neuronToSplit->components);
 	vector<SANIComponentNeuralNetwork*> componentsPart1(components->begin(), components->begin() + indexToSplitVector+1);
@@ -1111,9 +1150,7 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActi
 //indexToSplitVector2 = lastActivatedComponent (unordered; always assume normal order: "first" and "last" definitions do not respect (forwardPropogationSentenceData->parseSentenceReverse))
 SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponentUnordered(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector1, int indexToSplitVector2)
 {
-	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewGroup();	
-	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	
-	groupType->groups.push_back(newHiddenLayerNeuron);
+	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSentenceData, SANIGroupTypes);
 				
 	vector<SANIComponentNeuralNetwork*>* components = &(neuronToSplit->components);
 	
@@ -1194,6 +1231,87 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActi
 }
 #endif
 
+
+#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
+bool SANIgenerateCompactContinuousClass::determineListHighLevelNeuronsDirectInput(SANIGroupNeuralNetwork* newNeuronSequenceGroup1, bool* highLevelListHasDirectInputRefSetPOS, bool* highLevelListHasDirectInputRefSetDelimiterPOS)
+{
+	bool result = true;
+		
+	if(newNeuronSequenceGroup1 != NULL)
+	{
+		//cout << "SANIgenerateCompactContinuousClass::determineListHighLevelNeuronsDirectInput" << endl;
+
+		for(int i=0; i<newNeuronSequenceGroup1->components.size(); i++)
+		{
+			SANIComponentNeuralNetwork* component = newNeuronSequenceGroup1->components.at(i);
+			SANIGroupNeuralNetwork* inputLayerNeuron = (component->SANIbackGroupConnectionList)[0];	//newNeuronSequenceGroup1 doesn't contain variable components (only input neurons)
+			//cout << "inputLayerNeuron->groupIndex = " << inputLayerNeuron->groupIndex << endl;
+
+			if(inputLayerNeuron->inputLayerNeuron)
+			{
+				//cout << "inputLayerNeuron->inputLayerNeuron" << endl;
+
+				bool refsetDelimiterPOSfound = wordHasRefsetDelimiterPOS(inputLayerNeuron);
+				if(refsetDelimiterPOSfound)
+				{
+					*highLevelListHasDirectInputRefSetDelimiterPOS = true;
+					//cout << "highLevelListHasDirectInputRefSetDelimiterPOS" << endl;
+				}
+				else
+				{
+					*highLevelListHasDirectInputRefSetPOS = true;
+					//cout << "highLevelListHasDirectInputRefSetPOS" << endl;
+				}
+			}
+		}
+	}
+	
+	return result;
+}
+
+bool SANIgenerateCompactContinuousClass::determineListHighLevelNeuronsDirectInput(vector<SANIGroupNeuralNetwork*>* listOfInputNeurons, bool* highLevelListHasDirectInputRefSetPOS, bool* highLevelListHasDirectInputRefSetDelimiterPOS)
+{
+	bool result = true;
+		
+	for(int i=0; i<listOfInputNeurons->size(); i++)
+	{
+		SANIGroupNeuralNetwork* inputLayerNeuron = listOfInputNeurons->at(i);
+		if(inputLayerNeuron->inputLayerNeuron)
+		{			
+			bool refsetDelimiterPOSfound = wordHasRefsetDelimiterPOS(inputLayerNeuron);
+			if(refsetDelimiterPOSfound)
+			{
+				*highLevelListHasDirectInputRefSetDelimiterPOS = true;
+			}
+			else
+			{
+				*highLevelListHasDirectInputRefSetPOS = true;
+			}
+		}
+	}
+	
+	return result;
+}		
+		
+bool SANIgenerateCompactContinuousClass::wordHasRefsetDelimiterPOS(SANIGroupNeuralNetwork* inputNeuron)
+{
+	bool refsetDelimiterPOSfound = false;
+	
+	for(int q=0; q<SANI_SEQUENCE_GRAMMAR_REFSET_DELIMITER_POS_NUMBER_OF_TYPES; q++)
+	{
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
+		if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(inputNeuron->wordObject->POSambiguityInfo, refsetDelimiterPOSarray[q]))
+		#else
+		if(inputNeuron->wordPOStype == refsetDelimiterPOSarray[q])	//highLevelListHasDirectInputDelimiterPOS = SHAREDvars.intInIntArray(inputNeuron->wordPOStype, refsetDelimiterPOSarray, SANI_SEQUENCE_GRAMMAR_REFSET_DELIMITER_POS_NUMBER_OF_TYPES))
+		#endif
+		{
+			refsetDelimiterPOSfound = true;
+		}
+	}
+	
+	return refsetDelimiterPOSfound;
+}
+#endif
 
 		
 #endif

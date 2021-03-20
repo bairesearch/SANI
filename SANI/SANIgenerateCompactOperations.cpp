@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Operations - unsupervised training of sequence grammar parse network
  * /
@@ -170,7 +170,9 @@ bool SANIgenerateCompactOperationsClass::addComponentToGroup(const SANIForwardPr
 		#else
 		newComponent->componentType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING;
 		newComponent->stringType = GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS;
-		newComponent->wordPOStype = group->wordPOStype;	
+		#ifndef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
+		newComponent->wordPOStype = group->wordPOStype;
+		#endif
 		#endif
 	}
 	else

@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -200,6 +200,7 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	
 	//SANIGroupNeuralNetwork variables;
 	#ifdef SANI_FORWARD
+	
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 	networkDepth = 0;
@@ -232,7 +233,13 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	inputLayerNeuron = false;
 	groupTypeIsString = false;
 	//wordDataTemp = NULL;
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
+	wordObject = NULL;
+	#endif
+	#else
 	wordPOStype = INT_DEFAULT_VALUE;
+	#endif
 	groupIndex = INT_DEFAULT_VALUE;
 	#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
 	groupStrength = 0;
@@ -311,8 +318,8 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	#ifdef SANI_REMOVE_LAST_OPTIONAL_COMPONENTS
 	optionalComponentsWrapperGroup = NULL;
 	#endif
-	#endif
-	
+		
+	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_INDIVIDUALLY
 	newlyGeneratedForSentenceTemp = false;
 	#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
@@ -331,13 +338,11 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
 	referenceSetCandidateBestMetric = 0.0;
 	#endif
-	
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS
 	startOfSentenceWordDetected = false;
 	endOfSentenceWordDetected = false;
 	markToErase = false;
-	#endif
-	
+	#endif	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
 	//directNeuronAssociationList = NULL;	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
@@ -347,6 +352,9 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_CONCEPTS
 	SANIisConceptNeuron = false;
 	#endif
+	#endif
+	#endif
+	
 	#endif
 }
 SANIGroupNeuralNetwork::~SANIGroupNeuralNetwork(void)

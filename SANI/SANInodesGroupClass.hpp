@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -273,6 +273,7 @@ public:
 
 	//SANIGroupNeuralNetwork variables;
 	#ifdef SANI_FORWARD
+	
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_DEPTH
 	int networkDepth;
@@ -305,7 +306,13 @@ public:
 	bool inputLayerNeuron;	//neuron is in first layer of generated network
 	bool groupTypeIsString;
 	//SANIForwardPropogationWordData* wordDataTemp;
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
+	LRPpreprocessorPlainTextWord* wordObject;
+	#endif
+	#else
 	int wordPOStype;
+	#endif
 	int groupIndex;
 	#ifdef SANI_SEQUENCE_GRAMMAR_WEIGHTS
 	double groupStrength;
@@ -384,8 +391,8 @@ public:
 	#ifdef SANI_REMOVE_LAST_OPTIONAL_COMPONENTS
 	SANIGroupNeuralNetwork* optionalComponentsWrapperGroup;
 	#endif
-	#endif	
 
+	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_INDIVIDUALLY
 	bool newlyGeneratedForSentenceTemp;
 	#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
@@ -404,13 +411,11 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_WITHOUT_SEQUENTIALITY
 	double referenceSetCandidateBestMetric;
 	#endif
-	
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS
 	bool startOfSentenceWordDetected;
 	bool endOfSentenceWordDetected;
 	bool markToErase;
 	#endif
-	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
 	multimap<double, SANIGroupNeuralNetwork*> directNeuronAssociationList;	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
@@ -420,6 +425,9 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_CONCEPTS
 	bool SANIisConceptNeuron;
 	#endif
+	#endif
+	#endif
+	
 	#endif
 };
 

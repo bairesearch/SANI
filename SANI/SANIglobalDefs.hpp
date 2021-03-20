@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -78,10 +78,24 @@
 		//#define SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK
 
 		#define SANI_PARSE_RECORD_COMPONENT_WORD_INDEX	//SANI1p3a	//note this does not require full SANI_PARSE_GENERATE_PARSE_TREE functionality (ie is ~compatible with SANI_PARSE_PERFORMANCE_BIO) as primarily only interested in recording/accessing the word index of leaf nodes
-
+		
 		//#define SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
 		#ifdef SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS
 
+			#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
+				#define SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON	//SANI1p6a
+				#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
+					#ifdef SANI_SEMANTIC_NETWORK
+						//#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS	//not yet defined
+							#define SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
+							#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
+								#define SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS_CALCULATE_POS_AMBIGUITY_INFO
+							#endif
+						//#endif
+					#endif
+				#endif
+			#endif
+		
 			//#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS	//not yet defined
 				#define SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
 				#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION

@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedUnique.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Unique components - unsupervised training of sequence grammar parse network
  * /
@@ -624,7 +624,7 @@ bool SANIgenerateCompactSectionedUniqueClass::createOrAppendFirstLevelHiddenLaye
 	cout << "SANIgenerateCompactSectionedUniqueClass::createOrAppendFirstLevelHiddenLayerGroup" << endl;
 	#endif
 
-	currentLayerNeuronGroupStart->inputLayerNeuron = true;
+	//currentLayerNeuronGroupStart->inputLayerNeuron = true;	//moved to SANIformation: @SANI1p6a
 
 	listOfHighLevelNeurons->push_back(currentLayerNeuronGroupStart);	
 	

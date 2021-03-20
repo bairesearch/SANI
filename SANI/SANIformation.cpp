@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -212,7 +212,7 @@ bool SANIformationClass::createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNe
 	//initialise section as null
 	return result;
 }
-bool SANIformationClass::addInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
+bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
 {	
 	bool result = true;
 		
@@ -230,6 +230,21 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(const LRPpreprocesso
 	currentGroupInInputLayerSectionWordOrig->neuronReference->SANIneuronName = wordOrig;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR
+	currentGroupInInputLayerSectionWordOrig->inputLayerNeuron = true;	//moved @SANI1p6a
+	//cout << "currentGroupInInputLayerSectionWordOrig->inputLayerNeuron" << endl;
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
+	currentGroupInInputLayerSectionWordOrig->wordObject	= currentWord;	//added @SANI1p6a
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS_CALCULATE_POS_AMBIGUITY_INFO
+	bool contextWordPOSisAmbiguous = false;
+	bool identifiedEveryWordInDatabasePOSpermutationNOTUSED = true;
+	uint64_t contextWordPOSambiguityInfo = LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN;	//default value
+	uchar contextWordUnambiguousPOSindex = INT_DEFAULT_VALUE;	//LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;
+	if(!LRPpreprocessorPOStagger.determinePOSambiguityInfo(currentWord, &contextWordPOSambiguityInfo, &contextWordPOSisAmbiguous, &contextWordUnambiguousPOSindex, &identifiedEveryWordInDatabasePOSpermutationNOTUSED))
+	{
+		result = false;
+	}
+	#endif
+	#endif
 	currentGroupInInputLayerSectionWordOrig->groupTypeIsString = true;
 	#endif
 	#ifdef SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
@@ -301,7 +316,9 @@ bool SANIformationClass::createInputNeuronLayerSectionWordPOStype(SANIGroupNeura
 		(*currentGroupInInputLayerSectionWordPOStype)->neuronReference->SANIneuronName = LRPpreprocessorPOStypeNameArray[i];
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR
+		(*currentGroupInInputLayerSectionWordPOStype)->inputLayerNeuron = true;	//moved @SANI1p6a
 		(*currentGroupInInputLayerSectionWordPOStype)->groupTypeIsString = true;
+		(*currentGroupInInputLayerSectionWordPOStype)->wordPOStype = i;	//moved @SANI1p6a
 		#endif
 		#ifdef SANI_DEBUG_PROPAGATE_ASSIGN_GROUP_INDICES_TO_INPUT_NEURONS
 		int newNeuronIndex = SANInodes.assignGroupIndex(*currentGroupInInputLayerSectionWordPOStype);	

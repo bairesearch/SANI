@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -170,49 +170,49 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::identifyReferenceSetDelimite
 		{
 			#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_VIA_DETERMINERS_SUPPORT_PRONOUNS
 			//definite detection
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_DEMONSTRATIVE))
 			{
 				//case: Demonstrative Pronoun: this (definite) robot rides a 
 				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE;
 				pronounDeterminerDetected = true;
 			}
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_INDEFINITE))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_INDEFINITE))
 			{
 				//case: Indefinite Pronoun: somebody (reference) rides a 
 				pronounReferenceDetected = true;
 			}	
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_INTERROGATIVE))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_INTERROGATIVE))
 			{
 				//case: Interrogative Pronoun: whomever (reference) rides a 
 				pronounReferenceDetected = true;
 			}
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_OBJECT))
 			{
 				//case: Object Pronoun: Tom rides it (reference)
 				pronounReferenceDetected = true;
 			}
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_PERSONAL_SUBJECT))
 			{
 				//case: Subject Pronoun: He (definite) rides a 
 				pronounReferenceDetected = true;
 			}
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ADJECTIVE))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ADJECTIVE))
 			{
 				//case: Possessive Adjective Pronoun: Our (definite) robot rides a 
 				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE;
 				pronounDeterminerDetected = true;
 			}
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ALONE))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_POSSESSIVE_ALONE))
 			{
 				//case: Possessive Alone Pronoun: Tom is ours (reference)
 				pronounReferenceDetected = true;
 			}
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_REFLEXIVE))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_REFLEXIVE))
 			{
 				//case: Reflexive Pronoun: Tom rides himself (reference)
 				pronounReferenceDetected = true;
 			}
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->unambiguousPOSindex, LRP_SHARED_POS_TYPE_PRONOUN_RELATIVE))
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, LRP_SHARED_POS_TYPE_PRONOUN_RELATIVE))
 			{
 				//case: Relative Pronoun: Tom is a man who (determiner) rides a 
 				referenceSetStartCodonType = SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_START_CODON_DEFINITE;
@@ -604,28 +604,6 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_DOING;
 		contextWordPOSisAmbiguous = false;
 	}
-	/*
-	if(LRPpreprocessorWordIdentification.determineIsPossessiveEnding(currentWord))
-	{
-		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_POSSESSIVEENDING;
-		contextWordPOSisAmbiguous = false;
-	}
-	if(LRPpreprocessorWordIdentification.determineIsAuxiliaryBeing(currentWord))
-	{
-		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_BEING;
-		contextWordPOSisAmbiguous = false;
-	}
-	if(LRPpreprocessorWordIdentification.determineIsAuxiliaryHaving(currentWord))
-	{
-		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_HAVING;
-		contextWordPOSisAmbiguous = false;
-	}
-	if(LRPpreprocessorWordIdentification.determineIsAuxiliaryDoing(currentWord))
-	{
-		contextWordUnambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_AUXILIARY_DOING;
-		contextWordPOSisAmbiguous = false;
-	}
-	*/
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_CONJUNCTIONS
 	if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(contextWordPOSambiguityInfo, LRP_PREPROCESSOR_POS_TYPE_CONJUNCTION_COORDINATING))

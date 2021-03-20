@@ -26,7 +26,7 @@
  * File Name: SANIformation.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -46,6 +46,7 @@
 #include "XMLparserClass.hpp"
 #include "LRPpreprocessorSentenceClass.hpp"
 #include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 #include "SANIrules.hpp"
 #endif
@@ -61,6 +62,7 @@ class SANIformationClass
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	private: SANIrulesClass SANIrules;
@@ -86,7 +88,7 @@ class SANIformationClass
 		private: bool createInputNeuronLayer(vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes);
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 			private: bool createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordOrig, const int* numberOfGroupsInSection);
-			public: bool addInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
+			public: bool addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
 			public: bool findInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection);
 			#else
 			private: bool createInputNeuronLayerSectionWordPOStype(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordPOStype, int* numberOfGroupsInSection);

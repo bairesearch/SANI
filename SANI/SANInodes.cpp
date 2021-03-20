@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p5a 19-March-2021
+ * Project Version: 1p6a 20-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -1343,7 +1343,15 @@ bool SANInodesClass::traceBackpropNeuralNetwork(const SANIGroupNeuralNetwork* cu
 	printParseTreeDebugIndentation(level);
 	if(isNeuronString(currentNeuron))
 	{
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
+		cout << "SANInodesClass::traceBackpropNeuralNetwork: prevCompIndex = " << previousComponentIndex << ", prevCompType = " << previousComponentType << ", currentNeuron->wordObject->tagName = " << currentNeuron->wordObject->tagName << endl;
+		#else
+		cout << "SANInodesClass::traceBackpropNeuralNetwork: prevCompIndex = " << previousComponentIndex << ", prevCompType = " << previousComponentType << ", currentNeuron->groupIndex = " << currentNeuron->groupIndex << endl;
+		#endif
+		#else
 		cout << "SANInodesClass::traceBackpropNeuralNetwork: prevCompIndex = " << previousComponentIndex << ", prevCompType = " << previousComponentType << ", currentNeuron->wordPOStype = " << currentNeuron->wordPOStype << endl;
+		#endif
 	}
 	else
 	{
