@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator
  * /
@@ -81,11 +81,14 @@ bool SANIposRelTranslatorClass::parseTxtfileAndCreateSemanticNetworkBasedUponSem
 			#ifdef SANI_FORWARD
 			currentWord->translatorSentenceWordIndex = w;
 			#endif
+			#ifdef SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START
+			LRPpreprocessorPOStagger.recordPOSambiguityInfo(currentWord);
+			#endif
 		}
 		currentLRPpreprocessorSentenceInList = currentLRPpreprocessorSentenceInList->next;
 	}
 	#endif	
-		
+	
 	#ifdef SANI_PARSE_SIMULTANEOUS
 	/*
 	#ifdef SANI_PARSE_SIMULTANEOUS_SET_WORD_POSTYPE_INFERRED_DYNAMIC_OPTIMISED
@@ -114,6 +117,5 @@ bool SANIposRelTranslatorClass::parseTxtfileAndCreateSemanticNetworkBasedUponSem
 
 	return result;
 }
-
 
 

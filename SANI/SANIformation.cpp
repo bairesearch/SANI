@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -235,14 +235,7 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlain
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
 	currentGroupInInputLayerSectionWordOrig->wordObject	= currentWord;	//added @SANI1p6a
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS_CALCULATE_POS_AMBIGUITY_INFO
-	bool contextWordPOSisAmbiguous = false;
-	bool identifiedEveryWordInDatabasePOSpermutationNOTUSED = true;
-	uint64_t contextWordPOSambiguityInfo = LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN;	//default value
-	uchar contextWordUnambiguousPOSindex = INT_DEFAULT_VALUE;	//LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;
-	if(!LRPpreprocessorPOStagger.determinePOSambiguityInfo(currentWord, &contextWordPOSambiguityInfo, &contextWordPOSisAmbiguous, &contextWordUnambiguousPOSindex, &identifiedEveryWordInDatabasePOSpermutationNOTUSED))
-	{
-		result = false;
-	}
+	LRPpreprocessorPOStagger.recordPOSambiguityInfo(currentWord);
 	#endif
 	#endif
 	currentGroupInInputLayerSectionWordOrig->groupTypeIsString = true;

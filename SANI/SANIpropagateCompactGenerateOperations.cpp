@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate Operations - unsupervised training of sequence grammar parse network
  * /
@@ -499,34 +499,44 @@ bool SANIpropagateCompactGenerateOperationsClass::updateActivatedNeuronWithMaxWo
 				if(randomProb > SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_RANDOMISE_PROB)
 				{
 				#endif
-					//cout << "\t2 candidateCoveragePartial = " << candidateCoveragePartial << endl;
+					#ifdef SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION
+					bool updatePerformance = false;
+					bool verifyPerformance = true;
+					bool wordConnectivityVerification = SANIpropagateOperationsParseTree.updateAndOrVerifyPerformanceGroup(currentParseTreeGroupTemp, forwardPropogationSentenceData, 0, updatePerformance, verifyPerformance, true, forwardPropogationSignalData);
+					if(wordConnectivityVerification)
+					{
+					#endif
+						//cout << "\t2 candidateCoveragePartial = " << candidateCoveragePartial << endl;
 
-					//cout << "missingStartComponentFound = " << missingStartComponentFound << endl;
+						//cout << "missingStartComponentFound = " << missingStartComponentFound << endl;
 
-					#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
-					cout << "++++++++++++++++++++++++++++++++++++++++++ forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage" << endl;
-					cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
-					#endif
-					//cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
-					#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_UPDATE_ACTIVATED_NEURON_WITH_MAX_WORD_INDEX_COVERAGE
-					cout << "\tcandidateCoveragePartial = " << candidateCoveragePartial << endl;
-					cout << "\tforwardPropogationWordData->w = " << forwardPropogationWordData->w << endl;
-					#endif
-					//cout << "candidateCoveragePartial = " << candidateCoveragePartial << endl;
+						#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
+						cout << "++++++++++++++++++++++++++++++++++++++++++ forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage" << endl;
+						cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
+						#endif
+						//cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
+						#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_UPDATE_ACTIVATED_NEURON_WITH_MAX_WORD_INDEX_COVERAGE
+						cout << "\tcandidateCoveragePartial = " << candidateCoveragePartial << endl;
+						cout << "\tforwardPropogationWordData->w = " << forwardPropogationWordData->w << endl;
+						#endif
+						//cout << "candidateCoveragePartial = " << candidateCoveragePartial << endl;
 
-					forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage = currentParseTreeGroupTemp;
-					forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial = candidateCoveragePartial;			
-					#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-					forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent = activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet;
+						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage = currentParseTreeGroupTemp;
+						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial = candidateCoveragePartial;			
+						#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
+						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent = activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet;
+						#endif
+						#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
+						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = missingOrVariableEndComponentFound;
+						#endif
+						/*
+						#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
+						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageMissingStartComponent = activatedNeuronWithMaxWordIndexCoverageMissingStartComponentSet;	//NOTUSED
+						#endif
+						*/
+					#ifdef SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION
+					}
 					#endif
-					#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-					forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = missingOrVariableEndComponentFound;
-					#endif
-					/*
-					#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
-					forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageMissingStartComponent = activatedNeuronWithMaxWordIndexCoverageMissingStartComponentSet;	//NOTUSED
-					#endif
-					*/
 				#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_RANDOMISE
 				}
 				#endif
@@ -621,7 +631,7 @@ bool SANIpropagateCompactGenerateOperationsClass::verifyActivatedNeuronWithMaxWo
 			{
 				activatedNeuronCandidateCoverage = SANInodes.calculateCoverage(activatedNeuronCandidate);
 				#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
-				SANIpropagateOperationsParseTree.calculatePerformanceWeightOfParseTree(activatedNeuronCandidate, forwardPropogationSentenceData, &activatedNeuronCandidateMaxWeight);
+				SANIpropagateOperationsParseTree.calculatePerformanceWeightOfParseTree(activatedNeuronCandidate, &activatedNeuronCandidateMaxWeight);
 				#endif
 				#ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS
 				//cout << "activatedNeuronCandidate->components.size() = " << activatedNeuronCandidate->components.size() << endl;
@@ -640,7 +650,7 @@ bool SANIpropagateCompactGenerateOperationsClass::verifyActivatedNeuronWithMaxWo
 					activatedNeuronBaselineCoverage = SANInodes.calculateCoverage(activatedNeuronBaseline);
 					#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
 					//activatedNeuronBaselineMaxWeight = activatedNeuronBaselineCoverage->parseTreeMaxWeight;
-					SANIpropagateOperationsParseTree.calculatePerformanceWeightOfParseTree(activatedNeuronBaseline, forwardPropogationSentenceData, &activatedNeuronBaselineMaxWeight);
+					SANIpropagateOperationsParseTree.calculatePerformanceWeightOfParseTree(activatedNeuronBaseline, &activatedNeuronBaselineMaxWeight);
 					#endif
 				}
 			}

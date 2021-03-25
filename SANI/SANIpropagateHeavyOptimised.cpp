@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyOptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Heavy Optimised - ~O(nlogn)
  * /
@@ -154,12 +154,7 @@ bool SANIpropagateHeavyOptimisedClass::executePosRelTranslatorNeuralNetwork(cons
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 	if(sentenceValidActivationPath)
 	{
-		int performanceNOTUSED = 0;
-		bool print = false;
-		bool performancePreprocess = false;
-		bool calculateMaxWeight = false;
-		int maxWeightNOTUSED = 0;
-		SANIpropagateOperationsParseTree.traceBackpropParseTree(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, 1, print, performancePreprocess, &performanceNOTUSED, NULL, calculateMaxWeight, &maxWeightNOTUSED);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
+		SANIpropagateOperationsParseTree.traceBackpropParseTreeSetTraced(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, 1);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
 	}
 	#endif
 	for(int w=0; w<sentenceContents->size(); w++)	//start at every w in sentence
@@ -1214,13 +1209,8 @@ bool SANIpropagateHeavyOptimisedClass::propagateWordThroughNetworkGroupComponent
 					#endif
 					
 					#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
-					bool print = false;
-					bool performancePreprocess = false;
-					int performanceNOTUSED = 0;
-					bool calculateMaxWeight = true;
 					int maxWeight = 0;
-					SANIpropagateOperationsParseTree.traceBackpropParseTree(activationPathWordCurrentParseTreeGroupOwner, 1, print, performancePreprocess, &performanceNOTUSED, forwardPropogationSentenceData->sentenceContents, calculateMaxWeight, &maxWeight);
-					SANIpropagateOperationsParseTree.resetNeuronBackprop(activationPathWordCurrentParseTreeGroupOwner, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
+					SANIpropagateOperationsParseTree.calculatePerformanceWeightOfParseTree(activationPathWordCurrentParseTreeGroupOwner, &maxWeight);
 					if(maxWeight >= forwardPropogationSentenceData->parseTreeMaxWeightPropagate)
 					{
 						forwardPropogationSentenceData->parseTreeMaxWeightPropagate = maxWeight;
@@ -1231,7 +1221,7 @@ bool SANIpropagateHeavyOptimisedClass::propagateWordThroughNetworkGroupComponent
 						forwardPropogationSentenceData->topLevelParseTreeGroupPropagate = activationPathWordCurrentParseTreeGroupOwner;
 						#endif
 						#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
-						if(!SANIpropagateOperationsParseTree.updatePerformance(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
+						if(!SANIpropagateOperationsParseTree.updatePerformanceGroupSentence(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
 						{
 							//result = false;
 						}
@@ -1290,11 +1280,12 @@ bool SANIpropagateHeavyOptimisedClass::propagateWordThroughNetworkGroupComponent
 
 bool SANIpropagateHeavyOptimisedClass::printBackpropParseTree(SANIGroupParseTree* group, const int level)
 {
-	bool print = true;
-	bool performancePreprocess = false;
-	int performanceNOTUSED = 0;
-	SANIpropagateOperationsParseTree.traceBackpropParseTree(group, 1, print, performancePreprocess, &performanceNOTUSED, NULL);
-	SANIpropagateOperationsParseTree.resetNeuronBackprop(group, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
+	#ifdef SANI_DEBUG_PARSE_TREE_PRINT_SUPPORT_RECURSION
+	SANIpropagateOperationsParseTree.traceBackpropParseTreePrint(group, 1);
+	SANIpropagateOperationsParseTree.resetNeuronBackprop(group, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	
+	#else
+	SANInodes.printParseTree(group, level);
+	#endif
 }
 
 

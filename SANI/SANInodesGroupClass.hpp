@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -155,6 +155,7 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 	int firstIndexInSequence;
+	int currentIndexInSequence;
 	#endif
 	//bool createNewConnections;
 	//int maxLayerToCreateNewConnections;
@@ -209,7 +210,7 @@ public:
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BASIC
 	bool expectToSeeConnectionWithPreviousWordTrace;
 	#endif
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
+	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
 	vector<SANIForwardPropogationWordData*> previousWordConnections;
 	#endif
 		
@@ -306,10 +307,10 @@ public:
 	bool inputLayerNeuron;	//neuron is in first layer of generated network
 	bool groupTypeIsString;
 	//SANIForwardPropogationWordData* wordDataTemp;
-	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
 	LRPpreprocessorPlainTextWord* wordObject;
 	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 	#else
 	int wordPOStype;
 	#endif
@@ -615,11 +616,7 @@ public:
 	bool foundCandidateComponent2;
 	SANIGroupParseTree* candidateComponent2sourceParseTreeGroup;
 	#endif
-	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-	vector<vector<SANIGroupNeuralNetwork*>*>* firstLayer;
-	#else
 	vector<SANIGroupNeuralNetwork*>* firstLayer;
-	#endif
 	#endif
 	
 	//sentence specific variables:

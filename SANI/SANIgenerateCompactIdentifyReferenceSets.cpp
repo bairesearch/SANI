@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -542,6 +542,11 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 {
 	bool result = true;
 	
+	#ifdef SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START
+	uint64_t contextWordPOSambiguityInfo = currentWord->POSambiguityInfo;	
+	uchar contextWordUnambiguousPOSindex = currentWord->unambiguousPOSindex;
+	bool contextWordPOSisAmbiguous = LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord);
+	#else
 	bool contextWordPOSisAmbiguous = false;
 	bool identifiedEveryWordInDatabasePOSpermutationNOTUSED = true;
 	uint64_t contextWordPOSambiguityInfo = LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN;	//default value
@@ -550,6 +555,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 	{
 		result = false;
 	}
+	#endif
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_DEMARKATE_POS_UNAMBIGUOUS_ENTITIES_PROPERNOUNS
 	//definite detection
@@ -679,7 +685,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 		
 	if(!contextWordPOSisAmbiguous)
 	{
-		currentWord->wordPOStypeInferred = contextWordUnambiguousPOSindex;
+		//currentWord->wordPOStypeInferred = contextWordUnambiguousPOSindex;
 		currentWord->unambiguousPOSindex = contextWordUnambiguousPOSindex;
 
 		SANIGroupNeuralNetwork* nodeContainingWord = NULL;
@@ -692,7 +698,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntit
 
 				//cout << "getSANInodeContainingWord" << endl;
 				#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
-				cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntities: currentWord = " << currentWord->tagName << ", currentWord->wordPOStypeInferred = " << currentWord->wordPOStypeInferred << endl;
+				cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosUnambiguousEntities: currentWord = " << currentWord->tagName << ", currentWord->unambiguousPOSindex = " << currentWord->unambiguousPOSindex << endl;
 				#endif
 
 				/*
@@ -1034,7 +1040,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDeli
 			{
 				//interpret "is" auxiliary as quality rather than definition
 				referenceSetDelimiterWord->POSambiguityInfo = LRPpreprocessorPOStagger.setPOSambiguityInfoBit(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_SHARED_POS_TYPE_ADJECTIVE, true);
-				referenceSetDelimiterWord->wordPOStypeInferred = LRP_SHARED_POS_TYPE_ADJECTIVE;
+				//referenceSetDelimiterWord->wordPOStypeInferred = LRP_SHARED_POS_TYPE_ADJECTIVE;
 				referenceSetDelimiterWord->unambiguousPOSindex = LRP_SHARED_POS_TYPE_ADJECTIVE;
 			}
 		}
@@ -1053,7 +1059,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDeli
 				cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDelimiters: referenceSetDelimiterWordAmbiguous = " << referenceSetDelimiterWordAmbiguous->tagName << ", LRP_PREPROCESSOR_POS_TYPE_VERB" << endl;
 				#endif
 				referenceSetDelimiterWordAmbiguous->POSambiguityInfo = LRPpreprocessorPOStagger.setPOSambiguityInfoBit(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_VERB, true);
-				referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_VERB;
+				//referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_VERB;
 				referenceSetDelimiterWordAmbiguous->unambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_VERB;
 			}
 			if(LRPpreprocessorWordIdentification.determineIsPreposition(referenceSetDelimiterWordAmbiguous))
@@ -1062,7 +1068,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDeli
 				cout << "SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDelimiters: referenceSetDelimiterWordAmbiguous = " << referenceSetDelimiterWordAmbiguous->tagName << ", LRP_PREPROCESSOR_POS_TYPE_PREPOSITION" << endl;
 				#endif
 				referenceSetDelimiterWordAmbiguous->POSambiguityInfo = LRPpreprocessorPOStagger.setPOSambiguityInfoBit(LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN, LRP_PREPROCESSOR_POS_TYPE_PREPOSITION, true);
-				referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_PREPOSITION;
+				//referenceSetDelimiterWordAmbiguous->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_PREPOSITION;
 				referenceSetDelimiterWordAmbiguous->unambiguousPOSindex = LRP_PREPROCESSOR_POS_TYPE_PREPOSITION;
 			}
 		}
@@ -1090,9 +1096,6 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::demarkatePosReferenceSetDeli
 	
 		if(!referenceSetDelimiterWordAmbiguous)
 		{
-			//currentWord->wordPOStypeInferred = contextWordUnambiguousPOSindex;
-			//currentWord->unambiguousPOSindex = contextWordUnambiguousPOSindex;
-
 			SANIGroupNeuralNetwork* referenceSetDelimiterNode = NULL;
 			if(getSANInodeContainingWord(forwardPropogationSentenceData, SANIGroupTypes, topLevelParseTreeGroup, i, &referenceSetDelimiterNode))
 			{

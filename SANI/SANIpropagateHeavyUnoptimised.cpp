@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyUnoptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Heavy Unoptimised - ~O(n^2)
  * /
@@ -132,10 +132,7 @@ bool SANIpropagateHeavyUnoptimisedClass::executePosRelTranslatorNeuralNetwork(co
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 	if(sentenceValidActivationPath)
 	{
-		int performanceNOTUSED = 0;
-		bool print = false;
-		bool performancePreprocess = false;
-		SANIpropagateOperationsParseTree.traceBackpropParseTree(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, 1, print, performancePreprocess, &performanceNOTUSED, NULL);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
+		SANIpropagateOperationsParseTree.traceBackpropParseTreeSetTraced(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, 1);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
 		SANIpropagateOperations.resetAllNeuronComponents(SANIGroupTypes, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_ALLGROUPTYPES_PARSE_TREE_GROUP_REF);
 		SANIpropagateOperationsParseTree.resetNeuronBackprop(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	//added GIA3g6aTEMP32 
 		
@@ -191,7 +188,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkIntro(const 
 
 	//word specific variables:
 	SANIForwardPropogationWordData* forwardPropogationWordData = (forwardPropogationSentenceData->forwardPropogationWordDataArray[w]);
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC	
+	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC	
 	forwardPropogationWordData->previousWordConnections.clear();
 	#endif
 	forwardPropogationWordData->wordReference = currentWord;
@@ -901,7 +898,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 	SANInodes.printComponent(currentComponent, layer+1);
 	#endif
 	
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC	
+	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC	
 	vector<SANIForwardPropogationWordData*> previousWordConnectionsOrig = forwardPropogationWordData->previousWordConnections;
 	#endif
 	
@@ -965,7 +962,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 		}
 	}
 	
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC	
+	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC	
 	if(!result)
 	{
 		forwardPropogationWordData->previousWordConnections = previousWordConnectionsOrig;
@@ -1004,7 +1001,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 			exit(EXIT_ERROR);
 		}
 		#endif
-		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
+		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
 		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_VERIFY_HYPOTHETICAL_PROPOGATION_FINDS_PREVIOUS_WORD
 		if(!passThrough)
 		{
@@ -1073,7 +1070,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 
 		/*
 		#ifdef SANI_SUPPORT_FUZZY_LAST_COMPONENTS_METHOD2
-		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
+		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
 		vector<SANIForwardPropogationWordData*> previousWordConnectionsOrig = forwardPropogationWordData->previousWordConnections;
 		#endif
 		#endif
@@ -1124,7 +1121,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BASIC
 		//bool foundPreviousActiveWordOrig = forwardPropogationSignalData->foundPreviousActiveWord;
 		#endif
-		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC	
+		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC	
 		vector<SANIForwardPropogationWordData*> previousWordConnectionsOrig;
 		#endif
 		#endif
@@ -1155,7 +1152,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BASIC
 					//forwardPropogationSignalData->foundPreviousActiveWord = true;
 					#endif
-					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
+					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
 					previousWordConnectionsOrig = forwardPropogationWordDataPreviousRecord->previousWordConnections;
 					if(find(forwardPropogationWordDataPreviousRecord->previousWordConnections.begin(), forwardPropogationWordDataPreviousRecord->previousWordConnections.end(), forwardPropogationWordData) == forwardPropogationWordDataPreviousRecord->previousWordConnections.end())
 					{
@@ -1204,7 +1201,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 			else
 			{
 				/*
-				#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC	
+				#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC	
 				forwardPropogationWordData->previousWordConnections = previousWordConnectionsOrig;
 				#endif
 				*/
@@ -1334,11 +1331,11 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 					//cout << "topLevelGroup" << endl;
 					//exit(0);
 
-					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
+					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
 					if(forwardPropogationWordData->w == forwardPropogationSentenceData->sentenceContents->size()-1)	//end of sentence punctuation mark found
 					{
 					#endif
-						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT_OLD
+						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_OLD
 						if(SANIpropagateOperations.isSentenceWordDataFullyConnected(forwardPropogationSentenceData))
 						{
 						#endif
@@ -1356,7 +1353,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 							forwardPropogationSentenceData->topLevelParseTreeGroupPropagate = activationPathWordCurrentParseTreeGroupOwner;
 							#endif
 							#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
-							if(!SANIpropagateOperationsParseTree.updatePerformance(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
+							if(!SANIpropagateOperationsParseTree.updatePerformanceGroupSentence(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer))
 							{
 								//result = false;
 							}
@@ -1368,14 +1365,14 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 							exit(0);
 							*/
 
-						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT_OLD
+						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_OLD
 						}
 						else
 						{
 							result = false;
 						}
 						#endif
-					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
+					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
 					}
 					else
 					{
@@ -1450,7 +1447,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BASIC
 					//forwardPropogationSignalData->foundPreviousActiveWord = foundPreviousActiveWordOrig;
 					#endif
-					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC	
+					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC	
 					forwardPropogationWordDataPreviousRecord->previousWordConnections = previousWordConnectionsOrig;
 					#endif
 					#endif
@@ -1719,11 +1716,12 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 
 bool SANIpropagateHeavyUnoptimisedClass::printBackpropParseTree(SANIGroupParseTree* group, const int level)
 {
-	bool print = true;
-	bool performancePreprocess = false;
-	int performanceNOTUSED = 0;
-	SANIpropagateOperationsParseTree.traceBackpropParseTree(group, 1, print, performancePreprocess, &performanceNOTUSED, NULL);
-	SANIpropagateOperationsParseTree.resetNeuronBackprop(group, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
+	#ifdef SANI_DEBUG_PARSE_TREE_PRINT_SUPPORT_RECURSION
+	SANIpropagateOperationsParseTree.traceBackpropParseTreePrint(group, 1);
+	SANIpropagateOperationsParseTree.resetNeuronBackprop(group, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);	
+	#else
+	SANInodes.printParseTree(group, level);
+	#endif
 }
 
 

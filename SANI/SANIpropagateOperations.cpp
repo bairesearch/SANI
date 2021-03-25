@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -732,7 +732,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTests(const SANIForw
 	else if(existingActivationFoundStartComponent)
 	{
 		//assumes SANI_REVERSE_DIRECTION:
-		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT_MUTUALLY_EXCLUSIVE_BIO
+		#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_MUTUALLY_EXCLUSIVE_BIO
 		if(previousActiveComponentInParseTreeParseTreeGroupRef != NULL)
 		{
 			int wordIndexMinPrevious = previousActiveComponentInParseTreeParseTreeGroupRef->parseTreeMinWordIndex;
@@ -769,7 +769,7 @@ bool SANIpropagateOperationsClass::componentWordConnectivityTests(const SANIForw
 
 								
 								
-#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT
+#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
 bool SANIpropagateOperationsClass::isSentenceWordDataFullyConnected(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	//forwardPropogationWordData->previousWordConnections.push_back(wPrevious);

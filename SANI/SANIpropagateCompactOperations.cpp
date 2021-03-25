@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Operations - generic functions
  * /
@@ -38,7 +38,7 @@
 
 #ifdef SANI_SEQUENCE_GRAMMAR
 
-bool SANIpropagateCompactOperationsClass::identifySequentialActivationFound(const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIComponentNeuralNetwork*>* components, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const int i, const SANIComponentNeuralNetwork* currentComponent, const SANIComponentNeuralNetwork* previousActiveComponent, bool* sequentialActivationFound, bool* existingActivationFoundStartComponent, bool* existingActivationFoundEndComponent, SANIGroupNeuralNetwork* ownerGroup, const bool componentWordConnectivityTestsResult)
+bool SANIpropagateCompactOperationsClass::identifySequentialActivationFound(const SANIForwardPropogationSignalData* forwardPropogationSignalData, const SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIComponentNeuralNetwork*>* components, const SANIGroupParseTree* activationPathWordCurrentParseTreeGroup, const int i, SANIComponentNeuralNetwork* currentComponent, SANIComponentNeuralNetwork* previousActiveComponent, bool* sequentialActivationFound, bool* existingActivationFoundStartComponent, bool* existingActivationFoundEndComponent, SANIGroupNeuralNetwork* ownerGroup, const bool componentWordConnectivityTestsResult)
 {
 	bool result = true;
 	
@@ -524,7 +524,7 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 				if(SANInodes.currentWordPOSunknown(componentWordArray1[i]))
 				{	
 					int wordPOStype1 = INT_DEFAULT_VALUE;
-					bool pass = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray1[i], &wordPOStype1);
+					bool pass = LRPpreprocessorPOStagger.getWordPOStypeFromWordPOSunknown(componentWordArray1[i], &wordPOStype1);
 					if(pass)
 					{
 						if(componentWordArray2[i]->unambiguousPOSindex != wordPOStype1)
@@ -540,7 +540,7 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 				else if(SANInodes.currentWordPOSunknown(componentWordArray2[i]))
 				{
 					int wordPOStype2 = INT_DEFAULT_VALUE;
-					bool pass = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray2[i], &wordPOStype2);
+					bool pass = LRPpreprocessorPOStagger.getWordPOStypeFromWordPOSunknown(componentWordArray2[i], &wordPOStype2);
 					if(pass)
 					{
 						if(componentWordArray1[i]->unambiguousPOSindex != wordPOStype2)
@@ -558,9 +558,9 @@ bool SANIpropagateCompactOperationsClass::repeatedSequenceDetected(SANIForwardPr
 					//both words are ambiguous
 
 					int wordPOStype1 = INT_DEFAULT_VALUE;
-					bool pass1 = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray1[i], &wordPOStype1);
+					bool pass1 = LRPpreprocessorPOStagger.getWordPOStypeFromWordPOSunknown(componentWordArray1[i], &wordPOStype1);
 					int wordPOStype2 = INT_DEFAULT_VALUE;
-					bool pass2 = SANInodes.getWordPOStypeFromWordPOSunknown(componentWordArray2[i], &wordPOStype2);
+					bool pass2 = LRPpreprocessorPOStagger.getWordPOStypeFromWordPOSunknown(componentWordArray2[i], &wordPOStype2);
 					if(pass1 && pass2)
 					{
 						if(wordPOStype1 != wordPOStype2)

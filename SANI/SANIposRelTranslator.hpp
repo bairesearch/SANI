@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslator.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator
  * /
@@ -58,6 +58,7 @@
 #include "LRPpreprocessorWordIdentification.hpp"
 #endif
 #include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 #include "SHAREDvars.hpp"
 
 class SANIposRelTranslatorClass
@@ -78,6 +79,7 @@ class SANIposRelTranslatorClass
 	#endif
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: LRPpreprocessorSentenceClass LRPpreprocessorSentenceClassObject;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 
 	private: SHAREDvarsClass SHAREDvars;
 

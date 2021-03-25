@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -75,7 +75,7 @@ class SANIpropagateOperationsParseTreeClass
 	#endif
 		
 	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
-	public: bool calculatePerformanceWeightOfParseTree(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int* maxWeight);
+	public: bool calculatePerformanceWeightOfParseTree(SANIGroupParseTree* currentParseTreeGroup, int* maxWeight);
 		public: bool setPerformanceWeightOfParseTree(SANIGroupParseTree* currentParseTreeGroup, int maxWeight);
 	#endif
 
@@ -84,10 +84,23 @@ class SANIpropagateOperationsParseTreeClass
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
 	public: bool updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
 	#endif
-		public: bool updatePerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
+		public: bool updateAndVerifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
+		public: bool updatePerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
+		public: bool verifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
+			public: bool updateAndOrVerifyPerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer, const bool updatePerformance, const bool verifyPerformance, const bool partialSentenceSequence, const SANIForwardPropogationSignalData* forwardPropogationSignalData);
 	#endif
-		public: bool traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents);
-			public: bool traceBackpropParseTree(SANIGroupParseTree* currentParseTreeGroup, int level, const bool print, const bool performancePreprocess, int* performance, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool calculateMaxWeight, int* maxWeight);
+		public: bool traceBackpropParseTreeSetTraced(SANIGroupParseTree* currentParseTreeGroup, int level);
+		#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE_METHOD_OLD_INCREMENT_FOR_EVERY_GROUP_REF_RECURSE
+		public: bool traceBackpropParseTreePerformance(SANIGroupParseTree* currentParseTreeGroup, int level, int* performance);
+		#else
+		public: bool traceBackpropParseTreeWordIndexCoverage(SANIGroupParseTree* currentParseTreeGroup, int level, vector<LRPpreprocessorPlainTextWord*>* sentenceContents);
+		#endif
+		#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
+		public: bool traceBackpropParseTreeCalculateWeight(SANIGroupParseTree* currentParseTreeGroup, int level, int* maxWeight);
+		#endif
+		#ifdef SANI_DEBUG_PARSE_TREE_PRINT_SUPPORT_RECURSION
+		public: bool traceBackpropParseTreePrint(SANIGroupParseTree* currentParseTreeGroup, int level);
+		#endif
 	#endif
 		
 	#ifdef SANI_PARSE

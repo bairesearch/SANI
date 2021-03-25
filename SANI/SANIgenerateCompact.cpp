@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -69,51 +69,60 @@ bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork(SANItransla
 			{
 				result = false;
 			}
-	
-			#ifdef SANI_DEBUG_PROPAGATE_TRACE
-			cout << "\ntestSentenceNetworkNodes #1" << endl;
+			
+			#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
+			if(result)	//generateSentenceNetworkNodes may have passed/failed depending upon pos ambiguity reconciliation
+			{
 			#endif
-			if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
-			{
-				result = false;
-			}
-					
-			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY
-			if(result)
-			{
-				//cout << "identifyVariableComponentsAndReferenceSets" << endl;
-				if(!SANIgenerateCompactIdentify.identifyVariableComponentsAndReferenceSets(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, *topLevelParseTreeGroup))
-				{
-					result = false;
-				}
-
+	
 				#ifdef SANI_DEBUG_PROPAGATE_TRACE
-				cout << "testSentenceNetworkNodes #2" << endl;
+				cout << "\ntestSentenceNetworkNodes #1" << endl;
 				#endif
 				if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
 				{
 					result = false;
 				}
+
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY
+				if(result)
+				{
+					//cout << "identifyVariableComponentsAndReferenceSets" << endl;
+					if(!SANIgenerateCompactIdentify.identifyVariableComponentsAndReferenceSets(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, *topLevelParseTreeGroup))
+					{
+						result = false;
+					}
+
+					#ifdef SANI_DEBUG_PROPAGATE_TRACE
+					cout << "testSentenceNetworkNodes #2" << endl;
+					#endif
+					if(!testSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, topLevelParseTreeGroup))
+					{
+						result = false;
+					}
+				}
+				#endif
+
+				#ifdef SANI_DEBUG_RULES_PRINT_PARSE_TREE
+				cout << "SANI_DEBUG_RULES_PRINT_PARSE_TREE: SANInodes.printParseTree" << endl;			
+				SANInodes.printParseTree(*topLevelParseTreeGroup, 0);
+				#endif
+				#ifdef SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK
+				cout << "SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK: SANInodes.printNeuralNetwork" << endl;
+				SANInodes.printNeuralNetwork((*topLevelParseTreeGroup)->groupRef, 0);
+				#endif
+
+
+				#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
+				SANIgenerateCompactIdentify.setGeneratedForLastSentence(translatorVariables);
+				#endif
+
+				#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
+				SANIgenerateCompactIdentify.clearHiddenLayerGroupsTemp();
+				#endif
+			
+			#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
 			}
-			#endif
-			
-			#ifdef SANI_DEBUG_RULES_PRINT_PARSE_TREE
-			cout << "SANI_DEBUG_RULES_PRINT_PARSE_TREE: SANInodes.printParseTree" << endl;			
-			SANInodes.printParseTree(*topLevelParseTreeGroup, 0);
-			#endif
-			#ifdef SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK
-			cout << "SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK: SANInodes.printNeuralNetwork" << endl;
-			SANInodes.printNeuralNetwork((*topLevelParseTreeGroup)->groupRef, 0);
-			#endif
-			
-						
-			#ifdef SANI_ANN_COLOUR_NODES_FROM_LAST_GENERATED_SENTENCE
-			SANIgenerateCompactIdentify.setGeneratedForLastSentence(translatorVariables);
-			#endif
-		
-			#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS
-			SANIgenerateCompactIdentify.clearHiddenLayerGroupsTemp();
-			#endif
+			#endif	
 		}
 	}
 		
@@ -133,19 +142,19 @@ bool SANIgenerateCompactClass::generateSentenceNetworkNodes(SANItranslatorVariab
 	#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_INCREMENTALLY_SECTIONED
 	if(!SANIgenerateCompactSectionedVariable.findAndReconcileVariationWrapper(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData->sentenceContents, forwardPropogationSentenceData, supportVariableFirstComponents))
 	{
-
+		result = false;
 	}
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS_OPTIONAL
 	supportVariableFirstComponents = false;
-	if(SANIgenerateCompactSectionedVariable.findAndReconcileVariationWrapper(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData->sentenceContents, forwardPropogationSentenceData, supportVariableFirstComponents))
+	if(!SANIgenerateCompactSectionedVariable.findAndReconcileVariationWrapper(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData->sentenceContents, forwardPropogationSentenceData, supportVariableFirstComponents))
 	{
-
+		result = false;
 	}
 	#endif
 	#else
 	if(!SANIgenerateCompactContinuous.findAndReconcileVariationWrapper(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData->sentenceContents, forwardPropogationSentenceData, supportVariableFirstComponents))	
 	{
-
+		result = false;
 	}	
 	#endif
 	
@@ -157,7 +166,7 @@ bool SANIgenerateCompactClass::generateSentenceNetworkNodes(SANItranslatorVariab
 	if(!SANIgenerateCompactContinuous.findAndReconcileVariationWrapper(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData->sentenceContents, forwardPropogationSentenceData, supportVariableFirstComponents))
 	#endif
 	{
-
+		result = false;
 	}	
 	#endif
 	

@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -85,6 +85,7 @@ SANIForwardPropogationSignalData::SANIForwardPropogationSignalData(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 	firstIndexInSequence = 0;
+	currentIndexInSequence = INT_DEFAULT_VALUE;
 	#endif
 	//createNewConnections = false;
 	//maxLayerToCreateNewConnections = 0;
@@ -139,7 +140,7 @@ SANIForwardPropogationWordData::SANIForwardPropogationWordData(void)
 	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BASIC
 	expectToSeeConnectionWithPreviousWordTrace = false;
 	#endif
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSHOC
+	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
 	//previousWordConnections = NULL;
 	#endif
 	
@@ -233,10 +234,10 @@ SANIGroupNeuralNetwork::SANIGroupNeuralNetwork(void)
 	inputLayerNeuron = false;
 	groupTypeIsString = false;
 	//wordDataTemp = NULL;
-	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
 	wordObject = NULL;
 	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 	#else
 	wordPOStype = INT_DEFAULT_VALUE;
 	#endif
@@ -537,11 +538,7 @@ SANIForwardPropogationSentenceData::SANIForwardPropogationSentenceData(void)
 	foundCandidateComponent2 = false;
 	candidateComponent2sourceParseTreeGroup = NULL;
 	#endif
-	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
 	firstLayer = NULL;
-	#else
-	firstLayer = NULL;
-	#endif
 	#endif
 	
 	//sentence specific variables:

@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedUnique.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p6a 20-March-2021
+ * Project Version: 1p7a 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Unique components - unsupervised training of sequence grammar parse network
  * /
@@ -69,9 +69,14 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileVariationWrapper(S
 		}
 		else
 		{
+			result = false;
+			completedSentenceNetworkGeneration = true;	//premature exit sentence generation loop
+			#ifndef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
 			cerr << "!findAndReconcileIncrementalVariationLimitNumComponentsSection" << endl;
 			exit(EXIT_ERROR);
+			#endif
 		}
+		
 		if(indexInSequenceStart == sentenceContents->size())
 		{
 			completedSentenceNetworkGeneration = true;
@@ -130,6 +135,7 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileVariationLimitNumC
 	{
 	#endif
 		bool foundAndReconciledMissingOrDifferentIncrementalNeurons = findAndReconcileIncrementalVariationLimitNumComponentsSection(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, indexInSequenceStart, highLevelNeuronPrior);
+		result = foundAndReconciledMissingOrDifferentIncrementalNeurons;
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_TEST_VERIFICATION_AFTER_GENERATION
 	}
 	#endif
@@ -152,15 +158,7 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 	
 	
 	//if SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY, first layer contains firstPOS neuron for each wordIndex only
-	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-	vector<vector<SANIGroupNeuralNetwork*>*> firstLayer;
-	for(int i=0; i<forwardPropogationSentenceData->sentenceContents.size(); i++)
-	{
-		firstLayer.push_back(new vector<SANIGroupNeuralNetwork*>);
-	}
-	#else
 	vector<SANIGroupNeuralNetwork*> firstLayer;
-	#endif
 	forwardPropogationSentenceData->firstLayer = &firstLayer;
 	SANIpropagateCompact.defineFirstLayer(translatorVariables, forwardPropogationSentenceData);
 	
@@ -193,7 +191,18 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 			
 	while(stillIdentifyingHighLevelNeurons)
 	{	
-	
+		int currentFirstInputNeuronIndexInSequence;
+		if(forwardPropogationSentenceData->parseSentenceReverse)
+		{
+			currentFirstInputNeuronIndexInSequence = forwardPropogationSentenceData->sentenceContents->size()-1-indexInSequence;
+		}
+		else
+		{
+			currentFirstInputNeuronIndexInSequence = indexInSequence;
+		}
+		
+		LRPpreprocessorPlainTextWord* currentWord =  (forwardPropogationSentenceData->sentenceContents)->at(currentFirstInputNeuronIndexInSequence);
+
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_DISALLOW_IDENTICAL_INPUTS
 		forwardPropogationSentenceData->highLevelNeuronPriorTemp = NULL;
 		#ifdef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE
@@ -212,28 +221,16 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 		}
 		#endif
 		#endif
-				
-			
-		int currentFirstInputNeuronIndexInSequence;
-		if(forwardPropogationSentenceData->parseSentenceReverse)
-		{
-			currentFirstInputNeuronIndexInSequence = forwardPropogationSentenceData->sentenceContents->size()-1-indexInSequence;
-		}
-		else
-		{
-			currentFirstInputNeuronIndexInSequence = indexInSequence;
-		}
 
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
-		cout << "\e[35m \n** loopIndex = " << loopIndex << ", indexInSequence = " << indexInSequence << ", word = " << (forwardPropogationSentenceData->sentenceContents)->at(currentFirstInputNeuronIndexInSequence)->tagName << " \e[0m" << endl;
+		cout << "\e[35m \n** loopIndex = " << loopIndex << ", indexInSequence = " << indexInSequence << ", word = " << currentWord->tagName << " \e[0m" << endl;
 		#endif
 
 		#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
 		//if SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY, first layer contains firstPOS neuron for each wordIndex only
-		cerr << "SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariation hasnt yet been coded for SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY" << endl;
-		exit(EXIT_ERROR);
+		SANIGroupNeuralNetwork* currentLayerNeuronGroupStart = (firstLayer)[currentFirstInputNeuronIndexInSequence];	//will only be valid for pos unambiguous words
 		#else
-		SANIGroupNeuralNetwork* currentLayerNeuronGroupStart = (firstLayer)[currentFirstInputNeuronIndexInSequence];
+		SANIGroupNeuralNetwork* currentLayerNeuronGroupStart = (firstLayer)[currentFirstInputNeuronIndexInSequence];	
 		#endif
 		
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
@@ -264,6 +261,14 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 			
 			foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
 
+			#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
+			if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
+			{
+				foundAndReconciledMissingOrDifferentIncrementalNeurons = false;	//cannot add sentence to network (it contains pos ambiguous sequences that cannot be reconciled)
+				stillIdentifyingHighLevelNeurons = false;
+			}
+			#endif
+				
 			createOrAppendFirstLevelHiddenLayerGroup(SANIGroupTypes, forwardPropogationSentenceData, currentLayerNeuronGroupStart, &creatingNewNeuronSequence1, &neuronSequenceIndex1, &newNeuronSequenceGroup1, listOfHighLevelNeuronsCurrent);
 
 			indexInSequence++;
@@ -276,9 +281,9 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 
 			//case c
 			//fully activated group coverage+weight is > partially activated group coverage+weight
-			//#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
+			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 			cout << "B addNeuronToListSectioned, indexInSequence = " << indexInSequence  << ", nextIndexInSequence = " << SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSentenceData) << ", groupIndexes = " << SANInodes.printParseTreeGroupIndicesFlat(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage) << endl;
-			//#endif
+			#endif
 
 			addNeuronToListSectioned(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef, &indexInSequence);
 		}			
