@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -166,6 +166,11 @@ SANIComponentNeuralNetwork::SANIComponentNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS
 	refsetConnectionType = LRP_SHARED_ENTITY_CONNECTION_TYPE_UNDEFINED;	//SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_UNKNOWN;
 	#endif
+	#endif
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+	POSambiguousInputs = false;
+	POSambiguousInputsPOSambiguityInfo = 0;
 	#endif
 }
 SANIComponentNeuralNetwork::~SANIComponentNeuralNetwork(void)

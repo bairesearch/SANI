@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify - identify and connect regions
  * /
@@ -99,7 +99,7 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableComponentsAndReferenceSet
 	#endif
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS
-	if(!identifyVariableComponentsWrapper(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, topLevelParseTreeGroup))
+	if(!identifyVariableComponentsWrapper(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData))
 	{
 		result = false;
 	}
@@ -162,7 +162,7 @@ bool SANIgenerateCompactIdentifyClass::identifyStartEndOfSentenceWordDetected(SA
 	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
 	{				
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{			
 			if(!identifyStartEndOfSentenceWordDetected(forwardPropogationSentenceData, parseTreeComponent->parseTreeGroupRef))
 			{
@@ -179,7 +179,7 @@ bool SANIgenerateCompactIdentifyClass::identifyStartEndOfSentenceWordDetected(SA
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS
-bool SANIgenerateCompactIdentifyClass::identifyVariableComponentsWrapper(const SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupParseTree* topLevelParseTreeGroup)
+bool SANIgenerateCompactIdentifyClass::identifyVariableComponentsWrapper(const SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool result = true;
 								

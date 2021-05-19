@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -179,7 +179,7 @@ bool SANIformationClass::createInputNeuronLayer(vector<XMLparserTag*>* SANIrules
 	firstGroupInInputLayerSectionWordPOStype = new SANIGroupNeuralNetwork();
 	firstInputGroupInNetwork = firstGroupInInputLayerSectionWordPOStype;
 	currentGroupInInputLayerSection = firstGroupInInputLayerSectionWordPOStype;
-	if(!createInputNeuronLayerSectionWordPOStype(&currentGroupInInputLayerSection, &numberOfInputGroupsInSectionWordPOStype))
+	if(!createInputNeuronLayerSectionWordPOStype(&currentGroupInInputLayerSection, &numberOfInputGroupsInSectionWordPOStype, SANIGroupTypes))
 	{
 		result = false;
 	}
@@ -212,7 +212,7 @@ bool SANIformationClass::createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNe
 	//initialise section as null
 	return result;
 }
-bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
+bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection, vector<SANIGroupType*>* SANIGroupTypes)
 {	
 	bool result = true;
 		
@@ -246,6 +246,9 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlain
 	currentGroupInInputLayerSectionWordOrig->initiateANNneuron(wordOrig + ", groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex));	//OLD: groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex)
 	#endif
 	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
+	SANInodes.addNeuronToGroupTypes(currentGroupInInputLayerSectionWordOrig, SANIGroupTypes, true);	
+	#endif
 	
 	inputLayerSectionWordOrigMap.insert(pair<string, SANIGroupNeuralNetwork*>(wordOrig, currentGroupInInputLayerSectionWordOrig));
 
@@ -253,6 +256,7 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlain
 	#ifdef SANI_DEBUG_CREATE
 	cout << "SANIformationClass::createInputNeuronLayerSectionWordOrig{} addGroupToLayer(currentGroupInInputLayerSectionWordOrig, numberOfGroupsInSection);  i = " << i << endl;
 	#endif
+
 	
 	
 	return result;
@@ -276,7 +280,7 @@ bool SANIformationClass::findInputNeuronLayerSectionWordOrig(const LRPpreprocess
 	return result;
 }
 #else
-bool SANIformationClass::createInputNeuronLayerSectionWordPOStype(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordPOStype, int* numberOfGroupsInSection)
+bool SANIformationClass::createInputNeuronLayerSectionWordPOStype(SANIGroupNeuralNetwork** currentGroupInInputLayerSectionWordPOStype, int* numberOfGroupsInSection, vector<SANIGroupType*>* SANIGroupTypes)
 {
 	bool result = true;
 	
@@ -319,10 +323,14 @@ bool SANIformationClass::createInputNeuronLayerSectionWordPOStype(SANIGroupNeura
 		(*currentGroupInInputLayerSectionWordPOStype)->initiateANNneuron("groupIndex:" + SHAREDvars.convertIntToString(newNeuronIndex));
 		#endif
 		#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
+		SANInodes.addNeuronToGroupTypes(*currentGroupInInputLayerSectionWordPOStype, SANIGroupTypes, true);	
+		#endif
 		addGroupToLayer(currentGroupInInputLayerSectionWordPOStype, numberOfGroupsInSection);
 		#ifdef SANI_DEBUG_CREATE
 		cout << "SANIformationClass::createInputNeuronLayerSectionWordPOStype{} addGroupToLayer(currentGroupInInputLayerSectionWordPOStype, numberOfGroupsInSection);  i = " << i << endl;
 		#endif
+
 	}
 }
 

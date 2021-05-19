@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Operations - unsupervised training of sequence grammar parse network
  * /
@@ -58,8 +58,7 @@ SANIGroupNeuralNetwork* SANIgenerateCompactOperationsClass::createNewHiddenLayer
 	#endif
 	
 	SANIGroupNeuralNetwork* newNeuron = createNewGroup();
-	SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	
-	groupType->groups.push_back(newNeuron);
+	SANInodes.addNeuronToGroupTypes(newNeuron, SANIGroupTypes, false);	
 	
 	return newNeuron;
 }
@@ -188,8 +187,29 @@ bool SANIgenerateCompactOperationsClass::addComponentToGroup(const SANIForwardPr
 	cout << "SANIgenerateCompactOperationsClass::addComponentToGroup: higherLevelComponentGroupOwner->groupIndex = " << higherLevelComponentGroupOwner->groupIndex << ", newComponent->componentIndex = " << newComponent->componentIndex << endl;
 	#endif
 
-	SANIformation.createGroupANNconnection(group, newComponent);
-
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+	if(group->inputLayerNeuronArtificialAmbiguousPOSpermutations)
+	{
+		for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
+		{
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(group->inputLayerNeuronArtificialAmbiguousPOSpermutationsPOSambiguityInfo, wordPOStype))
+			{
+				SANIGroupNeuralNetwork* inputLayerGroup = SANIformation.getInputGroupLayerSection(SANIformation.getFirstGroupInInputLayerSectionWordPOStype(), wordPOStype);
+				SANIformation.createGroupANNconnection(inputLayerGroup, newComponent);
+			}
+		}
+		newComponent->POSambiguousInputs = true;
+		newComponent->POSambiguousInputsPOSambiguityInfo = group->inputLayerNeuronArtificialAmbiguousPOSpermutationsPOSambiguityInfo;
+		delete group;	//CHECKTHIS
+	}
+	else
+	{
+	#endif
+		SANIformation.createGroupANNconnection(group, newComponent);
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+	}
+	#endif
+	
 	return result;
 }
 
@@ -214,7 +234,7 @@ SANIGroupNeuralNetwork* SANIgenerateCompactOperationsClass::createNewGroup()
 {
 	SANIGroupNeuralNetwork* newGroup = new SANIGroupNeuralNetwork();
 	newGroup->groupName = SANI_SEQUENCE_GRAMMAR_GROUP_NAME;
-	newGroup->groupTypeName = SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_NAME;
+	newGroup->groupTypeName = SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_DEFAULT_NAME;
 	
 	int newNeuronIndex = SANInodes.assignGroupIndex(newGroup);
 

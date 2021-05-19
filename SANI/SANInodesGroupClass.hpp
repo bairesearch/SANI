@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -430,6 +430,11 @@ public:
 	#endif
 	
 	#endif
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+	bool inputLayerNeuronArtificialAmbiguousPOSpermutations;
+	uint64_t inputLayerNeuronArtificialAmbiguousPOSpermutationsPOSambiguityInfo;	//temporarily store word objects containing POS ambiguity info of artificial POS ambiguous input neuron
+	#endif
 };
 
 
@@ -686,6 +691,10 @@ public:
 	#ifdef SANI_LIGHT_BIO
 	vector<SANIGroupParseTree*> parseTreeGroupsArrayPropagate;
 	#endif
+	#endif
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+	bool artificialInputNeuronLinkPosAmbiguousPermuations;
 	#endif
 	
 };

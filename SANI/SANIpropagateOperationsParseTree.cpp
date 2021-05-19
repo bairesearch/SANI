@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -876,9 +876,9 @@ bool SANIpropagateOperationsParseTreeClass::deinitialiseParseTreeGroupList(vecto
 void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup)
 {
 	#ifdef SANI_PARSE_GENERATE_PARSE_TREE
-	if(parentComponent->parseTreeGroupRef != NULL)
+	if(!SANInodes.parseTreeNodeInputLayer(parentComponent->parseTreeGroupRef))
 	#else
-	if(childGroup != NULL)
+	if(!SANInodes.parseTreeNodeInputLayer(childGroup))
 	#endif
 	{	
 		//has children
@@ -935,7 +935,7 @@ void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfPare
 #ifdef SANI_SEQUENCE_GRAMMAR
 void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfParentBasic(SANIGroupParseTree* parentGroup, SANIForwardPropogationWordData* forwardPropogationWordData, SANIGroupParseTree* childGroup)
 {
-	if(childGroup != NULL)
+	if(!SANInodes.parseTreeNodeInputLayer(childGroup))
 	{	
 		//has children
 		if(childGroup->parseTreeMaxWordIndex > parentGroup->parseTreeMaxWordIndex)

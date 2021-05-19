@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -84,7 +84,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	//if SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY, first layer contains firstPOS neuron for each wordIndex only
 	vector<SANIGroupNeuralNetwork*> firstLayer;
 	forwardPropogationSentenceData->firstLayer = &firstLayer;
-	SANIpropagateCompact.defineFirstLayer(translatorVariables, forwardPropogationSentenceData);
+	SANIpropagateCompact.defineFirstLayer(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData);
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
 	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.clear();

@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -163,10 +163,15 @@ class SANInodesClass
 	public: void initialiseNewGroupIndex(vector<SANIGroupType*>* SANIGroupTypes);
 	public: int* getNewGroupIndex();
 	public: SANIGroupType* getSequenceGrammarGroupTypeDefault(vector<SANIGroupType*>* SANIGroupTypes);
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
+	public: SANIGroupType* getSequenceGrammarGroupTypeInputNeurons(vector<SANIGroupType*>* SANIGroupTypes);
+	#endif
+	public: SANIGroupType* getSequenceGrammarGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName);
 	public: int assignGroupIndex(SANIGroupNeuralNetwork* group);
 	#endif
 	
 	public: bool findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, constEffective SANIGroupType** groupTypeFound);
+		public: bool findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, constEffective SANIGroupType** groupTypeFound, int* groupTypeFoundIndex);
 	public: bool findGroup(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, const string groupName, constEffective SANIGroupType** groupTypeFound, SANIGroupNeuralNetwork** groupFound);
 	
 	#ifdef SANI_REMOVE_LAST_OPTIONAL_COMPONENTS
@@ -278,7 +283,13 @@ class SANInodesClass
 	public: bool hasComponentTypeString(const SANIComponentParseTree* component);
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	public: bool calculateComponentTypeString(const SANIGroupNeuralNetwork* componentSource);
+	public: bool parseTreeComponentOnFirstHiddenLayer(const SANIComponentParseTree* parseTreeComponent);
+	public: bool parseTreeNodeInputLayer(const SANIGroupParseTree* parseTreeGroup);
 	#endif
+	
+	public: void addNeuronToGroupTypes(SANIGroupNeuralNetwork* newNeuron, vector<SANIGroupType*>* SANIGroupTypes, const bool inputNeuron);
+	public: void createGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName);
+
 	
 };
 

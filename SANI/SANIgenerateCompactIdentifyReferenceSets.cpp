@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentifyReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify Reference Sets - identify and connect reference sets
  * /
@@ -1217,7 +1217,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findNeuronInParseTree(SANIGr
 	{				
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			if(findNeuronInParseTree(parseTreeComponent->parseTreeGroupRef, neuronToFind, layer+1))
 			{
@@ -1245,7 +1245,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findCurrentSentenceReference
 	{				
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			if(findCurrentSentenceReferenceSet(forwardPropogationSentenceData, tupleFirstIndex, referenceSetPhraseLength, parseTreeComponent->parseTreeGroupRef, currentSentenceReferenceSet, minNumberWordContiguityErrors, layer+1))
 			{
@@ -1295,7 +1295,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findReferenceSetDelimiter(SA
 		
 		int parseTreeMinWordIndex = INT_DEFAULT_VALUE;
 		int parseTreeMaxWordIndex = INT_DEFAULT_VALUE;
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			SANIGroupParseTree* parseTreeGroupRef = parseTreeComponent->parseTreeGroupRef;
 			parseTreeMinWordIndex = parseTreeGroupRef->parseTreeMinWordIndex;
@@ -1341,7 +1341,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findReferenceSetDelimiter(SA
 		}
 		parseTreeComponentPrevious = parseTreeComponent;
 		
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			if(findReferenceSetDelimiter(forwardPropogationSentenceData, referenceSetDelimiterWordIndex1, referenceSetDelimiterWordIndex2, parseTreeComponent->parseTreeGroupRef, currentSentenceReferenceSet, referenceSetDelimiterComponent1, referenceSetDelimiterComponent2, layer+1))
 			{
@@ -1424,7 +1424,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::updateNetworkRecency(int tim
 	{				
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			if(!updateNetworkRecency(timeIndex, parseTreeComponent->parseTreeGroupRef, layer+1))
 			{
@@ -1475,7 +1475,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findAndLinkReferenceSetCandi
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 		//printComponent(parseTreeComponent, layer);
 
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			if(!findAndLinkReferenceSetCandidates1(forwardPropogationSentenceData, parseTreeComponent->parseTreeGroupRef, layer+1))
 			{
@@ -1498,7 +1498,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findAndLinkReferenceSetCandi
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 		//printComponent(parseTreeComponent, layer);
 
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			hasComponentGroupRefs = true;
 			
@@ -1575,9 +1575,11 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findAndLinkReferenceSetCandi
 		createReferenceSetCandidateVector(currentParseTreeGroup, &referenceSetCandidateVector1);
 		SANIGroupNeuralNetwork* currentNeuralNetworkGroup = currentParseTreeGroup->groupRef;
 
-		for(int k=0; k<SANIGroupTypes->size(); k++)
-		{
-			SANIGroupType* groupType = SANIGroupTypes->at(k);
+		//for(int k=0; k<SANIGroupTypes->size(); k++)
+		//{
+		//	SANIGroupType* groupType = SANIGroupTypes->at(k);
+			
+			SANIGroupType* groupType = getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	
 			for(int k2=0; k2<groupType->groups.size(); k2++)
 			{
 				SANIGroupNeuralNetwork* groupTypeNeuralNetworkGroup = (groupType->groups)[k2];
@@ -1596,7 +1598,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findAndLinkReferenceSetCandi
 				}
 				#endif
 			}
-		}
+		//}
 	}
 		
 		
@@ -1605,7 +1607,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::findAndLinkReferenceSetCandi
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 		//printComponent(parseTreeComponent, layer);
 
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			if(!findAndLinkReferenceSetCandidatesWrapper(SANIGroupTypes, forwardPropogationSentenceData, parseTreeComponent->parseTreeGroupRef, layer+1))
 			{
@@ -1700,7 +1702,7 @@ bool SANIgenerateCompactIdentifyReferenceSetsClass::createReferenceSetCandidateV
 	{		
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
 
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
 		{
 			if(!createReferenceSetCandidateVector(parseTreeComponent->parseTreeGroupRef, referenceSetCandidateVector))
 			{

@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -75,10 +75,22 @@ int* SANInodesClass::getNewGroupIndex()
 }
 SANIGroupType* SANInodesClass::getSequenceGrammarGroupTypeDefault(vector<SANIGroupType*>* SANIGroupTypes)
 {
+	SANIGroupType* groupType = getSequenceGrammarGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_DEFAULT_NAME);
+	return groupType;
+}
+#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY	
+SANIGroupType* SANInodesClass::getSequenceGrammarGroupTypeInputNeurons(vector<SANIGroupType*>* SANIGroupTypes)
+{
+	SANIGroupType* groupType = getSequenceGrammarGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_INPUT_NEURONS_NAME);
+	return groupType;
+}
+#endif
+SANIGroupType* SANInodesClass::getSequenceGrammarGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName)
+{
 	SANIGroupType* groupType = NULL;
-	if(!findGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_NAME, &groupType))
+	if(!findGroupType(SANIGroupTypes, groupTypeName, &groupType))
 	{
-		cerr << "SANInodesClass::getSequenceGrammarGroupTypeDefault error: !findGroupType" << endl;
+		cerr << "SANInodesClass::getSequenceGrammarGroupTypeDefault error: !findGroupType, groupTypeName = " << groupTypeName << endl;
 		exit(EXIT_ERROR);
 	}
 	return groupType;
@@ -95,6 +107,11 @@ int SANInodesClass::assignGroupIndex(SANIGroupNeuralNetwork* group)
 
 bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, constEffective SANIGroupType** groupTypeFound)
 {
+	int groupTypeFoundIndexNOTUSED = INT_DEFAULT_VALUE;
+	return findGroupType(SANIGroupTypes, groupTypeName, groupTypeFound, &groupTypeFoundIndexNOTUSED);
+}
+bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName, constEffective SANIGroupType** groupTypeFound, int* groupTypeFoundIndex)
+{
 	bool result = false;
 	for(int i=0; i<SANIGroupTypes->size(); i++)
 	{
@@ -103,6 +120,7 @@ bool SANInodesClass::findGroupType(vector<SANIGroupType*>* SANIGroupTypes, const
 		if(groupType->groupTypeName == groupTypeName)
 		{
 			*groupTypeFound = groupType;
+			*groupTypeFoundIndex = i;
 			result = true;
 		}
 	}
@@ -1636,6 +1654,68 @@ bool SANInodesClass::calculateComponentTypeString(const SANIGroupNeuralNetwork* 
 }
 #endif
 
+bool SANInodesClass::parseTreeComponentOnFirstHiddenLayer(const SANIComponentParseTree* parseTreeComponent)	//parseTreeComponentIsString
+{
+	bool result = false;
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_COMPATIBILITY
+	if(hasComponentTypeString(parseTreeComponent))
+	#else
+	if(parseTreeComponent->parseTreeGroupRef == NULL)
+	#endif
+	{
+		result = true;
+	}
+	
+	return result;
+}
+bool SANInodesClass::parseTreeNodeInputLayer(const SANIGroupParseTree* parseTreeNode)
+{
+	bool result = false;
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_COMPATIBILITY
+	if(parseTreeNode->groupRef->inputLayerNeuron)
+	#else
+	if(parseTreeNode == NULL)
+	#endif
+	{
+		result = true;
+	}
+	
+	return result;
+}
 
+
+void SANInodesClass::addNeuronToGroupTypes(SANIGroupNeuralNetwork* newNeuron, vector<SANIGroupType*>* SANIGroupTypes, const bool inputNeuron)
+{	
+	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
+	cout << "addNeuronToGroupTypes::addNeuronToGroupTypes" << endl;
+	#endif
+	
+	SANIGroupType* groupType = NULL;
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
+	if(inputNeuron)
+	{
+		groupType = getSequenceGrammarGroupTypeInputNeurons(SANIGroupTypes);	//ie getSequenceGrammarGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_INPUT_NEURONS_NAME);
+	}
+	else
+	{
+	#endif
+		groupType = getSequenceGrammarGroupTypeDefault(SANIGroupTypes);	//ie getSequenceGrammarGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_DEFAULT_NAME);
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
+	}
+	#endif
+	groupType->groups.push_back(newNeuron);
+}
+
+void SANInodesClass::createGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName)
+{
+	SANIGroupType* groupType = new SANIGroupType();
+	groupType->groupTypeName = groupTypeName;
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
+	groupType->referenceSetType = SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_REFERENCE_SET_TYPE;
+	#endif
+	SANIGroupTypes->push_back(groupType);	
+}
 
 #endif

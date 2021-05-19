@@ -26,7 +26,7 @@
  * File Name: SANIrules.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Rules
  * /
@@ -48,12 +48,10 @@ bool SANIrulesClass::extractSANIrules(vector<SANIGroupType*>* SANIGroupTypes, ve
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR		
 	//FUTURE GIA - upgrade SANI_SEQUENCE_GRAMMAR to read/write SANIrulesGenerated.xml
-	SANIGroupType* groupType = new SANIGroupType();
-	groupType->groupTypeName = SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_NAME;
-	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-	groupType->referenceSetType = SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_REFERENCE_SET_TYPE;
+	SANInodes.createGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_DEFAULT_NAME);
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
+	SANInodes.createGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_INPUT_NEURONS_NAME);	
 	#endif
-	SANIGroupTypes->push_back(groupType);
 	SANInodes.initialiseNewGroupIndex(SANIGroupTypes);
 	SANInodes.setSANIGroupTypesGlobal(SANIGroupTypes);	//SANIGroupTypesGlobal = SANIGroupTypes;
 	#else

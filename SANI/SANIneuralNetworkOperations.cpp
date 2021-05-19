@@ -26,7 +26,7 @@
  * File Name: SANIneuralNetworkOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Neural Network Operations
  * /
@@ -96,6 +96,15 @@ bool SANIneuralNetworkOperationsClass::generateNeuralNetFromSANInet(ANNtranslato
 	
 	vector<SANIGroupType*>* SANIGroupTypes = SANInodes.getSANIGroupTypesGlobal();
 	
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY	
+	//temporarily remove SANIGroupTypeInputNeurons from SANIGroupTypes
+	SANIGroupType* SANIGroupTypeInputNeurons = NULL;
+	int groupTypeInputNeuronsIndex = INT_DEFAULT_VALUE;
+	SANInodes.findGroupType(SANIGroupTypes, SANI_SEQUENCE_GRAMMAR_GROUP_TYPE_INPUT_NEURONS_NAME, &SANIGroupTypeInputNeurons, &groupTypeInputNeuronsIndex);
+	SANIGroupTypes->erase(SANIGroupTypes->begin()+groupTypeInputNeuronsIndex);
+	//SANIGroupType* SANIGroupTypeInputNeurons = SANInodes.getSequenceGrammarGroupTypeInputNeurons(SANIGroupTypes);
+	#endif
+	
 	SANIGroupNeuralNetwork* firstInputGroupInNetwork = SANIformation.getFirstInputGroupInNetwork();
 	ANNneuron* firstInputNeuronInNetwork = firstInputGroupInNetwork->neuronReference;
 	
@@ -137,6 +146,11 @@ bool SANIneuralNetworkOperationsClass::generateNeuralNetFromSANInet(ANNtranslato
 	translatorVariables->firstOutputNeuronInNetwork = firstOutputNeuronInNetworkPost;
 
 	//cout << "SANIneuralNetworkOperationsClass::generateNeuralNetFromSANInet done" << endl;
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY	
+	//restore SANIGroupTypeInputNeurons to SANIGroupTypes
+	SANIGroupTypes->push_back(SANIGroupTypeInputNeurons);
+	#endif
 	
 	return result;	
 }

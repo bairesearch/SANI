@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p8a 29-April-2021
+ * Project Version: 1p9a 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -41,7 +41,7 @@ bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetwor
 {
 	bool result = true;
 
-	executePosRelTranslatorNeuralNetworkPart1(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData);
+	executePosRelTranslatorNeuralNetworkStart(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData);
 	
 	return result;
 }
@@ -50,12 +50,12 @@ bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetwor
 {
 	bool result = true;
 	
-	executePosRelTranslatorNeuralNetworkPart3(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData);
+	executePosRelTranslatorNeuralNetworkEnd(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData);
 	
 	return result;
 }
 
-bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetworkPart1(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetworkStart(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool result = false;
 	
@@ -75,7 +75,7 @@ bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetwor
 	return result;
 }
 
-bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetworkPart3(const SANItranslatorVariablesClass* translatorVariables, const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+bool SANIpropagateCompactReferenceSetsClass::executePosRelTranslatorNeuralNetworkEnd(const SANItranslatorVariablesClass* translatorVariables, const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
 {
 	bool result = true;
 	
