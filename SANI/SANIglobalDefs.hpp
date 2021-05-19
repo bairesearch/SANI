@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9a 17-May-2021
+ * Project Version: 1p9b 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -92,7 +92,7 @@
 		
 		#ifndef SANI_SEMANTIC_NETWORK
 		
-			#define SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS	//SANI1p9a	//requires SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START	//does not support SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS (as topLevelParseTreeGroup is not available during generation phase)
+			//#define SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS	//SANI1p9a	//requires SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START	//does not support SANI_SEQUENCE_GRAMMAR_LINK_SIMILAR_SUBNETS (as topLevelParseTreeGroup is not available during generation phase)
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 				#define SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES		//SANI1p9a	//save leaf nodes (input neurons) in parse tree
 			#endif

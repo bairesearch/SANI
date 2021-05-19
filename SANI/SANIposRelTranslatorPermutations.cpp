@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9a 17-May-2021
+ * Project Version: 1p9b 17-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -480,10 +480,10 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			#ifdef SANI_FORWARD
 			SANIGroupParseTree* firstParseTreeGroupTemp = NULL;
 			#else
-			SANIGroupParseTree* firstParseTreeGroupTemp = new SANIGroupParseTree();		
+			SANIGroupParseTree* firstParseTreeGroupTemp = new SANIGroupParseTree();	
+			int minIndexOfMatchesFoundBackup2 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContents);	
 			#endif
 	
-			int minIndexOfMatchesFoundBackup2 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContents);
 		#else			
 		for(int w=0; w<sentenceContents->size(); w++)
 		{
@@ -599,12 +599,21 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 		{
 			int performanceTemp = 0;
 			bool parserEnabled = false;
-			SANIGroupParseTree* firstParseTreeGroupTemp = NULL;
 			//word->POSambiguityInfo for each word in sentence has already been set
-			if(!SANIgenerateCompact.generatePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
+			if(!SANIgenerateCompact.generatePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
 			{
 				result = false;
 			}
+			
+			//get first sentence POS unambiguous permutation (use this to perform test)
+			SANIGroupParseTree* firstParseTreeGroupTemp = NULL;
+			vector<uint64_t>* POSambiguityInfoPermutationTemp = (*POSambiguityInfoUnambiguousPermutationArray)[0];
+			LRPpreprocessorPOStagger.setSentenceContentsWordsUnambiguousPOSindex(sentenceContents, POSambiguityInfoPermutationTemp);
+			
+			if(!SANIgenerateCompact.generatePosRelTranslatorNeuralNetworkPosthocTestAndIdentification(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, performance, result))
+			{
+				result = false;
+			}		
 		}
 		#endif
 	
