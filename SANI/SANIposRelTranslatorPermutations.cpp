@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p7b 24-March-2021
+ * Project Version: 1p8a 29-April-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -474,13 +474,9 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			vector<uint64_t>* POSambiguityInfoPermutationTemp = (*POSambiguityInfoUnambiguousPermutationArray)[i];
 			LRPpreprocessorPOStagger.setSentenceContentsWordsUnambiguousPOSindex(sentenceContents, POSambiguityInfoPermutationTemp);
 	
-			#ifdef SANI_DEBUG_PROPAGATE
+			#ifdef SANI_DEBUG_RULES_PRINT_POS_PERMUATIONS
 			cout << "POSambiguityInfoUnambiguousPermutationArray index = " << i << endl;
-			//LRPpreprocessorPOStagger.printPOSambiguityInfoPermutationAssumeUnambiguous(POSambiguityInfoPermutationTemp);	//printPOSambiguityInfoPermutation
-			#endif
-			#ifdef SANI_DEBUG_RULES_PRINT_PARSE_PROCESS3
-			cout << "POSambiguityInfoUnambiguousPermutationArray index = " << i << endl;
-			LRPpreprocessorPOStagger.printPOSambiguityInfoPermutationAssumeUnambiguous(POSambiguityInfoPermutationTemp);		
+			LRPpreprocessorPOStagger.printPOSambiguityInfoPermutationAssumeUnambiguous(POSambiguityInfoPermutationTemp);				
 			#endif
 	
 			#ifdef SANI_FORWARD
@@ -490,10 +486,16 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			#endif
 	
 			int minIndexOfMatchesFoundBackup2 = SANInodes.calculateMinIndexOfMatchesFound(sentenceContents);
-		#else
+		#else			
 		for(int w=0; w<sentenceContents->size(); w++)
 		{
-			(sentenceContents->at(w))->POSambiguityInfo = (*POSambiguityInfoPermutation)[w];
+			uint64_t POSambiguityInfoPermutationTemp = (*POSambiguityInfoPermutation)[w];
+			(sentenceContents->at(w))->POSambiguityInfo = POSambiguityInfoPermutationTemp;
+			
+			#ifdef SANI_DEBUG_RULES_PRINT_POS_PERMUATIONS
+			cout << "sentenceContents w index = " << w << endl;
+			LRPpreprocessorPOStagger.printPOSambiguityInfo(POSambiguityInfoPermutationTemp);				
+			#endif
 		}
 		#ifdef SANI_FORWARD
 		SANIGroupParseTree* firstParseTreeGroupTemp = NULL;

@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p7b 24-March-2021
+ * Project Version: 1p8a 29-April-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -69,7 +69,8 @@ bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork(SANItransla
 			{
 				result = false;
 			}
-			
+		
+			#ifndef SANI_DEBUG_SEQUENCE_GRAMMAR_DISABLE_TEST	
 			#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
 			if(result)	//generateSentenceNetworkNodes may have passed/failed depending upon pos ambiguity reconciliation
 			{
@@ -127,6 +128,8 @@ bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork(SANItransla
 				cout << "SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES: SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork - fail to generate/detect POS unambiguous subsequences" << endl;
 			}
 			#endif	
+			#endif
+
 		}
 	}
 		

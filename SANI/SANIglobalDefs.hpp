@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p7b 24-March-2021
+ * Project Version: 1p8a 29-April-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -68,6 +68,8 @@
 #ifndef SANI_DEBUG_DISABLE_1p_CODE
 
 	#ifdef SANI_SEQUENCE_GRAMMAR
+		#define SANI_DEBUG_SEQUENCE_GRAMMAR_DISABLE_TEST	//temp for manual generated network examination
+		
 		//#define DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL
 		#define DEBUG_SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE_ACTIVATION_SIGNAL_WEAK	//support weak signals
 
@@ -78,7 +80,8 @@
 		//#define SANI_DEBUG_FORMATION2
 		//#define SANI_DEBUG_SEQUENCE_GRAMMAR_SINGLE_POS_PERMUTATION
 
-		//#define SANI_DEBUG_RULES_PRINT_SENTENCES
+		#define SANI_DEBUG_RULES_PRINT_SENTENCES
+		#define SANI_DEBUG_RULES_PRINT_POS_PERMUATIONS
 		//#define SANI_DEBUG_RULES_PRINT_PARSE_TREE
 		//#define SANI_DEBUG_RULES_PRINT_NEURAL_NETWORK
 
@@ -88,10 +91,14 @@
 		//#endif
 		
 		#ifndef SANI_SEMANTIC_NETWORK
-			#define SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES //SANI1p7a	//new pos network propagation/generation algorithm
+			//#define SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES //SANI1p7a	//new pos network propagation/generation algorithm
 			#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
 				#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY	//upgraded @SANI1p7a
-				//#define SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	//optional SANI1p7a - enhances biological plausability of SANI propagation algorithm (performs word index contiguity verification of final generated parse trees at end of forward propagation)
+			#endif
+			
+			//#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY	//optional //independent trial @SANI1p8a
+			#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+				#define SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	//optional SANI1p7a - enhances biological plausability of SANI propagation algorithm (performs word index contiguity verification of final generated parse trees at end of forward propagation)
 				#ifdef SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	
 					#define SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
 					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
