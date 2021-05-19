@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p7a 24-March-2021
+ * Project Version: 1p7b 24-March-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -88,7 +88,7 @@
 		//#endif
 		
 		#ifndef SANI_SEMANTIC_NETWORK
-			//#define SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES //SANI1p7a	//new pos network propagation/generation algorithm
+			#define SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES //SANI1p7a	//new pos network propagation/generation algorithm
 			#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
 				#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY	//upgraded @SANI1p7a
 				//#define SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	//optional SANI1p7a - enhances biological plausability of SANI propagation algorithm (performs word index contiguity verification of final generated parse trees at end of forward propagation)
