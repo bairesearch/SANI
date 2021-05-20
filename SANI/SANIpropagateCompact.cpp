@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10a 20-May-2021
+ * Project Version: 1p10b 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -648,7 +648,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponentWrapper
 	
 	#ifdef SANI_DEBUG_PROPAGATE_EXTRA3
 	SANInodes.printParseTreeDebugIndentation(layer+1);
-	cout << "3_: propagateWordThroughNetworkGroup: " <<  ownerGroup->groupTypeName << ":" << ownerGroup->groupName << ", ownerGroup->groupIndex: " << ownerGroup->groupIndex << endl;	
+	cout << "3_: propagateWordThroughNetworkGroup: " <<  ownerGroup->groupTypeName << ":" << ownerGroup->groupName << ", ownerGroup->groupIndex: " << ownerGroup->groupIndex << ", currentComponent->componentIndex = " << currentComponent->componentIndex << endl;	
 	#endif
 	
 	SANIComponentNeuralNetwork* previousActiveComponent = NULL;	
@@ -870,6 +870,8 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 
 	if(activationSequenceCompleted)
 	{			
+		//cout << "activationSequenceCompleted" << endl;
+		
 		ownerGroup->neuronActive = true;	//required for SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_ACTIVATION
 		
 		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS

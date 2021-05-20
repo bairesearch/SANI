@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10a 20-May-2021
+ * Project Version: 1p10b 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -80,6 +80,15 @@
 		//#define SANI_DEBUG_FORMATION2
 		//#define SANI_DEBUG_SEQUENCE_GRAMMAR_SINGLE_POS_PERMUTATION
 
+		#define SANI_DEBUG_PROPAGATE_TRACE
+		#ifdef SANI_DEBUG_PROPAGATE_TRACE
+			#define SANI_DEBUG_PROPAGATE
+			#define SANI_DEBUG_PROPAGATE_EXTRA4
+
+			//#define SANI_DEBUG_PROPAGATE_EXTRA2
+			#define SANI_DEBUG_PROPAGATE_EXTRA3_PRIMARY
+		#endif
+			
 		#define SANI_DEBUG_RULES_PRINT_SENTENCES
 		//#define SANI_DEBUG_RULES_PRINT_POS_PERMUATIONS
 		//#define SANI_DEBUG_RULES_PRINT_PARSE_TREE

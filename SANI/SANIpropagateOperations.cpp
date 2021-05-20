@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10a 20-May-2021
+ * Project Version: 1p10b 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -206,10 +206,12 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 						{
 							//group not suitable for activation, following component is active
 							sequentialActivationFound = false;
+							//cout << "1 group not suitable for activation, following component is active: sequentialActivationFound = false" << endl;
 						}
 						#else
 						//group not suitable for activation, following component is active
 						sequentialActivationFound = false;
+						//cout << "2 group not suitable for activation, following component is active: sequentialActivationFound = false" << endl;
 						#endif
 					}
 				#ifdef SANI_SUPPORT_COMPONENTS_OPTIONAL
@@ -223,6 +225,7 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 	if((*missingStartComponentFound) && !(*missingOrVariableStartComponentFound))
 	{
 		sequentialActivationFound = false;
+		//cout << "(*missingStartComponentFound) && !(*missingOrVariableStartComponentFound)): sequentialActivationFound = false" << endl;
 	}
 	#endif
 	
@@ -279,8 +282,9 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(SANIForward
 	bool previousComponentWasActivatedBySameWordDifferentPOSpropagation = false;
 	if(previousActiveComponent != NULL)
 	{
-		if((previousActiveComponent)->neuronComponentConnectionActiveWordRecord = forwardPropogationWordData->wordReference)
+		if((previousActiveComponent)->neuronComponentConnectionActiveWordRecord == forwardPropogationWordData->wordReference)
 		{
+			//cout << "previousActiveComponent->componentIndex = " << previousActiveComponent->componentIndex << endl;
 			previousComponentWasActivatedBySameWordDifferentPOSpropagation = true;
 		}
 	}
@@ -290,6 +294,8 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(SANIForward
 				
 	if(currentComponent->neuronComponentConnectionActive)
 	{	
+		//cout << "(currentComponent->neuronComponentConnectionActive)" << endl;
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR
 		SANIpropagateCompactOperations.identifySequentialActivationFound(forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, components, activationPathWordCurrentParseTreeGroup, i, currentComponent, previousActiveComponent, sequentialActivationFound, existingActivationFoundStartComponent, existingActivationFoundEndComponent, ownerGroup, componentWordConnectivityTestsResult);
 		#else		

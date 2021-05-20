@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedUnique.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10a 20-May-2021
+ * Project Version: 1p10b 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Unique components - unsupervised training of sequence grammar parse network
  * /
@@ -150,9 +150,9 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariationLimitNumComponentsSection(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, int* indexInSequenceStart, SANIGroupNeuralNetwork** highLevelNeuronPrior)
 #endif
 {
-	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
-	cout << "SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariationLimitNumComponentsSection" << endl;
-	#endif
+	//#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
+	cout << "\n\n\nSANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariationLimitNumComponentsSection, indexInSequenceStart = " << *indexInSequenceStart << endl;
+	//#endif
 		
 	bool foundAndReconciledMissingOrDifferentIncrementalNeurons = false;
 		
