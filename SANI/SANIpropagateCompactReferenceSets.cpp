@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -151,7 +151,7 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkIntro(SA
 	#else
 	if(!SANInodes.currentWordPOSunknown(currentWord))
 	{
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 		int wordPOStype = currentWord->unambiguousPOSindex;
 		#else
 		#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
@@ -166,7 +166,7 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkIntro(SA
 				{
 					result = false;
 				}
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 		#else
 				#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
 				forwardPropogationSignalData->firstPOSval = false;

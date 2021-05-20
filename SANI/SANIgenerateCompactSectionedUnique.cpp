@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedUnique.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Unique components - unsupervised training of sequence grammar parse network
  * /
@@ -241,7 +241,10 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 		forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverage = true;
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage = NULL;
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial = false;
-		
+
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
+		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = true;
+		#endif		
 		
 		bool resetAllNeuronComponents = true;
 		if(SANIpropagateCompact.performPropagation(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, resetAllNeuronComponents, false, indexInSequence))
@@ -253,13 +256,16 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 		if(!(SANIpropagateCompactGenerateOperations.verifyActivatedNeuronsAtLeastOneBasic(forwardPropogationSentenceData, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage) && (!forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial)))		//(!forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial) should be enforced via SANI_SEQUENCE_GRAMMAR_IGNORE_PARTIAL_DETECTIONS
 		{
 			//case a	
-			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-			string neuronName = currentLayerNeuronGroupStart->neuronReference->SANIneuronName;
-			cout << "A createOrAppendFirstLevelHiddenLayerGroup, indexInSequence = " << indexInSequence << ", groupIndex = " << currentLayerNeuronGroupStart->groupIndex << ", neuronName = " << neuronName << ", LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] = " << LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] << endl;
-			#endif
 			
 			foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
 
+			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_SIMULTANEOUSLY_PROPAGATE_UNAMBIGUOUS_POS_PERMUTATIONS
+			if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
+			{
+				//cout << "SANIpropagateCompact.createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation" << endl;
+				currentLayerNeuronGroupStart = SANIpropagateCompact.createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation(translatorVariables, currentWord, currentFirstInputNeuronIndexInSequence, forwardPropogationSentenceData);
+			}	
+			#endif
 			#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
 			if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
 			{
@@ -267,17 +273,26 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 				stillIdentifyingHighLevelNeurons = false;
 			}
 			#endif
+			
+			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
+			string neuronName = currentLayerNeuronGroupStart->neuronReference->SANIneuronName;
+			cout << "A createOrAppendFirstLevelHiddenLayerGroup, indexInSequence = " << indexInSequence << ", groupIndex = " << currentLayerNeuronGroupStart->groupIndex << ", neuronName = " << neuronName << ", LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] = " << LRPpreprocessorPOStypeNameArray[currentLayerNeuronGroupStart->wordPOStype] << endl;
+			#endif
 				
 			createOrAppendFirstLevelHiddenLayerGroup(SANIGroupTypes, forwardPropogationSentenceData, currentLayerNeuronGroupStart, &creatingNewNeuronSequence1, &neuronSequenceIndex1, &newNeuronSequenceGroup1, listOfHighLevelNeuronsCurrent);
 
 			indexInSequence++;
 		}
 		else
-		{
+		{	
 			creatingNewNeuronSequence1 = false;
 			neuronSequenceIndex1 = 0;
 			foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
 
+			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
+			SANIgenerateCompactOperations.markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage, true);
+			#endif
+			
 			//case c
 			//fully activated group coverage+weight is > partially activated group coverage+weight
 			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
@@ -380,7 +395,11 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 	#endif
 	
 	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverage = false;
-	
+
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
+	forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = false;
+	#endif		
+			
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_CONTINUOUSLY_OUTPUT_NETWORK_GENERATION
 	SANIpropagateCompact.printSANInetworkSVG(translatorVariables, SANIGroupTypes);
 	#endif

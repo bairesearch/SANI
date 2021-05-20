@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompact.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -64,7 +64,9 @@
 #else
 #include "SANIgenerateCompactContinuous.hpp"
 #endif
-
+#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS
+#include "SANIgenerateCompactOperations.hpp"
+#endif
 
 
 
@@ -94,13 +96,15 @@ class SANIgenerateCompactClass
 	#else
 	private: SANIgenerateCompactContinuousClass SANIgenerateCompactContinuous;
 	#endif
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS
+	private: SANIgenerateCompactOperationsClass SANIgenerateCompactOperations;
+	#endif
+
 
 	private: ANNdisplayClass ANNdisplay;
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 	public: bool testPosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance, const bool createNewConnections);
-		private: bool markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(const SANIGroupParseTree* currentParseTreeGroup);
-			private: bool isComponentWordPOStypeInferredUnique(const int componentWordPOStypeInferred, const uint64_t componentPOSambiguousInputsPOSambiguityInfo, const uint64_t currentWordPOSambiguityInfo);
 	#endif
 		public: bool testAndGeneratePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance, const bool createNewConnections);
 		public: bool generatePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance);

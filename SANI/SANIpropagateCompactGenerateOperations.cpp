@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate Operations - unsupervised training of sequence grammar parse network
  * /
@@ -506,34 +506,50 @@ bool SANIpropagateCompactGenerateOperationsClass::updateActivatedNeuronWithMaxWo
 					if(wordConnectivityVerification)
 					{
 					#endif
-						//cout << "\t2 candidateCoveragePartial = " << candidateCoveragePartial << endl;
+						#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
+						bool foundPosUnambiguousContext = true;
+						if(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext)
+						{
+							foundPosUnambiguousContext = false;
+							if(verifyPosUnambiguousContext(forwardPropogationWordData, forwardPropogationSentenceData, currentParseTreeGroupTemp))
+							{
+								foundPosUnambiguousContext = true;
+							}
+						}
+						if(foundPosUnambiguousContext)
+						{
+						#endif	
+							//cout << "\t2 candidateCoveragePartial = " << candidateCoveragePartial << endl;
 
-						//cout << "missingStartComponentFound = " << missingStartComponentFound << endl;
+							cout << "missingStartComponentFound = " << missingStartComponentFound << endl;
 
-						#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
-						cout << "++++++++++++++++++++++++++++++++++++++++++ forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage" << endl;
-						cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
-						#endif
-						//cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
-						#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_UPDATE_ACTIVATED_NEURON_WITH_MAX_WORD_INDEX_COVERAGE
-						cout << "\tcandidateCoveragePartial = " << candidateCoveragePartial << endl;
-						cout << "\tforwardPropogationWordData->w = " << forwardPropogationWordData->w << endl;
-						#endif
-						//cout << "candidateCoveragePartial = " << candidateCoveragePartial << endl;
+							#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
+							cout << "++++++++++++++++++++++++++++++++++++++++++ forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage" << endl;
+							cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
+							#endif
+							//cout << "\tactivatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet = " << activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet << endl;		
+							#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_UPDATE_ACTIVATED_NEURON_WITH_MAX_WORD_INDEX_COVERAGE
+							cout << "\tcandidateCoveragePartial = " << candidateCoveragePartial << endl;
+							cout << "\tforwardPropogationWordData->w = " << forwardPropogationWordData->w << endl;
+							#endif
+							//cout << "candidateCoveragePartial = " << candidateCoveragePartial << endl;
 
-						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage = currentParseTreeGroupTemp;
-						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial = candidateCoveragePartial;			
-						#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent = activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet;
+							forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage = currentParseTreeGroupTemp;
+							forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial = candidateCoveragePartial;			
+							#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
+							forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent = activatedNeuronWithMaxWordIndexCoverageVariableStartComponentSet;
+							#endif
+							#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
+							forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = missingOrVariableEndComponentFound;
+							#endif
+							/*
+							#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
+							forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageMissingStartComponent = activatedNeuronWithMaxWordIndexCoverageMissingStartComponentSet;	//NOTUSED
+							#endif
+							*/
+						#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
+						}
 						#endif
-						#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = missingOrVariableEndComponentFound;
-						#endif
-						/*
-						#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
-						forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageMissingStartComponent = activatedNeuronWithMaxWordIndexCoverageMissingStartComponentSet;	//NOTUSED
-						#endif
-						*/
 					#ifdef SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION
 					}
 					#endif
@@ -573,6 +589,183 @@ bool SANIpropagateCompactGenerateOperationsClass::updateActivatedNeuronWithMaxWo
 	
 	return result;
 }
+
+#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
+bool SANIpropagateCompactGenerateOperationsClass::verifyPosUnambiguousContext(const SANIForwardPropogationWordData* forwardPropogationWordData, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupParseTree* activatedNeuronCandidate)
+{
+	bool foundPosUnambiguousContext = true;
+	
+	int activatedNeuronCandidateMinWordIndex = activatedNeuronCandidate->parseTreeMinWordIndex;
+	int activatedNeuronCandidateMaxWordIndex = activatedNeuronCandidate->parseTreeMaxWordIndex;
+	int startOfSentenceWordIndex = 0;
+	int endOfSentenceWordIndex = forwardPropogationSentenceData->sentenceContents->size()-1;
+	int numberOfUnambiguousContextWordsStart = 0;
+	int numberOfUnambiguousContextWordsEnd = 0;
+	
+	bool findingUnambiguousContextWords = true;	
+	for(int w=activatedNeuronCandidateMinWordIndex; w<=activatedNeuronCandidateMaxWordIndex; w++)
+	{
+		LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[w];
+		
+		if(findingUnambiguousContextWords)
+		{
+			if(!LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
+			{
+				numberOfUnambiguousContextWordsStart++;
+			}
+			else
+			{
+				findingUnambiguousContextWords = false;
+			}
+		}
+	}
+	findingUnambiguousContextWords = true;
+	for(int w=activatedNeuronCandidateMaxWordIndex; w>=activatedNeuronCandidateMinWordIndex; w--)
+	{
+		LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[w];
+		
+		if(findingUnambiguousContextWords)
+		{
+			if(!LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
+			{
+				numberOfUnambiguousContextWordsEnd++;
+			}
+			else
+			{
+				findingUnambiguousContextWords = false;
+			}
+		}
+	}
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT_IGNORE_OUT_OF_SENTENCE_BOUNDS
+	int minimumNumberOfUnambiguousContextWordsStartRequired = SHAREDvars.minInt(activatedNeuronCandidateMinWordIndex-startOfSentenceWordIndex, SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT_BOUNDARY);
+	int minimumNumberOfUnambiguousContextWordsEndRequired = SHAREDvars.minInt(endOfSentenceWordIndex-activatedNeuronCandidateMaxWordIndex, SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT_BOUNDARY);
+	#else
+	int minimumNumberOfUnambiguousContextWordsStartRequired = SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT_BOUNDARY;
+	int minimumNumberOfUnambiguousContextWordsEndRequired = SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT_BOUNDARY;
+	#endif
+	
+	if(numberOfUnambiguousContextWordsStart < minimumNumberOfUnambiguousContextWordsStartRequired)
+	{
+		foundPosUnambiguousContext = false;
+	}
+	if(numberOfUnambiguousContextWordsEnd < minimumNumberOfUnambiguousContextWordsEndRequired)
+	{
+		foundPosUnambiguousContext = false;
+	}
+		
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
+	clearPOSambiguousInputsMarkAsUnambiguous(activatedNeuronCandidate);	//clear existing POSambiguousInputsMarkAsUnambiguous values
+	#endif
+	for(int w=activatedNeuronCandidateMinWordIndex; w<=activatedNeuronCandidateMaxWordIndex; w++)
+	{
+		LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[w];
+		if(!verifyThatComponentInputIsNotPosAmbiguous(activatedNeuronCandidate, currentWord))
+		{
+			foundPosUnambiguousContext = false;
+		}
+	}
+	#endif
+	
+	if(foundPosUnambiguousContext)
+	{
+		cout << "SANIpropagateCompactGenerateOperationsClass::verifyPosUnambiguousContext: foundPosUnambiguousContext" << endl;
+	}
+	
+	return foundPosUnambiguousContext;
+}
+#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY
+bool SANIpropagateCompactGenerateOperationsClass::verifyThatComponentInputIsNotPosAmbiguous(const SANIGroupParseTree* currentParseTreeGroup, const LRPpreprocessorPlainTextWord* currentWord)
+{
+	bool result = true;
+	
+	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	{				
+		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
+		SANIComponentNeuralNetwork* currentComponent = parseTreeComponent->componentRef;
+			
+		if(SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
+		{
+			if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
+			{
+				if(currentComponent->POSambiguousInputs)
+				{
+					#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY_UNIQUE
+					if(SANInodes.isComponentWordPOStypeInferredUnique(parseTreeComponent->wordPOStypeInferred, currentComponent->POSambiguousInputsPOSambiguityInfo, currentWord->POSambiguityInfo))
+					{
+						#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
+						#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS_VERIFY_UNIQUE
+						currentComponent->POSambiguousInputsMarkAsUnambiguous = true;
+						#endif
+						#endif
+					}
+					else
+					{
+					#endif
+						result = false;
+					#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY_UNIQUE
+					}
+					#endif
+				}
+				#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY_POS_UNAMBIGUOUS_SUBNET
+				else
+				{
+					//result = true
+				}
+				#endif
+			}
+			else
+			{
+				if(currentComponent->POSambiguousInputs)
+				{
+					#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
+					#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS_VERIFY_POS_UNAMBIGUOUS_WORDS
+					currentComponent->POSambiguousInputsMarkAsUnambiguous = true;
+					#endif
+					#endif
+				}
+			}
+		}
+		else
+		{
+			if(!verifyThatComponentInputIsNotPosAmbiguous(parseTreeComponent->parseTreeGroupRef, currentWord))
+			{
+				result = false;
+			}
+		}
+	}
+
+	return result;
+}
+#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
+bool SANIpropagateCompactGenerateOperationsClass::clearPOSambiguousInputsMarkAsUnambiguous(const SANIGroupParseTree* currentParseTreeGroup)
+{
+	bool result = true;
+	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	{				
+		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
+		if(SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
+		{
+			SANIComponentNeuralNetwork* currentComponent = parseTreeComponent->componentRef;
+			if(currentComponent->POSambiguousInputsMarkAsUnambiguous)
+			{
+				currentComponent->POSambiguousInputsMarkAsUnambiguous = false;
+			}
+		}
+		else
+		{
+			if(!clearPOSambiguousInputsMarkAsUnambiguous(parseTreeComponent->parseTreeGroupRef))
+			{
+				result = false;
+			}
+		}
+	}	
+	return result;
+}
+#endif
+#endif
+#endif
 
 
 

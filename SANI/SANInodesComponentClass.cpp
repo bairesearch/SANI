@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -171,6 +171,9 @@ SANIComponentNeuralNetwork::SANIComponentNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 	POSambiguousInputs = false;
 	POSambiguousInputsPOSambiguityInfo = 0;
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
+	POSambiguousInputsMarkAsUnambiguous = false;
+	#endif
 	#endif
 }
 SANIComponentNeuralNetwork::~SANIComponentNeuralNetwork(void)

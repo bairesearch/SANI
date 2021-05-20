@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -614,7 +614,7 @@ bool SANInodesClass::currentWordPOSunknown(const LRPpreprocessorPlainTextWord* c
 {
 	bool result = false;
 	
-	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+	#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 	if(currentWord->unambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_UNDEFINED)
 	#else
 	if(currentWord->POSambiguityInfo == LRP_PREPROCESSOR_POS_TAGGER_POS_AMBIGUITY_INFO_UNKNOWN)
@@ -1717,5 +1717,28 @@ void SANInodesClass::createGroupType(vector<SANIGroupType*>* SANIGroupTypes, con
 	#endif
 	SANIGroupTypes->push_back(groupType);	
 }
+
+//#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS_VERIFY_UNIQUE or SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY_UNIQUE
+bool SANInodesClass::isComponentWordPOStypeInferredUnique(const int componentWordPOStypeInferred, const uint64_t componentPOSambiguousInputsPOSambiguityInfo, const uint64_t currentWordPOSambiguityInfo)
+{
+	bool result = true;
+
+	for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
+	{
+		if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(componentPOSambiguousInputsPOSambiguityInfo, wordPOStype))
+		{
+			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWordPOSambiguityInfo, wordPOStype))
+			{
+				if(componentWordPOStypeInferred != wordPOStype)
+				{
+					result = false;
+				}
+			}
+		}
+	}
+				
+	return result;
+}
+
 
 #endif

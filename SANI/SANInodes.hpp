@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -46,6 +46,7 @@
 #include "XMLparserClass.hpp"
 #include "SANInodesGroupClass.hpp"
 #include "SANInodesComponentClass.hpp"
+#include "LRPpreprocessorPOStagger.hpp"
 
 #ifdef SANI_NODES
 
@@ -149,6 +150,7 @@ class SANInodesClass
 	private: SHAREDvarsClass SHAREDvars;
 	private: XMLparserClassClass XMLparserClass;
 	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
+	private: LRPpreprocessorPOStaggerClass LRPpreprocessorPOStagger;
 	private: SANInodesComponentClass SANInodesComponentClassObject;
 	private: SANInodesGroupClass SANInodesGroupClassObject;
 	
@@ -290,7 +292,8 @@ class SANInodesClass
 	public: void addNeuronToGroupTypes(SANIGroupNeuralNetwork* newNeuron, vector<SANIGroupType*>* SANIGroupTypes, const bool inputNeuron);
 	public: void createGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName);
 
-	
+	//#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS_VERIFY_UNIQUE or SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY_UNIQUE
+	public: bool isComponentWordPOStypeInferredUnique(const int componentWordPOStypeInferred, const uint64_t componentPOSambiguousInputsPOSambiguityInfo, const uint64_t currentWordPOSambiguityInfo);
 };
 
 #endif

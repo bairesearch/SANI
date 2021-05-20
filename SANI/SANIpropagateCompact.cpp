@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -68,6 +68,10 @@ bool SANIpropagateCompactClass::defineFirstLayer(SANItranslatorVariablesClass* t
 		int w = i;
 
 		SANIForwardPropogationSignalData forwardPropogationSignalDataNOTUSED;
+		
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_SIMULTANEOUSLY_PROPAGATE_UNAMBIGUOUS_POS_PERMUTATIONS
+		forwardPropogationSentenceData->firstLayer->push_back(NULL);
+		#endif
 
 		if(!propagateWordThroughNetworkIntro(translatorVariables, SANIGroupTypes, w, &forwardPropogationSignalDataNOTUSED, forwardPropogationSentenceData, getFirstLayer))
 		{
@@ -339,38 +343,16 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 	#endif
 
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
-		if(forwardPropogationSentenceData->artificialInputNeuronLinkPosAmbiguousPermuations)
+		if(forwardPropogationSentenceData->artificialInputNeuronLinkPosAmbiguousPermuations)	//implied true: getFirstLayer
 		{
 			if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
 			{
-				if(getFirstLayer)
-				{
-					//create new artifical neuron representing ambiguous POS input permutation (to be deleted when added to network by SANIgenerateCompact..)
-					SANIGroupNeuralNetwork* inputLayerGroupArtificial = new SANIGroupNeuralNetwork();
-					inputLayerGroupArtificial->inputLayerNeuronArtificialAmbiguousPOSpermutations = true;
-					//#ifdef SANI_SEQUENCE_GRAMMAR
-					//initialisations taken from SANIformationClass::createInputNeuronLayerSectionWordPOStype:
-					inputLayerGroupArtificial->inputLayerNeuron = true;
-					inputLayerGroupArtificial->groupTypeIsString = true;
-					inputLayerGroupArtificial->wordPOStype = LRP_PREPROCESSOR_POS_TYPE_UNKNOWN;	//CHECKTHIS: cannot be used by SANIpropagateCompact as it is ambiguous
-					//#endif
-					inputLayerGroupArtificial->inputLayerNeuronArtificialAmbiguousPOSpermutationsPOSambiguityInfo = currentWord->POSambiguityInfo;
-					if(!propagateWordThroughNetworkGroupAddToFirstLayer(translatorVariables, forwardPropogationWordData->w, inputLayerGroupArtificial, forwardPropogationSentenceData))
-					{
-						result = false;
-					}	
-				}
-				else
-				{
-					result = true;
-					/*
-					//CHECKTHIS: propagate up through newly generated artificial neuron? it will not have any contents above it
-					if(!propagateWordThroughNetworkGroupInit2(translatorVariables, inputLayerGroup, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData))
-					{
-						result = false;
-					}
-					*/
-				}
+				#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+				createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation(translatorVariables, currentWord, w, forwardPropogationSentenceData);
+				#else
+				//do not assign the word an input layer neuron at present (as it is POS ambiguous).
+				//if the pos ambiguous sequence is not matched with an existing network subnet, then createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation will be called
+				#endif
 			}
 			else
 			{
@@ -386,7 +368,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 		{
 		#endif
 	
-			#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+			#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 			int wordPOStype = currentWord->unambiguousPOSindex;
 			#else
 			#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
@@ -401,7 +383,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 					{
 						result = false;
 					}
-			#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+			#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 			#else
 					#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
 					forwardPropogationSignalData->firstPOSval = false;
@@ -434,6 +416,33 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 	return result;
 }
 
+#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+SANIGroupNeuralNetwork* SANIpropagateCompactClass::createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation(SANItranslatorVariablesClass* translatorVariables, const LRPpreprocessorPlainTextWord* currentWord, const int w, SANIForwardPropogationSentenceData* forwardPropogationSentenceData)
+{
+	bool result = true;
+
+	//cout << "createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation: w = " << w << endl;
+	
+	//create new artifical neuron representing ambiguous POS input permutation (to be deleted when added to network by SANIgenerateCompact..)
+	SANIGroupNeuralNetwork* inputLayerGroupArtificial = new SANIGroupNeuralNetwork();
+	inputLayerGroupArtificial->inputLayerNeuronArtificialAmbiguousPOSpermutations = true;
+	//#ifdef SANI_SEQUENCE_GRAMMAR
+	//initialisations taken from SANIformationClass::createInputNeuronLayerSectionWordPOStype:
+	inputLayerGroupArtificial->inputLayerNeuron = true;
+	inputLayerGroupArtificial->groupTypeIsString = true;
+	inputLayerGroupArtificial->wordPOStype = LRP_PREPROCESSOR_POS_TYPE_UNKNOWN;	//CHECKTHIS: cannot be used by SANIpropagateCompact as it is ambiguous
+	//#endif
+	inputLayerGroupArtificial->inputLayerNeuronArtificialAmbiguousPOSpermutationsPOSambiguityInfo = currentWord->POSambiguityInfo;
+	if(!propagateWordThroughNetworkGroupAddToFirstLayer(translatorVariables, w, inputLayerGroupArtificial, forwardPropogationSentenceData))
+	{
+		result = false;
+	}
+	
+	return inputLayerGroupArtificial;
+}
+#endif
+				
+				
 bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupInit(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, int wordPOStype, SANIForwardPropogationSignalData* forwardPropogationSignalData, SANIForwardPropogationWordData* forwardPropogationWordData, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool getFirstLayer)
 {
 	bool result = true;
@@ -475,6 +484,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupInit(SANItransla
 	
 	if(getFirstLayer)
 	{
+		//cout << "SANIpropagateCompactClass::propagateWordThroughNetworkIntro: getFirstLayer, wordPOStype = " << wordPOStype << ", forwardPropogationWordData->w = " << forwardPropogationWordData->w << endl;
 		if(!propagateWordThroughNetworkGroupAddToFirstLayer(translatorVariables, forwardPropogationWordData->w, inputLayerGroup, forwardPropogationSentenceData))
 		{
 			result = false;
@@ -495,11 +505,15 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupAddToFirstLayer(
 {
 	bool result = true;	
 	
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_SIMULTANEOUSLY_PROPAGATE_UNAMBIGUOUS_POS_PERMUTATIONS
+	(*forwardPropogationSentenceData->firstLayer)[w] = inputLayerGroup;	//cannot assume that propagateWordThroughNetworkGroupAddToFirstLayer will be executed via defineFirstLayer at start of generation
+	#else
 	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-	forwardPropogationSentenceData->firstLayer->insert(forwardPropogationSentenceData->firstLayer->begin()+w, inputLayerGroup);	//will only be valid for pos unambiguous words	
+	forwardPropogationSentenceData->firstLayer->insert(forwardPropogationSentenceData->firstLayer->begin()+w, inputLayerGroup);	//will only be valid for pos unambiguous words	//CHECKTHIS - only work if neuron is inserted in order
 	//(forwardPropogationSentenceData->firstLayer->at(w))->push_back(inputLayerGroup);	//will only be valid for pos unambiguous words
 	#else
 	forwardPropogationSentenceData->firstLayer->push_back(inputLayerGroup);
+	#endif
 	#endif
 		
 	return result;

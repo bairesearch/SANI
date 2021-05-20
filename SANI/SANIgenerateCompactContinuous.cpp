@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -167,7 +167,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 			currentFirstInputNeuronIndexInSequence = indexInSequence;
 		}
 		
-		LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[indexInSequence];
+		LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[currentFirstInputNeuronIndexInSequence];
 		
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 		cout << "currentWord->tagName = " << currentWord->tagName << endl;
@@ -211,6 +211,9 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = false;
+		#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
+		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = true;
 		#endif
 
 		#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
@@ -289,19 +292,25 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		#endif
 			if(!SANIpropagateCompactGenerateOperations.verifyActivatedNeuronsAtLeastOne(forwardPropogationSentenceData, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage, newNeuronSequenceGroup1))
 			{
-				//case a			
-				#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
-				cout << "A createOrAppendFirstLevelHiddenLayerGroup, indexInSequence = " << indexInSequence << ", groupIndex = " << currentLayerNeuronGroupStart->groupIndex << endl;
-				#endif
-				
+				//case a						
 				foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
-
+				
+				#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_SIMULTANEOUSLY_PROPAGATE_UNAMBIGUOUS_POS_PERMUTATIONS
+				if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
+				{
+					currentLayerNeuronGroupStart = SANIpropagateCompact.createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation(translatorVariables, currentWord, currentFirstInputNeuronIndexInSequence, forwardPropogationSentenceData);
+				}	
+				#endif
 				#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
 				if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
 				{
 					foundAndReconciledMissingOrDifferentIncrementalNeurons = false;	//cannot add sentence to network (it contains pos ambiguous sequences that cannot be reconciled)
 					stillIdentifyingHighLevelNeurons = false;
 				}
+				#endif
+				
+				#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
+				cout << "A createOrAppendFirstLevelHiddenLayerGroup, indexInSequence = " << indexInSequence << ", groupIndex = " << currentLayerNeuronGroupStart->groupIndex << endl;
 				#endif
 				
 				#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
@@ -338,7 +347,11 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 				creatingNewNeuronSequence1 = false;
 				neuronSequenceIndex1 = 0;
 				foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
-				
+
+				#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
+				SANIgenerateCompactOperations.markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage, true);
+				#endif
+						
 				#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 				if(!(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial || forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent))
@@ -476,7 +489,10 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent = false;
 	#endif
-			
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
+	forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = false;
+	#endif
+					
 	return foundAndReconciledMissingOrDifferentIncrementalNeurons;
 }
 

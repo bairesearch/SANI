@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightUnoptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Unoptimised - ~O(n^2)
  * /
@@ -136,7 +136,7 @@ bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(co
 		*performance = 0;		
 	}
 		
-	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+	#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 	if(sentenceValidActivationPath)
 	{
 		SANIpropagateOperationsParseTree.traceBackpropParseTreeSetTraced(forwardPropogationSentenceData.topLevelParseTreeGroupPropagate, 1);	//added GIA3g6aTEMP32 - set all parseTreeGroup groups in final heirachy to neuronTraced to prevent their memory from being deleted during SANIpropagateOperations.resetAllNeuronComponents
@@ -187,7 +187,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkIntro(const 
 	#ifdef SANI_DEBUG_PROPAGATE
 	cout << "currentWord = " << currentWord->tagName << endl;
 	#endif
-	#ifndef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+	#ifndef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 	SANInodes.printParseTreeDebugIndentation(layer);
 	cout << "currentWord->POSambiguityInfo = " << LRPpreprocessorPOStagger.printPOSambiguityInfo(currentWord->POSambiguityInfo) << endl;
 	#endif
@@ -215,7 +215,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkIntro(const 
 	
 	if(!SANInodes.currentWordPOSunknown(currentWord))
 	{
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 		int wordPOStype = currentWord->unambiguousPOSindex;
 		#else
 		for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
@@ -228,7 +228,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkIntro(const 
 					result = true;
 				}
 				
-		#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 		#else
 			}
 		}

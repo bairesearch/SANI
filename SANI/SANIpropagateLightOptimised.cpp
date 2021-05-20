@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightOptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Optimised - ~O(n)
  * /
@@ -214,7 +214,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkIntro(SANItran
 	#ifdef SANI_DEBUG_PROPAGATE
 	cout << "currentWord = " << currentWord->tagName << endl;
 	#endif
-	#ifndef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+	#ifndef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 	SANInodes.printParseTreeDebugIndentation(layer);
 	cout << "currentWord->POSambiguityInfo = " << LRPpreprocessorPOStagger.printPOSambiguityInfo(currentWord->POSambiguityInfo) << endl;
 	#endif
@@ -284,7 +284,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkIntro(SANItran
 
 	#ifdef SANI_ADD_EXPLICIT_WORD_REFERENCES_AS_INDEPENDENT_POS_PERMUTATIONS
 	bool currentWordIsExplicitPOStypeTemp = false;
-	#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+	#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 	if(currentWord->unambiguousPOSindex == LRP_PREPROCESSOR_POS_TYPE_EXPLICITWORDTEMP)
 	{
 		currentWordIsExplicitPOStypeTemp = true;
@@ -345,7 +345,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkIntro(SANItran
 
 		if(!SANInodes.currentWordPOSunknown(currentWord))
 		{
-			#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+			#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 			int wordPOStype = currentWord->unambiguousPOSindex;
 			#else
 			#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
@@ -361,7 +361,7 @@ bool SANIpropagateLightOptimisedClass::propagateWordThroughNetworkIntro(SANItran
 						result = true;
 					}
 
-			#ifdef GIA_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+			#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
 			#else
 					#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
 					forwardPropogationSignalData.firstPOSval = false;

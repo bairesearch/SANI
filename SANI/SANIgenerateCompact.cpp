@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p9c 17-May-2021
+ * Project Version: 1p10a 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -59,118 +59,16 @@ bool SANIgenerateCompactClass::testPosRelTranslatorNeuralNetwork(SANItranslatorV
 	{
 		result = true;
 		
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS
 		if(createNewConnections)
 		{
 			//for every first hidden layer neuron component in parse tree
 				//if that hidden layer neuron component was marked as POS ambiguous, then mark it as  POS unambiguous, and remove all alternate input connections to this hidden layer neuron
-			markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(*topLevelParseTreeGroup);
+			SANIgenerateCompactOperations.markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(*topLevelParseTreeGroup, false);
 		}
+		#endif
 	}
 	
-	return result;
-}
-
-bool SANIgenerateCompactClass::markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(const SANIGroupParseTree* currentParseTreeGroup)
-{
-	bool result = true;
-			
-	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
-	{
-		SANIComponentParseTree* currentParseComponent = (currentParseTreeGroup->components)[i];
-
-		if(SANInodes.parseTreeComponentOnFirstHiddenLayer(currentParseComponent))
-		{
-			if(currentParseComponent->parseTreeGroupRef == NULL)
-			{
-				cerr << "SANIgenerateCompactClass::markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous error: (currentParseComponent->parseTreeGroupRef == NULL)" << endl;
-				exit(EXIT_ERROR);
-			}
-
-			//currentParseTreeGroup->groupRef->firstHiddenLayerNeuron == true
-			SANIComponentNeuralNetwork* currentComponent = currentParseComponent->componentRef;
-			if(currentComponent->POSambiguousInputs)
-			{
-				SANIGroupNeuralNetwork* currentComponentBackGroup = currentParseComponent->parseTreeGroupRef->groupRef;	//requires SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES
-
-				//pos ambiguous components nodes are only ever resolved when they are parsed with a non-ambiguous word (or when only 1 pos value is accepted by the component based on the sentence word pos values):
-				LRPpreprocessorPlainTextWord* currentWord = currentParseComponent->neuronComponentConnectionActiveWordRecord;	//or currentComponent->neuronComponentConnectionActiveWordRecord
-				bool resolvePOSambiguousComponentInputs = false;
-				if(!LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))	
-				{
-					resolvePOSambiguousComponentInputs = true;
-				}
-				else if(isComponentWordPOStypeInferredUnique(currentParseComponent->wordPOStypeInferred, currentComponent->POSambiguousInputsPOSambiguityInfo, currentWord->POSambiguityInfo))
-				{
-					resolvePOSambiguousComponentInputs = true;
-				}
-
-				if(resolvePOSambiguousComponentInputs)
-				{
-					currentComponent->POSambiguousInputs = false;
-					for(int i=0; i<currentComponent->SANIbackGroupConnectionList.size(); )
-					{
-						SANIGroupNeuralNetwork* currentComponentBackGroup = currentComponent->SANIbackGroupConnectionList[i];
-						if(currentComponentBackGroup != currentComponentBackGroup)
-						{
-							//breakSANIconnection(currentComponentBackGroup, currentComponent);
-
-							//1a.
-							//disconnect currentComponentBackGroup -> currentComponent
-							int componentRefBackGroupFrontIndexToErase = INT_DEFAULT_VALUE;
-							for(int j=0; j<currentComponentBackGroup->SANIfrontComponentConnectionList.size(); j++)
-							{
-								SANIComponentNeuralNetwork* currentComponent2 = (currentComponentBackGroup->SANIfrontComponentConnectionList)[j];
-								if(currentComponent2 == currentComponent)
-								{
-									componentRefBackGroupFrontIndexToErase = j;
-								}
-							}
-							if(componentRefBackGroupFrontIndexToErase == INT_DEFAULT_VALUE)
-							{
-								cerr << "SANIgenerateCompactClass::markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous error: (componentRefBackGroupFrontIndexToErase == INT_DEFAULT_VALUE)" << endl;
-								exit(EXIT_ERROR);
-							}
-							currentComponentBackGroup->SANIfrontComponentConnectionList.erase(currentComponentBackGroup->SANIfrontComponentConnectionList.begin() + componentRefBackGroupFrontIndexToErase);
-
-							//1b.
-							//disconnect currentComponent -> currentComponentBackGroup
-							currentComponent->SANIbackGroupConnectionList.erase(currentComponent->SANIbackGroupConnectionList.begin() + i);
-						}
-						else
-						{
-							i++;
-						}
-					}
-				}
-			}
-		}
-		else
-		{	
-			markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(currentParseComponent->parseTreeGroupRef);
-		}
-	}
-
-	return result;
-}
-
-bool SANIgenerateCompactClass::isComponentWordPOStypeInferredUnique(const int componentWordPOStypeInferred, const uint64_t componentPOSambiguousInputsPOSambiguityInfo, const uint64_t currentWordPOSambiguityInfo)
-{
-	bool result = true;
-
-	for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
-	{
-		if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(componentPOSambiguousInputsPOSambiguityInfo, wordPOStype))
-		{
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWordPOSambiguityInfo, wordPOStype))
-			{
-				if(componentWordPOStypeInferred != wordPOStype)
-				{
-					result = false;
-				}
-			}
-		}
-	}
-				
 	return result;
 }
 
@@ -283,7 +181,7 @@ bool SANIgenerateCompactClass::testSentenceNetworkNodes(SANItranslatorVariablesC
 		result = false;
 		#ifndef SANI_DEBUG_IGNORE_TEST_FAILURE
 		cerr << "SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetwork error: !SANIpropagateCompact.performPropagationTest" << endl;
-		exit(EXIT_ERROR);
+		//exit(EXIT_ERROR);
 		#endif
 	}
 	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_RECENCY_UPDATE_ALL_PROPAGATED_NEURONS
