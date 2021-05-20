@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10b 20-May-2021
+ * Project Version: 1p10c 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -282,7 +282,7 @@ bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SA
 	int performanceTemp = 0;
 	if(!traceBackpropParseTreePerformance(currentParseTreeGroup, 1, &performanceTemp))
 	{
-		cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeWordIndexCoverage fail #1" << endl;
+		//cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeWordIndexCoverage fail #1" << endl;
 		result = false;
 	}
 	resetNeuronBackprop(currentParseTreeGroup, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
@@ -290,7 +290,7 @@ bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SA
 	#else
 	if(!traceBackpropParseTreeWordIndexCoverage(currentParseTreeGroup, 1, forwardPropogationSentenceData->sentenceContents))	
 	{
-		cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeWordIndexCoverage fail #1" << endl;
+		//cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeWordIndexCoverage fail #1" << endl;
 		result = false;
 	}
 	resetNeuronBackprop(currentParseTreeGroup, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);

@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10b 20-May-2021
+ * Project Version: 1p10c 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify - identify and connect regions
  * /
@@ -206,106 +206,114 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableComponents(vector<SANIGro
 	
 	for(int k=0; k<newHiddenLayerGroupsTemp.size(); k++)
 	{
+		SANIGroupNeuralNetwork* generatedNeuron = newHiddenLayerGroupsTemp[k];
+		
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_ONE_PER_SENTENCE
 		if(!identifyAVariableComponent)
 		{
 		#endif
-		
-			SANIGroupNeuralNetwork* generatedNeuron = newHiddenLayerGroupsTemp[k];
-			//cout << "generatedNeuron
-			bool passEdgeRequirements = true;
-
-			int firstComponentIndex;
-			if(forwardPropogationSentenceData->parseSentenceReverse)
+			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+			if(!SANInodes.aComponentHasPOSambiguousInputs(generatedNeuron))
 			{
-				firstComponentIndex = generatedNeuron->components.size()-1;
-			}
-			else
-			{
-				firstComponentIndex = 0;
-			}
-			SANIComponentNeuralNetwork* firstComponentOfGeneratedNeuron = generatedNeuron->components[firstComponentIndex];	
-
-			int lastComponentIndex;
-			if(forwardPropogationSentenceData->parseSentenceReverse)
-			{
-				lastComponentIndex = 0;
-			}
-			else
-			{
-				lastComponentIndex = generatedNeuron->components.size()-1;
-			}
-			SANIComponentNeuralNetwork* lastComponentOfGeneratedNeuron = generatedNeuron->components[lastComponentIndex];
-
-			if(firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1)
-			{
-				cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS: SANIgenerateCompactIdentifyClass::identifyVariableFirstComponents error: (firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1); SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_GENERATE_FIRST_COMPONENTS is not supported" << endl;
-				exit(EXIT_ERROR);
-			}
-			if(lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1)
-			{
-				cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS: SANIgenerateCompactIdentifyClass::identifyVariableFirstComponents error: (lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1); SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS is not supported" << endl;
-				exit(EXIT_ERROR);
-			}
-			/*
-			if(generatedNeuron->SANIfrontComponentConnectionList.size() > 1)
-			{
-				cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS: SANIgenerateCompactIdentifyClass::identifyVariableFirstComponents error: (generatedNeuron->SANIfrontComponentConnectionList.size() > 1)" << endl;
-				exit(EXIT_ERROR);
-			}
-			*/
-			SANIGroupNeuralNetwork* firstComponentOfGeneratedNeuronSource = (firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];	//generated neuron doesn't have variable components
-			SANIGroupNeuralNetwork* lastComponentOfGeneratedNeuronSource = (lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];	//generated neuron doesn't have variable components
-
-			bool identifyVariableFirstComponent = false;
-			bool identifyVariableLastComponent = false;
-	
-			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS
-			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_FIRST_COMPONENTS_NON_STRING
-			if(!SANInodes.hasComponentTypeString(firstComponentOfGeneratedNeuron))	//firstComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
-			{
-			if(!SANInodes.hasComponentTypeString(lastComponentOfGeneratedNeuron))	//lastComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
-			{
-			#endif	
-				if(identifyVariableFirstLastComponents(SANIGroupTypes, forwardPropogationSentenceData, true, generatedNeuron, firstComponentOfGeneratedNeuron, lastComponentOfGeneratedNeuron, firstComponentOfGeneratedNeuronSource, lastComponentOfGeneratedNeuronSource))
-				{
-					identifyAVariableComponent = true;
-					identifyVariableFirstComponent = true;
-					#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_UPDATE_DURING_IDENTIFY
-					newHiddenLayerGroupsTemp.erase(newHiddenLayerGroupsTemp.begin() + k);	//CHECKTHIS
-					k--;	//generatedNeuron has been merged (deleted)
-					#endif
-
-				}
-			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_FIRST_COMPONENTS_NON_STRING
-			}
-			}
-			#endif	
 			#endif
+		
+				//cout << "generatedNeuron
+				bool passEdgeRequirements = true;
 
-			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_LAST_COMPONENTS
-			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_NON_STRING
-			if(!SANInodes.hasComponentTypeString(firstComponentOfGeneratedNeuron))	//firstComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
-			{
-			if(!SANInodes.hasComponentTypeString(lastComponentOfGeneratedNeuron))	//lastComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
-			{
-			#endif	
-				if(!identifyVariableFirstComponent)
+				int firstComponentIndex;
+				if(forwardPropogationSentenceData->parseSentenceReverse)
 				{
-					if(identifyVariableFirstLastComponents(SANIGroupTypes, forwardPropogationSentenceData, false, generatedNeuron, lastComponentOfGeneratedNeuron, firstComponentOfGeneratedNeuron, lastComponentOfGeneratedNeuronSource, firstComponentOfGeneratedNeuronSource))
+					firstComponentIndex = generatedNeuron->components.size()-1;
+				}
+				else
+				{
+					firstComponentIndex = 0;
+				}
+				SANIComponentNeuralNetwork* firstComponentOfGeneratedNeuron = generatedNeuron->components[firstComponentIndex];	
+
+				int lastComponentIndex;
+				if(forwardPropogationSentenceData->parseSentenceReverse)
+				{
+					lastComponentIndex = 0;
+				}
+				else
+				{
+					lastComponentIndex = generatedNeuron->components.size()-1;
+				}
+				SANIComponentNeuralNetwork* lastComponentOfGeneratedNeuron = generatedNeuron->components[lastComponentIndex];
+
+				if(firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1)
+				{
+					cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS: SANIgenerateCompactIdentifyClass::identifyVariableFirstComponents error: (firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1); SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_GENERATE_FIRST_COMPONENTS is not supported" << endl;
+					exit(EXIT_ERROR);
+				}
+				if(lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1)
+				{
+					cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS: SANIgenerateCompactIdentifyClass::identifyVariableFirstComponents error: (lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList.size() > 1); SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS is not supported" << endl;
+					exit(EXIT_ERROR);
+				}
+				/*
+				if(generatedNeuron->SANIfrontComponentConnectionList.size() > 1)
+				{
+					cerr << "SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS: SANIgenerateCompactIdentifyClass::identifyVariableFirstComponents error: (generatedNeuron->SANIfrontComponentConnectionList.size() > 1)" << endl;
+					exit(EXIT_ERROR);
+				}
+				*/
+				SANIGroupNeuralNetwork* firstComponentOfGeneratedNeuronSource = (firstComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];	//generated neuron doesn't have variable components
+				SANIGroupNeuralNetwork* lastComponentOfGeneratedNeuronSource = (lastComponentOfGeneratedNeuron->SANIbackGroupConnectionList)[0];	//generated neuron doesn't have variable components
+
+				bool identifyVariableFirstComponent = false;
+				bool identifyVariableLastComponent = false;
+
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_FIRST_COMPONENTS_NON_STRING
+				if(!SANInodes.hasComponentTypeString(firstComponentOfGeneratedNeuron))	//firstComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
+				{
+				if(!SANInodes.hasComponentTypeString(lastComponentOfGeneratedNeuron))	//lastComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
+				{
+				#endif	
+					if(identifyVariableFirstLastComponents(SANIGroupTypes, forwardPropogationSentenceData, true, generatedNeuron, firstComponentOfGeneratedNeuron, lastComponentOfGeneratedNeuron, firstComponentOfGeneratedNeuronSource, lastComponentOfGeneratedNeuronSource))
 					{
 						identifyAVariableComponent = true;
-						identifyVariableLastComponent = true;
+						identifyVariableFirstComponent = true;
 						#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_UPDATE_DURING_IDENTIFY
 						newHiddenLayerGroupsTemp.erase(newHiddenLayerGroupsTemp.begin() + k);	//CHECKTHIS
 						k--;	//generatedNeuron has been merged (deleted)
 						#endif
+
 					}
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_FIRST_COMPONENTS_NON_STRING
 				}
-			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_NON_STRING
+				}
+				#endif	
+				#endif
+
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_LAST_COMPONENTS
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_NON_STRING
+				if(!SANInodes.hasComponentTypeString(firstComponentOfGeneratedNeuron))	//firstComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
+				{
+				if(!SANInodes.hasComponentTypeString(lastComponentOfGeneratedNeuron))	//lastComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
+				{
+				#endif	
+					if(!identifyVariableFirstComponent)
+					{
+						if(identifyVariableFirstLastComponents(SANIGroupTypes, forwardPropogationSentenceData, false, generatedNeuron, lastComponentOfGeneratedNeuron, firstComponentOfGeneratedNeuron, lastComponentOfGeneratedNeuronSource, firstComponentOfGeneratedNeuronSource))
+						{
+							identifyAVariableComponent = true;
+							identifyVariableLastComponent = true;
+							#ifdef SANI_SEQUENCE_GRAMMAR_RECORD_NEWLY_GENERATED_NEURONS_UPDATE_DURING_IDENTIFY
+							newHiddenLayerGroupsTemp.erase(newHiddenLayerGroupsTemp.begin() + k);	//CHECKTHIS
+							k--;	//generatedNeuron has been merged (deleted)
+							#endif
+						}
+					}
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_NON_STRING
+				}
+				}
+				#endif
+				#endif
+			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 			}
-			}
-			#endif
 			#endif
 			
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_ONE_PER_SENTENCE

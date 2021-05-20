@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10b 20-May-2021
+ * Project Version: 1p10c 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -949,6 +949,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 							#endif
 							
 								bool wordConnectivityVerification = SANIpropagateOperationsParseTree.verifyPerformanceGroupSentence(activationPathWordCurrentParseTreeGroupOwner, forwardPropogationSentenceData, layer);
+								#ifndef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION_DO_NOT_STOP
 								#ifdef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION
 								if(!wordConnectivityVerification)
 								{
@@ -958,6 +959,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupComponent(SANItr
 									SANInodes.printParseTree(activationPathWordCurrentParseTreeGroupOwner, 0);
 									exit(EXIT_ERROR);
 								}
+								#endif
 								#endif
 								#ifdef SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION
 								if(wordConnectivityVerification)
@@ -1622,7 +1624,6 @@ bool SANIpropagateCompactClass::verifyWordIndexCoverageIntegrity(SANIForwardProp
 		SANInodes.printParseTree(currentParseTreeGroup, 1);
 		exit(EXIT_ERROR);
 	}
-	
 	return result;
 }
 #endif

@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10b 20-May-2021
+ * Project Version: 1p10c 20-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -80,7 +80,7 @@
 		//#define SANI_DEBUG_FORMATION2
 		//#define SANI_DEBUG_SEQUENCE_GRAMMAR_SINGLE_POS_PERMUTATION
 
-		#define SANI_DEBUG_PROPAGATE_TRACE
+		//#define SANI_DEBUG_PROPAGATE_TRACE
 		#ifdef SANI_DEBUG_PROPAGATE_TRACE
 			#define SANI_DEBUG_PROPAGATE
 			#define SANI_DEBUG_PROPAGATE_EXTRA4
@@ -147,13 +147,16 @@
 			
 			//#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY	//optional //independent trial @SANI1p8a
 			#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-				#define SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	//optional SANI1p7a - enhances biological plausability of SANI propagation algorithm (performs word index contiguity verification of final generated parse trees at end of forward propagation)
-				#ifdef SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	
-					#define SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
-					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
-						#define SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_MUTUALLY_EXCLUSIVE
+				//#ifdef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION	//not yet defined
+					#define SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION_DO_NOT_STOP	//SANI1p10c
+					#define SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	//optional SANI1p7a - enhances biological plausability of SANI propagation algorithm (performs word index contiguity verification of final generated parse trees at end of forward propagation)
+					#ifdef SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	
+						#define SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
+						#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
+							#define SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_MUTUALLY_EXCLUSIVE
+						#endif
 					#endif
-				#endif
+				//#endif
 			#endif
 		#else
 		
@@ -607,7 +610,9 @@
 	#define SANI_SEQUENCE_GRAMMAR_VERIFICATION	//not required	//should be activated for software verification	//can be disabled for specific debugging
 	#define SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION	//SANI1j5aTEMP53	//not required 	//should be activated for software verification
 	#ifdef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION
-		#define SANI_DEBUG_SEQUENCE_GRAMMAR_WORDCONNECTIVITY_VERIFICATION_CONTINUOUS	//SANI1j15a //continuous verification of SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION
+		#ifndef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION_DO_NOT_STOP
+			#define SANI_DEBUG_SEQUENCE_GRAMMAR_WORDCONNECTIVITY_VERIFICATION_CONTINUOUS	//SANI1j15a //continuous verification of SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION
+		#endif
 	#endif
 		
 	
