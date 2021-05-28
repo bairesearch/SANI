@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactReferenceSets.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
@@ -151,29 +151,33 @@ bool SANIpropagateCompactReferenceSetsClass::propagateWordThroughNetworkIntro(SA
 	#else
 	if(!SANInodes.currentWordPOSunknown(currentWord))
 	{
-		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-		int wordPOStype = currentWord->unambiguousPOSindex;
-		#else
-		#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-		forwardPropogationSignalData->firstPOSval = false;
-		#endif
-		for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
+		if(!forwardPropogationSentenceData->simultaneousAmbiguousPOSpropagation)
 		{
-			if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, wordPOStype))
+			int wordPOStype = currentWord->unambiguousPOSindex;
+			if(!propagateWordThroughNetworkGroupInit(translatorVariables, SANIGroupTypes, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))
 			{
-		#endif	
-				if(!propagateWordThroughNetworkGroupInit(translatorVariables, w, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData))
-				{
-					result = false;
-				}
-		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-		#else
-				#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-				forwardPropogationSignalData->firstPOSval = false;
-				#endif
+				result = false;
 			}
 		}
-		#endif
+		else
+		{
+			#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+			forwardPropogationSignalData->firstPOSval = false;
+			#endif
+			for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
+			{
+				if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, wordPOStype))
+				{
+					if(!propagateWordThroughNetworkGroupInit(translatorVariables, SANIGroupTypes, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))
+					{
+						result = false;
+					}
+					#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+					forwardPropogationSignalData->firstPOSval = false;
+					#endif
+				}
+			}
+		}
 	}
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES
 	else

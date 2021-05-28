@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactGenerateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Generate Operations - unsupervised training of sequence grammar parse network
  * /
@@ -521,7 +521,7 @@ bool SANIpropagateCompactGenerateOperationsClass::updateActivatedNeuronWithMaxWo
 						#endif	
 							//cout << "\t2 candidateCoveragePartial = " << candidateCoveragePartial << endl;
 
-							cout << "missingStartComponentFound = " << missingStartComponentFound << endl;
+							//cout << "missingStartComponentFound = " << missingStartComponentFound << endl;
 
 							#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR
 							cout << "++++++++++++++++++++++++++++++++++++++++++ forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage" << endl;

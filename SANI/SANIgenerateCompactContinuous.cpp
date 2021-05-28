@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -212,8 +212,11 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = false;
 		#endif
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+		forwardPropogationSentenceData->simultaneousAmbiguousPOSpropagation = true;
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = true;
+		#endif
 		#endif
 
 		#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
@@ -734,7 +737,7 @@ bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuro
 		{
 			SANIGroupNeuralNetwork* currentHighLevelNeuron = (*listOfHighLevelNeurons)[k];
 			#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-			cout << currentHighLevelNeuron->groupIndex << " ";
+			cout << "currentHighLevelNeuron->groupIndex = " << currentHighLevelNeuron->groupIndex << ", k = " << k << endl;
 			#endif
 				
 			SANIGroupNeuralNetwork* grammaticalSentenceNeuronSubHigher = NULL;

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -169,6 +169,8 @@ bool SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompar
 			}
 			if(overWrite)
 			{
+				//cout << "SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory; overWrite" << endl;
+				
 				lastActiveComponent->neuronComponentConnectionActiveWordRecord = neuronComponentConnectionActiveWordOption;	//GIA3k13a
 				ownerGroup->currentParseTreeGroupTemp = ownerGroup->parseTreeGroupMemory[m];	//GIA3k13a
 
@@ -360,7 +362,9 @@ bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SA
 			
 			if(!wordConnectivityTest)
 			{
+				#ifndef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION_DO_NOT_STOP
 				cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:wordConnectivityTest fail #2" << endl;
+				#endif
 				result = false;
 			}
 		}

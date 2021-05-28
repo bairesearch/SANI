@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -125,7 +125,7 @@ class SANIposRelTranslatorPermutationsClass
 			#endif
 					public: bool executePosRelTranslator(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, vector<uint64_t>* POSambiguityInfoPermutation);
 						#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-						private: bool generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<vector<uint64_t>*>* POSambiguityInfoUnambiguousPermutationArray, int* iOptimum, int* minIndexOfMatchesFoundBackupOptimum);
+						private: bool generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<uint64_t>* POSambiguityInfoPermutation, const vector<vector<uint64_t>*>* POSambiguityInfoUnambiguousPermutationArray, int* iOptimum, int* minIndexOfMatchesFoundBackupOptimum);
 						#else
 						private: bool generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<uint64_t>* POSambiguityInfoPermutation);
 						#endif

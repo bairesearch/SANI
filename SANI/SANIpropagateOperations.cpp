@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -160,6 +160,7 @@ bool SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyCompone
 				if(currentComponent->neuronComponentConnectionActive)
 				{
 					*previousActiveComponent = currentComponent;
+					//cout << "*previousActiveComponent = currentComponent, currentComponent->componentIndex = " << currentComponent->componentIndex << endl;
 				}
 				#endif
 				
@@ -279,17 +280,26 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(SANIForward
 	
 	//can be depreciated;
 	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+	#ifndef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
 	bool previousComponentWasActivatedBySameWordDifferentPOSpropagation = false;
 	if(previousActiveComponent != NULL)
 	{
 		if((previousActiveComponent)->neuronComponentConnectionActiveWordRecord == forwardPropogationWordData->wordReference)
 		{
-			//cout << "previousActiveComponent->componentIndex = " << previousActiveComponent->componentIndex << endl;
 			previousComponentWasActivatedBySameWordDifferentPOSpropagation = true;
+			//cout << "previousComponentWasActivatedBySameWordDifferentPOSpropagation" << endl;
+			/*
+			cout << "previousActiveComponent->componentIndex = " << previousActiveComponent->componentIndex << endl;
+			cout << "forwardPropogationWordData->w = " << forwardPropogationWordData->w << endl;
+			cout << "forwardPropogationWordData->wordReference->tagName = " << forwardPropogationWordData->wordReference->tagName << endl;
+			cout << "(previousActiveComponent)->neuronComponentConnectionActiveWordRecord->tagName = " << (previousActiveComponent)->neuronComponentConnectionActiveWordRecord->tagName << endl;	
+			cout << "(previousActiveComponent)->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex = " << (previousActiveComponent)->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex << endl;	
+			*/
 		}
 	}
 	if(!previousComponentWasActivatedBySameWordDifferentPOSpropagation)
 	{
+	#endif
 	#endif	
 				
 	if(currentComponent->neuronComponentConnectionActive)
@@ -325,7 +335,9 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(SANIForward
 	}
 	
 	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+	#ifndef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
 	}
+	#endif
 	#endif
 	
 	return result;
@@ -955,6 +967,7 @@ bool SANIpropagateOperationsClass::getFirstWordInParseTree(const SANIGroupParseT
 	return result;
 }
 
+#ifndef SANI_SEQUENCE_GRAMMAR
 bool SANIpropagateOperationsClass::findPreviousWordInSentence(vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const LRPpreprocessorPlainTextWord* currentWord, const int previousWordPOStype)
 {
 	bool result = false;
@@ -1032,6 +1045,8 @@ bool SANIpropagateOperationsClass::checkWordPOStype(const LRPpreprocessorPlainTe
 	#endif
 	return result;
 }
+#endif
+
 #endif
 #endif
 

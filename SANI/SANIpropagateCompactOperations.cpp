@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompactOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Operations - generic functions
  * /
@@ -47,7 +47,7 @@ bool SANIpropagateCompactOperationsClass::identifySequentialActivationFound(cons
 	bool previousComponentWasActivatedBySameWordDifferentPOSpropagation = false;
 	if(previousActiveComponent != NULL)
 	{
-		if((previousActiveComponent)->neuronComponentConnectionActiveWordRecord = forwardPropogationWordData->wordReference)
+		if((previousActiveComponent)->neuronComponentConnectionActiveWordRecord == forwardPropogationWordData->wordReference)
 		{
 			previousComponentWasActivatedBySameWordDifferentPOSpropagation = true;
 		}
@@ -231,7 +231,7 @@ bool SANIpropagateCompactOperationsClass::identifySequentialActivationFound(cons
 						{
 							if(!(forwardPropogationSignalData->firstPOSval))
 							{
-								if(currentComponent->neuronComponentConnectionActiveWordRecord = forwardPropogationWordData->wordReference)
+								if(currentComponent->neuronComponentConnectionActiveWordRecord == forwardPropogationWordData->wordReference)
 								{
 									//component has been activated by previous POS propagation
 									allowFirstComponentReset = false;

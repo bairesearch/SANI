@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactSectionedUnique.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Sectioned Unique components - unsupervised training of sequence grammar parse network
  * /
@@ -242,9 +242,12 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage = NULL;
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial = false;
 
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+		forwardPropogationSentenceData->simultaneousAmbiguousPOSpropagation = true;
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
 		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = true;
-		#endif		
+		#endif	
+		#endif
 		
 		bool resetAllNeuronComponents = true;
 		if(SANIpropagateCompact.performPropagation(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, resetAllNeuronComponents, false, indexInSequence))
@@ -396,9 +399,12 @@ bool SANIgenerateCompactSectionedUniqueClass::findAndReconcileIncrementalVariati
 	
 	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverage = false;
 
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
+	forwardPropogationSentenceData->simultaneousAmbiguousPOSpropagation = false;
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
 	forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = false;
 	#endif		
+	#endif
 			
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_CONTINUOUSLY_OUTPUT_NETWORK_GENERATION
 	SANIpropagateCompact.printSANInetworkSVG(translatorVariables, SANIGroupTypes);

@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact - unsupervised training of sequence grammar parse network
  * /
@@ -50,12 +50,11 @@ bool SANIgenerateCompactClass::generatePosRelTranslatorNeuralNetworkWrapper(SANI
 }
 */
 
-#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
-bool SANIgenerateCompactClass::testPosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance, const bool createNewConnections)
+bool SANIgenerateCompactClass::testPosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance, const bool createNewConnections, const bool simultaneousAmbiguousPOSpropagation)
 {
 	bool result = false;
 	
-	if(SANIpropagateCompact.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance))
+	if(SANIpropagateCompact.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, performance, simultaneousAmbiguousPOSpropagation))
 	{
 		result = true;
 		
@@ -72,11 +71,7 @@ bool SANIgenerateCompactClass::testPosRelTranslatorNeuralNetwork(SANItranslatorV
 	return result;
 }
 
-
-
-#endif
-
-bool SANIgenerateCompactClass::testAndGeneratePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance, const bool createNewConnections)
+bool SANIgenerateCompactClass::testAndGeneratePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, const bool parserEnabled, int* performance, const bool createNewConnections, const bool simultaneousAmbiguousPOSpropagation)
 {
 	bool result = true;
 	
@@ -86,12 +81,24 @@ bool SANIgenerateCompactClass::testAndGeneratePosRelTranslatorNeuralNetwork(SANI
 	
 	SANIForwardPropogationSentenceData forwardPropogationSentenceData;
 	forwardPropogationSentenceData.sentenceContents = sentenceContents;
+	forwardPropogationSentenceData.simultaneousAmbiguousPOSpropagation = simultaneousAmbiguousPOSpropagation;
 				
 	SANIpropagateCompact.executePosRelTranslatorNeuralNetworkStart(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, parseIsolatedSubreferenceSets, parserEnabled, performance);
 	bool toplevelGroupActivationFound = SANIpropagateCompact.performPropagationTest(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, true, topLevelParseTreeGroup);
 	
-	if(!toplevelGroupActivationFound)
-	{				
+	if(toplevelGroupActivationFound)
+	{	
+		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS
+		if(createNewConnections)
+		{
+			//for every first hidden layer neuron component in parse tree
+				//if that hidden layer neuron component was marked as POS ambiguous, then mark it as  POS unambiguous, and remove all alternate input connections to this hidden layer neuron
+			SANIgenerateCompactOperations.markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(*topLevelParseTreeGroup, false);
+		}
+		#endif	
+	}
+	else
+	{			
 		if(createNewConnections)
 		{
 			if(!generateSentenceNetworkNodes(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData))

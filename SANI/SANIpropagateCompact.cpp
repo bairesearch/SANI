@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -86,21 +86,22 @@ bool SANIpropagateCompactClass::defineFirstLayer(SANItranslatorVariablesClass* t
 	return result;
 }	
 	
-bool SANIpropagateCompactClass::executePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents)
+bool SANIpropagateCompactClass::executePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, const bool simultaneousAmbiguousPOSpropagation)
 {
 	SANIGroupParseTree* topLevelParseTreeGroup = NULL; 
 	bool parseIsolatedSubreferenceSets = false;
 	bool parserEnabled = false;
 	int performance = 0;
-	return executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performance);
+	return executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &topLevelParseTreeGroup, parseIsolatedSubreferenceSets, parserEnabled, &performance, simultaneousAmbiguousPOSpropagation);
 }
 
-bool SANIpropagateCompactClass::executePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, constEffective SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance)
+bool SANIpropagateCompactClass::executePosRelTranslatorNeuralNetwork(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, vector<LRPpreprocessorPlainTextWord*>* sentenceContents, constEffective SANIGroupParseTree** topLevelParseTreeGroup, const bool parseIsolatedSubreferenceSets, bool parserEnabled, int* performance, const bool simultaneousAmbiguousPOSpropagation)
 {
 	bool result = false;
 
 	SANIForwardPropogationSentenceData forwardPropogationSentenceData;
 	forwardPropogationSentenceData.sentenceContents = sentenceContents;
+	forwardPropogationSentenceData.simultaneousAmbiguousPOSpropagation = simultaneousAmbiguousPOSpropagation;
 
 	#ifndef SANI_SEQUENCE_GRAMMAR_PRELIMTEST_GENERATE_CLASSIFICATION_NET_INPUT_DATASET_VIA_ANN
 	executePosRelTranslatorNeuralNetworkStart(translatorVariables, SANIGroupTypes, &forwardPropogationSentenceData, parseIsolatedSubreferenceSets, parserEnabled, performance);
@@ -337,10 +338,10 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 		result = false;
 	}	
 	#else
-	#ifndef SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START	//already inferred POS type from POSunknown
+	//#ifndef SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START	//already inferred POS type from POSunknown
 	if(!SANInodes.currentWordPOSunknown(currentWord))
 	{
-	#endif
+	//#endif
 
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 		if(forwardPropogationSentenceData->artificialInputNeuronLinkPosAmbiguousPermuations)	//implied true: getFirstLayer
@@ -368,33 +369,38 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 		{
 		#endif
 	
-			#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-			int wordPOStype = currentWord->unambiguousPOSindex;
-			#else
-			#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-			forwardPropogationSignalData->firstPOSval = false;
-			#endif
-			for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
+			if(!forwardPropogationSentenceData->simultaneousAmbiguousPOSpropagation)
 			{
-				if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, wordPOStype))
+				int wordPOStype = currentWord->unambiguousPOSindex;
+				if(!propagateWordThroughNetworkGroupInit(translatorVariables, SANIGroupTypes, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))
 				{
-			#endif	
-					if(!propagateWordThroughNetworkGroupInit(translatorVariables, SANIGroupTypes, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))
-					{
-						result = false;
-					}
-			#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-			#else
-					#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-					forwardPropogationSignalData->firstPOSval = false;
-					#endif
+					result = false;
 				}
 			}
-			#endif
+			else
+			{
+				//cout << "forwardPropogationSentenceData->simultaneousAmbiguousPOSpropagation" << endl;
+				#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+				forwardPropogationSignalData->firstPOSval = false;
+				#endif
+				for(int wordPOStype=0; wordPOStype<LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES; wordPOStype++)
+				{
+					if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(currentWord->POSambiguityInfo, wordPOStype))
+					{						
+						if(!propagateWordThroughNetworkGroupInit(translatorVariables, SANIGroupTypes, wordPOStype, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))
+						{
+							result = false;
+						}
+						#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+						forwardPropogationSignalData->firstPOSval = false;
+						#endif
+					}
+				}
+			}
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 		}
 		#endif
-	#ifndef SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START
+	//#ifndef SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START
 	}
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES
 	else
@@ -411,7 +417,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 	}
 	#endif
 	#endif
-	#endif
+	//#endif
 	
 	return result;
 }
@@ -509,8 +515,9 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupAddToFirstLayer(
 	(*forwardPropogationSentenceData->firstLayer)[w] = inputLayerGroup;	//cannot assume that propagateWordThroughNetworkGroupAddToFirstLayer will be executed via defineFirstLayer at start of generation
 	#else
 	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-	forwardPropogationSentenceData->firstLayer->insert(forwardPropogationSentenceData->firstLayer->begin()+w, inputLayerGroup);	//will only be valid for pos unambiguous words	//CHECKTHIS - only work if neuron is inserted in order
-	//(forwardPropogationSentenceData->firstLayer->at(w))->push_back(inputLayerGroup);	//will only be valid for pos unambiguous words
+	//OLD2: forwardPropogationSentenceData->firstLayer->insert(forwardPropogationSentenceData->firstLayer->begin()+w, inputLayerGroup);	//will only be valid for pos unambiguous words	//CHECKTHIS - only work if neuron is inserted in order
+	//OLD1: (forwardPropogationSentenceData->firstLayer->at(w))->push_back(inputLayerGroup);	//will only be valid for pos unambiguous words
+	forwardPropogationSentenceData->firstLayer->push_back(inputLayerGroup);	//CHECKTHIS
 	#else
 	forwardPropogationSentenceData->firstLayer->push_back(inputLayerGroup);
 	#endif

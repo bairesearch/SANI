@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p10c 20-May-2021
+ * Project Version: 1p11a 27-May-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -352,7 +352,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslat
 		#endif
 
 		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-		if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSets1, &POSambiguityInfoUnambiguousPermutationArray, &iOptimum, &minIndexOfMatchesFoundBackupOptimum))	
+		if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSets1, POSambiguityInfoPermutation, &POSambiguityInfoUnambiguousPermutationArray, &iOptimum, &minIndexOfMatchesFoundBackupOptimum))	
 		#else
 		if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSets1, POSambiguityInfoPermutation))
 		#endif
@@ -371,7 +371,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslat
 			{
 			#endif
 				#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-				if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSets2, &POSambiguityInfoUnambiguousPermutationArray, &iOptimum, &minIndexOfMatchesFoundBackupOptimum))	
+				if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSets2, POSambiguityInfoPermutation, &POSambiguityInfoUnambiguousPermutationArray, &iOptimum, &minIndexOfMatchesFoundBackupOptimum))	
 				#else
 				if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSets2, POSambiguityInfoPermutation))
 				#endif
@@ -391,7 +391,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslat
 	else
 	{
 		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-		if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSetsRecord, &POSambiguityInfoUnambiguousPermutationArray, &iOptimum, &minIndexOfMatchesFoundBackupOptimum))	
+		if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSetsRecord, POSambiguityInfoPermutation, &POSambiguityInfoUnambiguousPermutationArray, &iOptimum, &minIndexOfMatchesFoundBackupOptimum))	
 		#else
 		if(generateParseTreeIntroWrapper(translatorVariables, SANIrulesTokenLayers, SANIGroupTypes, currentLRPpreprocessorSentenceInList, firstParseTreeGroup, &performance, parseIsolatedSubreferenceSetsRecord, POSambiguityInfoPermutation))
 		#endif
@@ -427,7 +427,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslat
 
 
 #ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<vector<uint64_t>*>* POSambiguityInfoUnambiguousPermutationArray, int* iOptimum, int* minIndexOfMatchesFoundBackupOptimum)
+bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<uint64_t>* POSambiguityInfoPermutation, const vector<vector<uint64_t>*>* POSambiguityInfoUnambiguousPermutationArray, int* iOptimum, int* minIndexOfMatchesFoundBackupOptimum)
 #else
 bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItranslatorVariablesClass* translatorVariables, vector<XMLparserTag*>* SANIrulesTokenLayers, vector<SANIGroupType*>* SANIGroupTypes, LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList, SANIGroupParseTree* firstParseTreeGroup, int* performance, bool parseIsolatedSubreferenceSets, const vector<uint64_t>* POSambiguityInfoPermutation)
 #endif
@@ -510,10 +510,16 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			bool parserEnabled = false;
 			#ifdef SANI_SEQUENCE_GRAMMAR
 			bool createNewConnections = true; 
-			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
-			if(SANIgenerateCompact.testPosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp, createNewConnections))
+			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START	//assume SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+			bool simultaneousAmbiguousPOSpropagation = false;
+			if(SANIgenerateCompact.testPosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp, createNewConnections, simultaneousAmbiguousPOSpropagation))
 			#else
-			if(SANIgenerateCompact.testAndGeneratePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp, createNewConnections))
+			#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
+			bool simultaneousAmbiguousPOSpropagation = false;
+			#else
+			bool simultaneousAmbiguousPOSpropagation = true;
+			#endif
+			if(SANIgenerateCompact.testAndGeneratePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp, createNewConnections, simultaneousAmbiguousPOSpropagation))
 			#endif
 			#else
 			#ifdef SANI_HEAVY
@@ -567,7 +573,7 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 				#endif
 				#ifdef SANI_DEBUG_RULES_PRINT_SENTENCES
 				cout << "executePosRelTranslatorNeuralNetwork failed" << endl;
-				#endif		
+				#endif	
 			}
 	
 		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
@@ -592,6 +598,28 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			SANIpropagateInverse.restoreAllWordsAlreadyFoundMatchInComponent(sentenceContents, *performance);
 		}
 		#endif
+		#endif
+		
+		
+		#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_INDEPENDENT
+		#ifdef SANI_DEBUG_RULES_PRINT_SENTENCES
+		cout << "\n\n\n\nSANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_INDEPENDENT: SANIgenerateCompact.testPosRelTranslatorNeuralNetwork(simultaneousAmbiguousPOSpropagation=true):" << endl;
+		#endif
+		int performanceTemp = 0;
+		bool parserEnabled = false;
+		bool createNewConnections = false;
+		SANIGroupParseTree* firstParseTreeGroupTemp = NULL;
+		bool simultaneousAmbiguousPOSpropagation = true;
+		for(int w=0; w<sentenceContents->size(); w++)
+		{
+			uint64_t POSambiguityInfoPermutationTemp = (*POSambiguityInfoPermutation)[w];
+			(sentenceContents->at(w))->POSambiguityInfo = POSambiguityInfoPermutationTemp;
+		}		
+		if(!SANIgenerateCompact.testPosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp, createNewConnections, simultaneousAmbiguousPOSpropagation))
+		{
+			result = false;
+			cout << "SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_INDEPENDENT: SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper - SANIgenerateCompact.testPosRelTranslatorNeuralNetwork fail" << endl;
+		}
 		#endif
 		
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
