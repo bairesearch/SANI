@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p11b 27-May-2021
+ * Project Version: 1p12a 07-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -1464,38 +1464,6 @@ string SANInodesClass::printParseTreeGroupIndicesFlat(const SANIGroupParseTree* 
 	return groupIndicesString;
 }
 
-
-bool SANInodesClass::printParseTree(const SANIGroupParseTree* currentParseTreeGroup, const int layer)
-{
-	bool result = true;
-	
-	printParseTreeDebugIndentation(layer);
-	cout << "currentParseTreeGroup->groupRef->groupIndex = " << currentParseTreeGroup->groupRef->groupIndex << endl;
-	
-	/*
-	if(currentParseTreeGroup->components.size() == 1)
-	{
-		cout << "currentParseTreeGroup->components.size() == 1" << endl;
-	}
-	*/
-	
-	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
-	{				
-		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
-		printComponent(parseTreeComponent, layer);
-
-		if(parseTreeComponent->parseTreeGroupRef != NULL)
-		{
-			if(!printParseTree(parseTreeComponent->parseTreeGroupRef, layer+1))
-			{
-				result = false;
-			}
-		}
-	}
-
-	return result;
-}
-
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE	
 bool SANInodesClass::printNeuralNetwork(const SANIGroupNeuralNetwork* currentNeuron, const int layer)
 {
@@ -1584,6 +1552,40 @@ bool SANInodesClass::printNeuralNetworkInputNeuron(const SANIGroupNeuralNetwork*
 
 
 #endif
+
+
+bool SANInodesClass::printParseTree(const SANIGroupParseTree* currentParseTreeGroup, const int layer)
+{
+	bool result = true;
+	
+	#ifdef SANI_SEQUENCE_GRAMMAR
+	printParseTreeDebugIndentation(layer);
+	cout << "currentParseTreeGroup->groupRef->groupIndex = " << currentParseTreeGroup->groupRef->groupIndex << endl;
+	#endif
+	
+	/*
+	if(currentParseTreeGroup->components.size() == 1)
+	{
+		cout << "currentParseTreeGroup->components.size() == 1" << endl;
+	}
+	*/
+	
+	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
+	{				
+		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
+		printComponent(parseTreeComponent, layer);
+
+		if(parseTreeComponent->parseTreeGroupRef != NULL)
+		{
+			if(!printParseTree(parseTreeComponent->parseTreeGroupRef, layer+1))
+			{
+				result = false;
+			}
+		}
+	}
+
+	return result;
+}
 
 
 
@@ -1686,6 +1688,7 @@ bool SANInodesClass::parseTreeNodeInputLayer(const SANIGroupParseTree* parseTree
 }
 
 
+#ifdef SANI_SEQUENCE_GRAMMAR
 void SANInodesClass::addNeuronToGroupTypes(SANIGroupNeuralNetwork* newNeuron, vector<SANIGroupType*>* SANIGroupTypes, const bool inputNeuron)
 {	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
@@ -1707,7 +1710,6 @@ void SANInodesClass::addNeuronToGroupTypes(SANIGroupNeuralNetwork* newNeuron, ve
 	#endif
 	groupType->groups.push_back(newNeuron);
 }
-
 void SANInodesClass::createGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName)
 {
 	SANIGroupType* groupType = new SANIGroupType();
@@ -1717,6 +1719,7 @@ void SANInodesClass::createGroupType(vector<SANIGroupType*>* SANIGroupTypes, con
 	#endif
 	SANIGroupTypes->push_back(groupType);	
 }
+#endif
 
 //#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS_VERIFY_UNIQUE or SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY_UNIQUE
 bool SANInodesClass::isComponentWordPOStypeInferredUnique(const int componentWordPOStypeInferred, const uint64_t componentPOSambiguousInputsPOSambiguityInfo, const uint64_t currentWordPOSambiguityInfo)

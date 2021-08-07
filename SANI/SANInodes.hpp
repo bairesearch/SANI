@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p11b 27-May-2021
+ * Project Version: 1p12a 07-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -274,24 +274,26 @@ class SANInodesClass
 	public: bool printParseTreeGroupIndices(const SANIGroupParseTree* currentParseTreeGroup, const int layer);
 	public: string printParseTreeGroupIndicesFlat(const SANIGroupParseTree* currentParseTreeGroup);
 
-	public: bool printParseTree(const SANIGroupParseTree* currentParseTreeGroup, const int layer);
 	public: bool printNeuralNetwork(const SANIGroupNeuralNetwork* currentNeuron, const int layer);
 	#ifndef GIA_POS_REL_TRANSLATOR_RULES_USE	
 	public: bool printNeuralNetworkInputNeuron(const SANIGroupNeuralNetwork* inputNeuron, const int layer);
 	#endif
 	#endif
+	public: bool printParseTree(const SANIGroupParseTree* currentParseTreeGroup, const int layer);
 
 	public: bool hasComponentTypeString(const SANIComponentNeuralNetwork* component);
 	public: bool hasComponentTypeString(const SANIComponentParseTree* component);
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	public: bool calculateComponentTypeString(const SANIGroupNeuralNetwork* componentSource);
+	#endif
 	public: bool parseTreeComponentOnFirstHiddenLayer(const SANIComponentParseTree* parseTreeComponent);
 	public: bool parseTreeNodeInputLayer(const SANIGroupParseTree* parseTreeGroup);
-	#endif
 	
+	#ifdef SANI_SEQUENCE_GRAMMAR
 	public: void addNeuronToGroupTypes(SANIGroupNeuralNetwork* newNeuron, vector<SANIGroupType*>* SANIGroupTypes, const bool inputNeuron);
 	public: void createGroupType(vector<SANIGroupType*>* SANIGroupTypes, const string groupTypeName);
-
+	#endif
+	
 	//#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS_VERIFY_UNIQUE or SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_VERIFY_UNIQUE
 	public: bool isComponentWordPOStypeInferredUnique(const int componentWordPOStypeInferred, const uint64_t componentPOSambiguousInputsPOSambiguityInfo, const uint64_t currentWordPOSambiguityInfo);
 	
