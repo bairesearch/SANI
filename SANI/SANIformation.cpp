@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p12d 07-August-2021
+ * Project Version: 1q1a 25-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -247,7 +247,7 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlain
 	#endif
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
-	SANInodes.addNeuronToGroupTypes(currentGroupInInputLayerSectionWordOrig, SANIGroupTypes, true);	
+	SANInodes.addNeuronToGroupTypes(currentGroupInInputLayerSectionWordOrig, SANIGroupTypes, true);
 	#endif
 	
 	inputLayerSectionWordOrigMap.insert(pair<string, SANIGroupNeuralNetwork*>(wordOrig, currentGroupInInputLayerSectionWordOrig));

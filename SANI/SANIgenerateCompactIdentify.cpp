@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p12d 07-August-2021
+ * Project Version: 1q1a 25-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify - identify and connect regions
  * /
@@ -162,13 +162,22 @@ bool SANIgenerateCompactIdentifyClass::identifyStartEndOfSentenceWordDetected(SA
 	for(int i=0; i<currentParseTreeGroup->components.size(); i++)
 	{				
 		SANIComponentParseTree* parseTreeComponent = (currentParseTreeGroup->components).at(i);
-		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
-		{			
+		#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING
+		if(SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
+		{
+			parseTreeComponent->parseTreeGroupRef->groupRef->startOfSentenceWordDetected = currentParseTreeGroup->groupRef->startOfSentenceWordDetected;
+			parseTreeComponent->parseTreeGroupRef->groupRef->endOfSentenceWordDetected = currentParseTreeGroup->groupRef->endOfSentenceWordDetected;
+		}
+		else
+		{
+		#endif
 			if(!identifyStartEndOfSentenceWordDetected(forwardPropogationSentenceData, parseTreeComponent->parseTreeGroupRef))
 			{
 				result = false;
 			}
+		#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING
 		}
+		#endif
 	}
 	
 	return result;
@@ -270,7 +279,7 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableComponents(vector<SANIGro
 				if(!SANInodes.hasComponentTypeString(firstComponentOfGeneratedNeuron))	//firstComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
 				{
 				if(!SANInodes.hasComponentTypeString(lastComponentOfGeneratedNeuron))	//lastComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
-				{
+				{			
 				#endif	
 					if(identifyVariableFirstLastComponents(SANIGroupTypes, forwardPropogationSentenceData, true, generatedNeuron, firstComponentOfGeneratedNeuron, lastComponentOfGeneratedNeuron, firstComponentOfGeneratedNeuronSource, lastComponentOfGeneratedNeuronSource))
 					{
@@ -289,11 +298,11 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableComponents(vector<SANIGro
 				#endif
 
 				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_LAST_COMPONENTS
-				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_NON_STRING
+				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_LAST_COMPONENTS_NON_STRING	
 				if(!SANInodes.hasComponentTypeString(firstComponentOfGeneratedNeuron))	//firstComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
 				{
 				if(!SANInodes.hasComponentTypeString(lastComponentOfGeneratedNeuron))	//lastComponentOfGeneratedNeuron->componentType != GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_COMPONENTTYPE_STRING
-				{
+				{					
 				#endif	
 					if(!identifyVariableFirstComponent)
 					{
@@ -327,7 +336,7 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableComponents(vector<SANIGro
 bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, bool identifyVariableFirstOrLastComponent, SANIGroupNeuralNetwork* generatedNeuron, const SANIComponentNeuralNetwork* variableComponentOfGeneratedNeuron, const SANIComponentNeuralNetwork* nonvariableComponentOfGeneratedNeuron, SANIGroupNeuralNetwork* variableComponentOfGeneratedNeuronSource, SANIGroupNeuralNetwork* nonvariableComponentOfGeneratedNeuronSource)
 {
 	bool result = false;
-	
+		
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 	/*
 	//verify no neurons already marked;
@@ -380,8 +389,10 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vecto
 	
 	if(passEdgeRequirements)
 	{
-		//cout << "passEdgeRequirements" << endl;
-		
+		//cout << "passEdgeRequirements;" << endl;
+		//cout << "generatedNeuron->groupIndex = " << generatedNeuron->groupIndex << endl;
+		//SANInodes.printNeuralNetwork(generatedNeuron, 0);
+
 		for(int i=0; i<nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size(); i++)
 		{
 			if(!(generatedNeuron->markToErase))	//only perform merge once
@@ -389,15 +400,16 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vecto
 				SANIComponentNeuralNetwork* currentComponent = (nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[i];
 				SANIGroupNeuralNetwork* candidateMatchGroup = currentComponent->ownerGroup;
 				if(candidateMatchGroup != generatedNeuron)
-				{		
-					//cout << "(candidateMatchGroup != generatedNeuron)" << endl;
-						
+				{								
 					#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VERIFY_NOT_NEWLY_CREATED
 					if(!(candidateMatchGroup->newlyGeneratedForSentenceTemp)) //only consider candidateMatchGroup if neuron has not been newly generated for current sentence	//candidateMatchGroup->timeIndex != forwardPropogationSentenceData->sentenceIndex
 					{
 					#endif
 						int candidateMatchGroupVariableComponentIndex2;
 						int candidateMatchGroupNonvariableComponentIndex2;
+						
+						//cout << "candidateMatchGroup->groupIndex = " << candidateMatchGroup->groupIndex << endl;
+						
 						if(identifyVariableFirstOrLastComponent)
 						{
 							if(forwardPropogationSentenceData->parseSentenceReverse)
@@ -435,9 +447,11 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vecto
 								bool passPreconditions = true;
 								if(identifyVariableFirstOrLastComponent)
 								{
+									//cout << "identifyVariableFirstOrLastComponent" << endl;	
 									#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_FIRST_COMPONENTS
 									if(!SANIpropagateCompactGenerateOperations.identifyMissingOrVariableStartComponentFound(forwardPropogationSentenceData, &(candidateMatchGroup->components), candidateMatchGroupVariableComponent))	//requires firstComponent
 									{
+										//cout << "!identifyMissingOrVariableStartComponentFound" << endl;
 										passPreconditions = false;
 									}
 									#endif
@@ -447,12 +461,10 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vecto
 										//cout << "variableEdgeComponentSourcePOSisIdenticalWrapper1" << endl;
 										passPreconditions = false;
 									}
-									/*
 									else
 									{
-										cout << "!variableEdgeComponentSourcePOSisIdenticalWrapper1" << endl;
+										//cout << "!variableEdgeComponentSourcePOSisIdenticalWrapper1" << endl;
 									}
-									*/
 									#endif
 								}
 								else
@@ -471,137 +483,155 @@ bool SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents(vecto
 									#endif
 								}
 								//CHECKTHIS: no additional tests required from SANIpropagateOperationsClass::identifySequentialActivationFound
-								if(passPreconditions)
+								
+								#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
+								cout << "found a variable first/last component candidate match" << endl;
+								/*
+								cout << "generatedNeuron->groupIndex = " << generatedNeuron->groupIndex << endl;
+								cout << "candidateMatchGroup->groupIndex = " << candidateMatchGroup->groupIndex << endl;
+								//cout << "variableComponentOfGeneratedNeuronSource->newlyGeneratedForSentenceTemp = " << variableComponentOfGeneratedNeuronSource->newlyGeneratedForSentenceTemp << ", groupIndex = " << variableComponentOfGeneratedNeuronSource->groupIndex << endl;
+								cout << "variableComponentOfGeneratedNeuronSource->groupIndex = " << variableComponentOfGeneratedNeuronSource->groupIndex << endl;
+								cout << "nonvariableComponentOfGeneratedNeuronSource->groupIndex = " << nonvariableComponentOfGeneratedNeuronSource->groupIndex << endl;								
+								for(int j=0; j<candidateMatchGroupVariableComponent->SANIbackGroupConnectionList.size(); j++)
 								{
-									#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-									//cout << "\nfound a variable first/last component candidate match" << endl;
-									/*
-									cout << "generatedNeuron->groupIndex = " << generatedNeuron->groupIndex << endl;
-									cout << "candidateMatchGroup->groupIndex = " << candidateMatchGroup->groupIndex << endl;
-									//cout << "variableComponentOfGeneratedNeuronSource->newlyGeneratedForSentenceTemp = " << variableComponentOfGeneratedNeuronSource->newlyGeneratedForSentenceTemp << ", groupIndex = " << variableComponentOfGeneratedNeuronSource->groupIndex << endl;
-									cout << "variableComponentOfGeneratedNeuronSource->groupIndex = " << variableComponentOfGeneratedNeuronSource->groupIndex << endl;
-									cout << "nonvariableComponentOfGeneratedNeuronSource->groupIndex = " << nonvariableComponentOfGeneratedNeuronSource->groupIndex << endl;								
-									for(int j=0; j<candidateMatchGroupVariableComponent->SANIbackGroupConnectionList.size(); j++)
-									{
-										SANIGroupNeuralNetwork* candidateMatchGroupVariableComponentSource = (candidateMatchGroupVariableComponent->SANIbackGroupConnectionList)[j];
-										cout << "candidateMatchGroupVariableComponentSource->groupIndex = " << candidateMatchGroupVariableComponentSource->groupIndex << endl;
-									}
-									for(int j=0; j<candidateMatchGroupNonvariableComponent->SANIbackGroupConnectionList.size(); j++)
-									{
-										SANIGroupNeuralNetwork* candidateMatchGroupNonvariableComponentSource = (candidateMatchGroupNonvariableComponent->SANIbackGroupConnectionList)[j];
-										cout << "candidateMatchGroupNonvariableComponentSource->groupIndex = " << candidateMatchGroupNonvariableComponentSource->groupIndex << endl;
-									}
-									*/
-									#endif
-																			
-									//verify that variableComponentOfGeneratedNeuronSource is not already connected to candidateMatchGroupVariableComponent;
-									bool duplicateProspectiveVariableComponentDetected = false;
-									for(int j=0; j<candidateMatchGroupVariableComponent->SANIbackGroupConnectionList.size(); j++)
-									{
-										SANIGroupNeuralNetwork* candidateMatchGroupVariableComponentSource = (candidateMatchGroupVariableComponent->SANIbackGroupConnectionList)[j];
-										if(candidateMatchGroupVariableComponentSource == variableComponentOfGeneratedNeuronSource)
-										{
-											duplicateProspectiveVariableComponentDetected = true;
-										}
-									}
-									if(!duplicateProspectiveVariableComponentDetected)
-									{										
-										
-										//found a variable [first/]last component candidate match
-										//now merge newly generated neuron with existing candidateMatchGroup
+									SANIGroupNeuralNetwork* candidateMatchGroupVariableComponentSource = (candidateMatchGroupVariableComponent->SANIbackGroupConnectionList)[j];
+									cout << "candidateMatchGroupVariableComponentSource->groupIndex = " << candidateMatchGroupVariableComponentSource->groupIndex << endl;
+								}
+								for(int j=0; j<candidateMatchGroupNonvariableComponent->SANIbackGroupConnectionList.size(); j++)
+								{
+									SANIGroupNeuralNetwork* candidateMatchGroupNonvariableComponentSource = (candidateMatchGroupNonvariableComponent->SANIbackGroupConnectionList)[j];
+									cout << "candidateMatchGroupNonvariableComponentSource->groupIndex = " << candidateMatchGroupNonvariableComponentSource->groupIndex << endl;
+								}
+								*/
+								#endif
 
-										#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
-										if(SANInodes.calculateComponentTypeString(variableComponentOfGeneratedNeuronSource))
+								//verify that variableComponentOfGeneratedNeuronSource is not already connected to candidateMatchGroupVariableComponent;
+								bool duplicateProspectiveVariableComponentDetected = false;
+								for(int j=0; j<candidateMatchGroupVariableComponent->SANIbackGroupConnectionList.size(); j++)
+								{
+									SANIGroupNeuralNetwork* candidateMatchGroupVariableComponentSource = (candidateMatchGroupVariableComponent->SANIbackGroupConnectionList)[j];
+									if(candidateMatchGroupVariableComponentSource == variableComponentOfGeneratedNeuronSource)
+									{
+										duplicateProspectiveVariableComponentDetected = true;
+									}
+								}
+								
+								#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_DUPLICATE_DETECTION_CULL
+								if(passPreconditions || duplicateProspectiveVariableComponentDetected)
+								#else
+								if(passPreconditions && !duplicateProspectiveVariableComponentDetected)
+								#endif
+								{	
+									//cout << "duplicateProspectiveVariableComponentDetected = " << duplicateProspectiveVariableComponentDetected << endl;
+
+									//found a variable [first/]last component candidate match
+									//now merge newly generated neuron with existing candidateMatchGroup
+
+									#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP
+									if(SANInodes.calculateComponentTypeString(variableComponentOfGeneratedNeuronSource))
+									{
+										candidateMatchGroupVariableComponent->neuralNetworkComponentHasTypeString = true;	//CHECKTHIS
+									}
+									#endif
+
+									//1a.
+									//disconnect variableComponentSource -> generatedNeuron
+									//connect variableComponentSource -> candidateMatchGroup [if !duplicateProspectiveVariableComponentDetected]
+									//connect variableComponentOfGeneratedNeuronSource <- candidateMatchGroup [if !duplicateProspectiveVariableComponentDetected]
+									int variableComponentOfGeneratedNeuronSourceFrontIndexToErase = INT_DEFAULT_VALUE;
+									for(int j=0; j<variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size(); j++)
+									{
+										SANIComponentNeuralNetwork* currentComponent2 = (variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j];
+										SANIGroupNeuralNetwork* candidateMatchGroup2 = currentComponent2->ownerGroup;
+										//cout << "\tgeneratedNeuron->groupIndex = " << generatedNeuron->groupIndex << endl;
+										//cout << "\tcandidateMatchGroup2->groupIndex = " << candidateMatchGroup2->groupIndex << endl;
+										if(candidateMatchGroup2 == generatedNeuron)
 										{
-											candidateMatchGroupVariableComponent->neuralNetworkComponentHasTypeString = true;	//CHECKTHIS
+											//delete this (variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j]
+											variableComponentOfGeneratedNeuronSourceFrontIndexToErase = j;
 										}
-										#endif
-										
-										//1a.
-										//disconnect variableComponentSource -> generatedNeuron
-										//connect variableComponentSource -> candidateMatchGroup
-										//connect variableComponentOfGeneratedNeuronSource <- candidateMatchGroup
-										int variableComponentOfGeneratedNeuronSourceFrontIndexToErase = INT_DEFAULT_VALUE;
-										for(int j=0; j<variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size(); j++)
-										{
-											SANIComponentNeuralNetwork* currentComponent2 = (variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j];
-											SANIGroupNeuralNetwork* candidateMatchGroup2 = currentComponent2->ownerGroup;
-											//cout << "\tgeneratedNeuron->groupIndex = " << generatedNeuron->groupIndex << endl;
-											//cout << "\tcandidateMatchGroup2->groupIndex = " << candidateMatchGroup2->groupIndex << endl;
-											if(candidateMatchGroup2 == generatedNeuron)
-											{
-												//delete this (variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j]
-												variableComponentOfGeneratedNeuronSourceFrontIndexToErase = j;
-											}
-										}
-										if(variableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)
-										{
-											cerr << "SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents error: (variableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)" << endl;
-											exit(EXIT_ERROR);
-										}
-										//cout << "variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size() = " << variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size() << endl;
-										variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.erase(variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.begin() + variableComponentOfGeneratedNeuronSourceFrontIndexToErase);
+									}
+									if(variableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)
+									{
+										cerr << "SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents error: (variableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)" << endl;
+										exit(EXIT_ERROR);
+									}
+									//cout << "variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size() = " << variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size() << endl;
+									variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.erase(variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.begin() + variableComponentOfGeneratedNeuronSourceFrontIndexToErase);
+									#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_DUPLICATE_DETECTION_CULL
+									if(!duplicateProspectiveVariableComponentDetected)
+									{
+									#endif
 										variableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.push_back(candidateMatchGroup->components[candidateMatchGroupVariableComponentIndex2]);
 										candidateMatchGroup->components[candidateMatchGroupVariableComponentIndex2]->SANIbackGroupConnectionList.push_back(variableComponentOfGeneratedNeuronSource);
+									#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_DUPLICATE_DETECTION_CULL
+									}
+									#endif
 
-										//2.
-										//disconnect nonvariableComponentSource -> generatedNeuron	
-										//NO [ALREADYDONE]: connect nonvariableComponentSource -> candidateMatchGroup	
-										//NO [ALREADYDONE: connect nonvariableComponentSource <- candidateMatchGroup
-										int nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase = INT_DEFAULT_VALUE;
-										for(int j=0; j<nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size(); j++)
+									//2.
+									//disconnect nonvariableComponentSource -> generatedNeuron	
+									//NO [ALREADYDONE]: connect nonvariableComponentSource -> candidateMatchGroup	
+									//NO [ALREADYDONE: connect nonvariableComponentSource <- candidateMatchGroup
+									int nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase = INT_DEFAULT_VALUE;
+									for(int j=0; j<nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.size(); j++)
+									{
+										SANIComponentNeuralNetwork* currentComponent2 = (nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j];
+										SANIGroupNeuralNetwork* candidateMatchGroup2 = currentComponent2->ownerGroup;
+										if(candidateMatchGroup2 == generatedNeuron)
+										{	
+											//delete this (nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j]
+											nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase = j;
+
+											//cout << "candidateMatchGroup2->groupIndex = " << candidateMatchGroup2->groupIndex << endl;
+											//cout << "nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase = " << nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase << endl;
+										}
+									}
+									if(nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)
+									{
+										cerr << "SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents error: (nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)" << endl;
+										exit(EXIT_ERROR);
+									}
+									nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.erase(nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.begin() + nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase);	//CHECKTHIS
+
+									//3.
+									//disconnect generatedNeuron <- generatedNeuronTarget
+									//connect candidateMatchGroup <- generatedNeuronTarget [if !duplicateProspectiveVariableComponentDetected]
+									//connect candidateMatchGroup -> generatedNeuronTarget [if !duplicateProspectiveVariableComponentDetected]
+									for(int l=0; l<generatedNeuron->SANIfrontComponentConnectionList.size(); l++)
+									{
+										SANIComponentNeuralNetwork* generatedNeuronTargetComponent = generatedNeuron->SANIfrontComponentConnectionList[l];
+										SANIGroupNeuralNetwork* generatedNeuronTargetGroup = generatedNeuronTargetComponent->ownerGroup;
+
+										int generatedNeuronTargetGroupBackIndexToErase = INT_DEFAULT_VALUE;
+										for(int j=0; j<generatedNeuronTargetComponent->SANIbackGroupConnectionList.size(); j++)
 										{
-											SANIComponentNeuralNetwork* currentComponent2 = (nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j];
-											SANIGroupNeuralNetwork* candidateMatchGroup2 = currentComponent2->ownerGroup;
-											if(candidateMatchGroup2 == generatedNeuron)
-											{	
-												//delete this (nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList)[j]
-												nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase = j;
-
-												//cout << "candidateMatchGroup2->groupIndex = " << candidateMatchGroup2->groupIndex << endl;
-												//cout << "nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase = " << nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase << endl;
+											SANIGroupNeuralNetwork* generatedNeuronTargetGroupComponentSource = (generatedNeuronTargetComponent->SANIbackGroupConnectionList)[j];
+											//cout << "generatedNeuron->groupIndex = " << generatedNeuron->groupIndex << endl;
+											//cout << "generatedNeuronTargetGroupComponentSource->groupIndex = " << generatedNeuronTargetGroupComponentSource->groupIndex << endl;
+											if(generatedNeuronTargetGroupComponentSource == generatedNeuron)
+											{
+												//delete this (generatedNeuronTargetGroup->SANIbackGroupConnectionList)[j];
+												generatedNeuronTargetGroupBackIndexToErase = j;
 											}
 										}
-										if(nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)
+
+										if(generatedNeuronTargetGroupBackIndexToErase != INT_DEFAULT_VALUE)
 										{
-											cerr << "SANIgenerateCompactIdentifyClass::identifyVariableFirstLastComponents error: (nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase == INT_DEFAULT_VALUE)" << endl;
-											exit(EXIT_ERROR);
-										}
-										nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.erase(nonvariableComponentOfGeneratedNeuronSource->SANIfrontComponentConnectionList.begin() + nonvariableComponentOfGeneratedNeuronSourceFrontIndexToErase);	//CHECKTHIS
-
-										//3.
-										//disconnect generatedNeuron <- generatedNeuronTarget
-										//connect candidateMatchGroup <- generatedNeuronTarget
-										//connect candidateMatchGroup -> generatedNeuronTarget
-										for(int l=0; l<generatedNeuron->SANIfrontComponentConnectionList.size(); l++)
-										{
-											SANIComponentNeuralNetwork* generatedNeuronTargetComponent = generatedNeuron->SANIfrontComponentConnectionList[l];
-											SANIGroupNeuralNetwork* generatedNeuronTargetGroup = generatedNeuronTargetComponent->ownerGroup;
-
-											int generatedNeuronTargetGroupBackIndexToErase = INT_DEFAULT_VALUE;
-											for(int j=0; j<generatedNeuronTargetComponent->SANIbackGroupConnectionList.size(); j++)
+											generatedNeuronTargetComponent->SANIbackGroupConnectionList.erase(generatedNeuronTargetComponent->SANIbackGroupConnectionList.begin() + generatedNeuronTargetGroupBackIndexToErase);
+											#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_DUPLICATE_DETECTION_CULL
+											if(!duplicateProspectiveVariableComponentDetected)
 											{
-												SANIGroupNeuralNetwork* generatedNeuronTargetGroupComponentSource = (generatedNeuronTargetComponent->SANIbackGroupConnectionList)[j];
-												//cout << "generatedNeuron->groupIndex = " << generatedNeuron->groupIndex << endl;
-												//cout << "generatedNeuronTargetGroupComponentSource->groupIndex = " << generatedNeuronTargetGroupComponentSource->groupIndex << endl;
-												if(generatedNeuronTargetGroupComponentSource == generatedNeuron)
-												{
-													//delete this (generatedNeuronTargetGroup->SANIbackGroupConnectionList)[j];
-													generatedNeuronTargetGroupBackIndexToErase = j;
-												}
-											}
-
-											if(generatedNeuronTargetGroupBackIndexToErase != INT_DEFAULT_VALUE)
-											{
-												generatedNeuronTargetComponent->SANIbackGroupConnectionList.erase(generatedNeuronTargetComponent->SANIbackGroupConnectionList.begin() + generatedNeuronTargetGroupBackIndexToErase);
+											#endif
 												generatedNeuronTargetComponent->SANIbackGroupConnectionList.push_back(candidateMatchGroup);
 												candidateMatchGroup->SANIfrontComponentConnectionList.push_back(generatedNeuronTargetComponent);
+											#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS_DUPLICATE_DETECTION_CULL
 											}
+											#endif
 										}
-
-										//4. erase generatedNeuron
-										generatedNeuron->markToErase = true;
 									}
+
+									//4. erase generatedNeuron
+									generatedNeuron->markToErase = true;
 								}
 							}
 						}

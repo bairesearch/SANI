@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p12d 07-August-2021
+ * Project Version: 1q1a 25-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -460,6 +460,9 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupInit(SANItransla
 	if(!SANIformation.findInputNeuronLayerSectionWordOrig(currentWord, &inputLayerGroup))
 	{
 		SANIformation.addInputNeuronLayerSectionWordOrig(currentWord, &inputLayerGroup, SANIGroupTypes);
+		#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES_ADD_INPUT_NEURONS_TO_GROUPTYPES_ARRAY
+		SANIpropagateOperationsParseTree.resetGroupParseTreeGroupRef(inputLayerGroup, true);
+		#endif
 	}
 	#else //SANI_SEQUENCE_GRAMMAR_INPUT_POS
 	cerr << "SANIpropagateCompactClass::propagateWordThroughNetworkGroupInit error: SANI_SEQUENCE_GRAMMAR_INPUT_DYNAMIC requires SANI_SEQUENCE_GRAMMAR_INPUT_WORDS" << endl;
@@ -530,7 +533,6 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupInit2(SANItransl
 {
 	bool result = true;	
 
-
 	#ifdef SANI_ANN_COLOUR_CONNECTIONS_BASED_ON_ACTIVATION_INPUT_NEURONS
 	inputLayerGroup->neuronActive = true;
 	inputLayerGroup->neuronReference->activationLevel = ANN_ALGORITHM_SANI_SEQUENCE_GRAMMAR_NETWORK_PRINT_COLOURS_ACTIVE_LEVEL_FULL;
@@ -538,7 +540,9 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkGroupInit2(SANItransl
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES	//SANI_PARSE
 	SANIGroupParseTree* activationPathWordFirstParseTreeGroup = inputLayerGroup->currentParseTreeGroupTemp;	//if(inputLayerGroup->artificialInputNeuronLinkPosAmbiguousPermuations), inputLayerGroup->currentParseTreeGroupTemp will not have been defined
-	//cout << "inputLayerGroup->currentParseTreeGroupTemp->groupName = " << inputLayerGroup->currentParseTreeGroupTemp->groupName << endl;
+	#ifdef DEBUG_SANI_SEQUENCE_GRAMMAR_PARSE_TREE_SAVE_LEAF_NODES
+	cout << "DEBUG: inputLayerGroup->currentParseTreeGroupTemp->groupName = " << inputLayerGroup->currentParseTreeGroupTemp->groupName << endl;	//tests whether currentParseTreeGroupTemp object has been generated
+	#endif
 	#else
 	SANIGroupParseTree* activationPathWordFirstParseTreeGroup = NULL;	//not properly used by SANI_SEQUENCE_GRAMMAR
 	#endif
