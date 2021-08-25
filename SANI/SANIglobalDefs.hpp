@@ -26,7 +26,7 @@
  * File Name: SANIglobalsDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p12b 07-August-2021
+ * Project Version: 1p12c 07-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: SANI specific global definitions
  * /
@@ -49,7 +49,7 @@
 		#define SANI_FORWARD	//mandatory
 		#define SANI_SEQUENCE_GRAMMAR	//SANI1j2a
 		#ifdef SANI_SEQUENCE_GRAMMAR	
-			#define SANI_SEMANTIC_NETWORK	//SANI1m1a	//store semantic network within SANI parse tree rather than generating from SANI parse tree - SANI input words rather than pos
+			//#define SANI_SEMANTIC_NETWORK	//SANI1m1a	//store semantic network within SANI parse tree rather than generating from SANI parse tree - SANI input words rather than pos
 			#ifdef SANI_SEMANTIC_NETWORK
 				#define SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 				#define SANI_SEQUENCE_GRAMMAR_VARIABLE_COMPONENTS
@@ -98,7 +98,7 @@
 		//#ifdef LRP_DEFINE_WORD_TRANSLATOR_SENTENCE_ENTITY_INDEX_AT_START	//not yet defined
 			#define SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START	//SANI1p7a	//requires GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES (no known implementation of !SANI_SEMANTIC_NETWORK without GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES)
 		//#endif
-		
+				
 		#ifndef SANI_SEMANTIC_NETWORK
 		
 			#define SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS	//SANI1p9a	//requires SANI_SEQUENCE_GRAMMAR_DETERMINE_POS_AMIGUITY_INFO_AT_START
@@ -154,6 +154,12 @@
 			#endif
 			
 			#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+				#ifndef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY	//added condition SANI1p11aTEMP22
+					#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_VERIFY_PREVIOUS_COMPONENT_NOT_ACTIVATED_BY_SAME_WORD_DIFFERENT_POS_PROPAGATION //added SANI1j
+				#endif
+				#ifdef SANI_SEQUENCE_GRAMMAR_VARIABLE_COMPONENTS 	//restored case SANI1p12c
+					#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_VERIFY_PREVIOUS_COMPONENT_NOT_ACTIVATED_BY_SAME_WORD_DIFFERENT_POS_PROPAGATION	//added SANI1j
+				#endif
 				//#ifdef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION	//not yet defined
 					#define SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION_DO_NOT_STOP	//SANI1p10c
 					#define SANI_SEQUENCE_GRAMMAR_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_AFTER_SIMULTANEOUS_POS_PROPAGATION	//optional SANI1p7a - enhances biological plausability of SANI propagation algorithm (performs word index contiguity verification of final generated parse trees at end of forward propagation)
@@ -1029,7 +1035,12 @@
 	#ifdef SANI_SEQUENCE_GRAMMAR
 		
 		//untested variables (should all be disabled by default):
+		/*//depreciated:
 		//#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY	//SANI1j4a	//untested
+		#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
+			#define SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_VERIFY_PREVIOUS_COMPONENT_NOT_ACTIVATED_BY_SAME_WORD_DIFFERENT_POS_PROPAGATION
+		#endif
+		*/
 		
 		#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 			#define SANI_PREVENT_RECORDING_TOP_LEVEL_NEURON_IF_RECORDING_MAX_COVERAGE_NEURON	//SANI1j5a	//enabled SANI1k10c

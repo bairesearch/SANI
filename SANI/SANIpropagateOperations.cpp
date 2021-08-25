@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p12b 07-August-2021
+ * Project Version: 1p12c 07-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations - generic functions
  * /
@@ -278,9 +278,7 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(SANIForward
 {
 	bool result = true;
 	
-	//can be depreciated;
-	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-	#ifndef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_VERIFY_PREVIOUS_COMPONENT_NOT_ACTIVATED_BY_SAME_WORD_DIFFERENT_POS_PROPAGATION
 	bool previousComponentWasActivatedBySameWordDifferentPOSpropagation = false;
 	if(previousActiveComponent != NULL)
 	{
@@ -299,7 +297,6 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(SANIForward
 	}
 	if(!previousComponentWasActivatedBySameWordDifferentPOSpropagation)
 	{
-	#endif
 	#endif	
 				
 	if(currentComponent->neuronComponentConnectionActive)
@@ -334,10 +331,8 @@ bool SANIpropagateOperationsClass::identifySequentialActivationFound(SANIForward
 		//cout << "*sequentialActivationFound" << endl;
 	}
 	
-	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-	#ifndef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+	#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY_VERIFY_PREVIOUS_COMPONENT_NOT_ACTIVATED_BY_SAME_WORD_DIFFERENT_POS_PROPAGATION
 	}
-	#endif
 	#endif
 	
 	return result;
