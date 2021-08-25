@@ -26,7 +26,7 @@
  * File Name: SANIpropagateCompact.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1p12a 07-August-2021
+ * Project Version: 1p12b 07-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact - ~O(n)
  * /
@@ -333,7 +333,7 @@ bool SANIpropagateCompactClass::propagateWordThroughNetworkIntro(SANItranslatorV
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
 	int wordPOStypeNOTUSED = INT_DEFAULT_VALUE;
-	if(!propagateWordThroughNetworkGroupInit(translatorVariables, w, wordPOStypeNOTUSED, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))
+	if(!propagateWordThroughNetworkGroupInit(translatorVariables, SANIGroupTypes, wordPOStypeNOTUSED, forwardPropogationSignalData, forwardPropogationWordData, forwardPropogationSentenceData, getFirstLayer))
 	{
 		result = false;
 	}	
