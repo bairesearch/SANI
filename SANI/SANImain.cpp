@@ -26,7 +26,7 @@
  * File Name: SANImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Main
  * /
@@ -73,7 +73,7 @@ static char errmessage[] = "Usage:  SANI.exe [options]\n\n\twhere options are an
 "\n\t-lrp                               : language reduction preprocessor"
 "\n\t-olrptxt [string]                  : plain text .txt output filename with LRP language reduction preprocessor applied (def: inputTextWithLRP.txt)"
 //"\n\t-olrptxtq [string]                 : query plain text .txt output filename with LRP language reduction preprocessor applied (def: inputTextWithLRPQuery.txt)"
-"\n\t-lrpfolder [string]                : folder of LRP data files (list of multiword verbs, multiword prepositions etc) (def: same as exe)"
+"\n\t-lrpfolder [string]                : folder of LRP data files (list of multisequenceElement verbs, multisequenceElement prepositions etc) (def: same as exe)"
 #endif
 //"\n\t-show                : display output in opengl"
 "\n\t-width [int]         : raster graphics width in pixels (def: 640)"
@@ -304,7 +304,7 @@ int main(const int argc, const char** argv)
 
 	if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 	{
-		cout << "SANI.exe - Project Version: 1q1c 25-August-2021" << endl;
+		cout << "SANI.exe - Project Version: 1q2a 19-September-2021" << endl;
 		exit(EXIT_OK);
 	}
 

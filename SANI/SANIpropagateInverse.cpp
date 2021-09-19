@@ -26,7 +26,7 @@
  * File Name: SANIpropagateInverse.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Inverse
  * /
@@ -755,13 +755,13 @@ bool SANIpropagateInverseClass::forwardNounVerbVariantRequirementsComponentToGro
 	//cout << "1 SANIpropagateInverseClass::forwardNounVerbVariantRequirementsComponentToGroup: currentComponent->semanticRelationReturnEntity" << endl;
 	if(component->wordVerbVariantType != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 	{
-		newParseGroup->wordVerbVariantTypeDerived = component->wordVerbVariantType;
-		//cout << "1 newParseGroup->wordVerbVariantTypeDerived = " << newParseGroup->wordVerbVariantTypeDerived << endl;
+		newParseGroup->sequenceElementVerbVariantTypeDerived = component->wordVerbVariantType;
+		//cout << "1 newParseGroup->sequenceElementVerbVariantTypeDerived = " << newParseGroup->sequenceElementVerbVariantTypeDerived << endl;
 	}
 	if(component->wordNounVariantType != LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 	{
-		newParseGroup->wordNounVariantTypeDerived = component->wordNounVariantType;		
-		//cout << "1 newParseGroup->wordNounVariantTypeDerived = " << newParseGroup->wordNounVariantTypeDerived << endl;
+		newParseGroup->sequenceElementNounVariantTypeDerived = component->wordNounVariantType;		
+		//cout << "1 newParseGroup->sequenceElementNounVariantTypeDerived = " << newParseGroup->sequenceElementNounVariantTypeDerived << endl;
 	}		
 	return result;
 }
@@ -771,14 +771,14 @@ bool SANIpropagateInverseClass::forwardNounVerbVariantRequirementsGroupToCompone
 	if(currentComponent->semanticRelationReturnEntity)
 	{
 		//cout << "2 SANIpropagateInverseClass::forwardNounVerbVariantRequirementsGroupToComponent: currentComponent->semanticRelationReturnEntity" << endl;
-		if(currentParseGroup->wordVerbVariantTypeDerived != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+		if(currentParseGroup->sequenceElementVerbVariantTypeDerived != LRP_PREPROCESSOR_WORD_VERB_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 		{
-			currentComponent->wordVerbVariantType = currentParseGroup->wordVerbVariantTypeDerived;
+			currentComponent->wordVerbVariantType = currentParseGroup->sequenceElementVerbVariantTypeDerived;
 			//cout << "2 currentComponent->wordVerbVariantType = " << currentComponent->wordVerbVariantType << endl;
 		}
-		if(currentParseGroup->wordNounVariantTypeDerived != LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
+		if(currentParseGroup->sequenceElementNounVariantTypeDerived != LRP_PREPROCESSOR_WORD_NOUN_DATABASE_TAG_BASE_TENSE_FORM_UNKNOWN)
 		{
-			currentComponent->wordNounVariantType = currentParseGroup->wordNounVariantTypeDerived;	
+			currentComponent->wordNounVariantType = currentParseGroup->sequenceElementNounVariantTypeDerived;	
 			//cout << "2 currentComponent->wordNounVariantType = " << currentComponent->wordNounVariantType << endl;	
 		}		
 	}
@@ -792,8 +792,8 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 	bool foundWordMatchTemp = false;
 	if(component->stringType == GIA_POS_REL_TRANSLATOR_RULES_GROUPS_COMPONENT_STRINGTYPE_LRPEXTERNALWORDLISTS)
 	{
-		string wordPOStypeName = component->wordPOStype;
-		int wordPOStype = LRPpreprocessorWordClassObject.getPOStypeFromName(wordPOStypeName);
+		string sequenceElementPOStypeName = component->wordPOStype;
+		int wordPOStype = LRPpreprocessorWordClassObject.getPOStypeFromName(sequenceElementPOStypeName);
 		
 		#ifdef GIA_POS_REL_TRANSLATOR_RULES_TREAT_UNKNOWN_POSTYPES
 		#ifdef SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
@@ -808,7 +808,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 			{
 			#endif
 				foundWordMatchTemp = true;
-				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
+				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous sequenceElements in current parse tree 
 				currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
 			#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_OPTIONAL
 			}
@@ -818,7 +818,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 			if(wordPOStype == LRP_PREPROCESSOR_POS_TYPE_NOUN)
 			{
 				foundWordMatchTemp = true;
-				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
+				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous sequenceElements in current parse tree 
 				currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
 				//cout << "(wordPOStype == LRP_PREPROCESSOR_POS_TYPE_NOUN): currentWord = " << currentWord->tagName << endl;
 			}
@@ -827,7 +827,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 			if((wordPOStype == LRP_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT) && LRPpreprocessorWordClassObject.isMidSentenceUppercaseWordLikelyProperNoun(currentWord))
 			{
 				foundWordMatchTemp = true;
-				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
+				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous sequenceElements in current parse tree 
 				currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
 				//cout << "(wordPOStype == LRP_PREPROCESSOR_POS_TYPE_PROPERNOUN_DEFAULT): currentWord = " << currentWord->tagName << endl;
 			}
@@ -838,7 +838,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 		{
 		#endif
 
-			//cout << "wordPOStypeName = " << wordPOStypeName << endl;
+			//cout << "sequenceElementPOStypeName = " << sequenceElementPOStypeName << endl;
 			//cout << "wordPOStype = " << wordPOStype << endl;
 			if(verifyPOStype(currentWord, wordPOStype))
 			{
@@ -900,7 +900,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 				#endif
 
 					foundWordMatchTemp = true;
-					currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
+					currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous sequenceElements in current parse tree 
 					currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
 	
 				#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
@@ -933,7 +933,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 		if(foundExplicitWord)
 		{
 			foundWordMatchTemp = true;
-			currentWord->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;		//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 	//component->wordPOStype;  -need to add wordPOStype attribute to <component>? Not required at present as all stringType explicit tagged words are currently disgarded by semantic network
+			currentWord->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;		//this is required to quickly check wordPOStypeInferred of previous sequenceElements in current parse tree 	//component->wordPOStype;  -need to add wordPOStype attribute to <component>? Not required at present as all stringType explicit tagged sequenceElements are currently disgarded by semantic network
 			currentParseTreeComponent->wordPOStypeInferred = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)
 		}
 	}
@@ -945,7 +945,7 @@ bool SANIpropagateInverseClass::findStringMatch(vector<XMLparserTag*>* SANIrules
 			int wordPOStype = LRP_PREPROCESSOR_POS_TYPE_UNDEFINED;
 			if(SHAREDvars.textInTextArray(component->tokenClass, LRPpreprocessorPOStypeNameArray, LRP_PREPROCESSOR_POS_TYPE_ARRAY_NUMBER_OF_TYPES, &wordPOStype))
 			{
-				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous words in current parse tree 
+				currentWord->wordPOStypeInferred = wordPOStype;	//this is required to quickly check wordPOStypeInferred of previous sequenceElements in current parse tree 
 				currentParseTreeComponent->wordPOStypeInferred = wordPOStype;	//store a copy of wordPOStypeInferred in parseTree (which will not overwritten by a future bad parse unlike that copied to currentWord)	
 			}
 			else

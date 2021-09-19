@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -627,19 +627,19 @@ bool SANInodesClass::currentWordPOSunknown(const LRPpreprocessorPlainTextWord* c
 }
 
 
-int SANInodesClass::convertWordIndexToSentenceEntityIndex(const int wordIndex)
+int SANInodesClass::convertSequenceIndexToSentenceEntityIndex(const int sequenceIndex)
 {
-	int sentenceEntityIndex = wordIndex + SANI_WORD_INDEX_W_TO_ENTITY_INDEX_OFFSET;
+	int sentenceEntityIndex = sequenceIndex + SANI_SEQUENCE_INDEX_W_TO_ENTITY_INDEX_OFFSET;
 	return sentenceEntityIndex;
 }
-int SANInodesClass::convertSentenceEntityIndexToWordIndex(const int sentenceEntityIndex)
+int SANInodesClass::convertSentenceEntityIndexToSequenceIndex(const int sentenceEntityIndex)
 {
-	int wordIndex = sentenceEntityIndex - SANI_WORD_INDEX_W_TO_ENTITY_INDEX_OFFSET;
-	return wordIndex;
+	int sequenceIndex = sentenceEntityIndex - SANI_SEQUENCE_INDEX_W_TO_ENTITY_INDEX_OFFSET;
+	return sequenceIndex;
 }
 
 
-#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_VERIFY_HYPOTHETICAL_PROPOGATION_FINDS_PREVIOUS_WORD_NOUNS_ONLY
+#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_VERIFY_HYPOTHETICAL_PROPOGATION_FINDS_PREVIOUS_SEQUENCEELEMENT_NOUNS_ONLY
 bool SANInodesClass::isWordPOStypeNoun(const int wordPOStype)
 {
 	bool result = false;
@@ -700,7 +700,7 @@ int SANInodesClass::countParseTreeLeafSize(const SANIGroupParseTree* currentPars
 	#ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
 	if(currentParseTreeGroup != NULL)
 	{
-		size = currentParseTreeGroup->parseTreeMaxWordIndex - currentParseTreeGroup->parseTreeMinWordIndex + 1;
+		size = currentParseTreeGroup->parseTreeMaxSequenceIndex - currentParseTreeGroup->parseTreeMinSequenceIndex + 1;
 	}
 	#else
 	size = countParseTreeLeafSizeUnoptimised(currentParseTreeGroup);
@@ -930,9 +930,9 @@ bool SANInodesClass::countNeuralNetworkMaxLeafSizeAndDepthReset(const SANICompon
 #endif
 #endif
 
-SANIComponentNeuralNetwork* SANInodesClass::getFirstComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron, bool fromStart)
+SANIComponentNeuralNetwork* SANInodesClass::getFirstComponent(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* currentNeuron, bool fromStart)
 {
-	if(forwardPropogationSentenceData->parseSentenceReverse)
+	if(forwardPropogationSequenceData->parseSentenceReverse)
 	{
 		fromStart = !fromStart;
 	}
@@ -950,9 +950,9 @@ SANIComponentNeuralNetwork* SANInodesClass::getFirstComponent(const SANIForwardP
 	return firstComponent;
 }
 
-SANIComponentParseTree* SANInodesClass::getFirstComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentNeuron, bool fromStart)
+SANIComponentParseTree* SANInodesClass::getFirstComponent(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupParseTree* currentNeuron, bool fromStart)
 {
-	if(forwardPropogationSentenceData->parseSentenceReverse)
+	if(forwardPropogationSequenceData->parseSentenceReverse)
 	{
 		fromStart = !fromStart;
 	}
@@ -1350,10 +1350,10 @@ bool SANInodesClass::resetComponentsOptimumPathway(const vector<SANIComponentNeu
 
 
 #ifdef SANI_SEQUENCE_GRAMMAR
-int SANInodesClass::calculateCoverage(const SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage)
+int SANInodesClass::calculateCoverage(const SANIGroupParseTree* activatedNeuronWithMaxSequenceIndexCoverage)
 {
-	int activatedNeuronWordIndexCoverage = activatedNeuronWithMaxWordIndexCoverage->parseTreeMaxWordIndex - activatedNeuronWithMaxWordIndexCoverage->parseTreeMinWordIndex + 1;
-	return activatedNeuronWordIndexCoverage;
+	int activatedNeuronSequenceIndexCoverage = activatedNeuronWithMaxSequenceIndexCoverage->parseTreeMaxSequenceIndex - activatedNeuronWithMaxSequenceIndexCoverage->parseTreeMinSequenceIndex + 1;
+	return activatedNeuronSequenceIndexCoverage;
 }
 
 bool SANInodesClass::traceBackpropNeuralNetwork(const SANIGroupNeuralNetwork* currentNeuron, const int level, const int previousComponentIndex, const int previousComponentType)
@@ -1362,8 +1362,8 @@ bool SANInodesClass::traceBackpropNeuralNetwork(const SANIGroupNeuralNetwork* cu
 	if(isNeuronString(currentNeuron))
 	{
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
-		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
-		cout << "SANInodesClass::traceBackpropNeuralNetwork: prevCompIndex = " << previousComponentIndex << ", prevCompType = " << previousComponentType << ", currentNeuron->wordObject->tagName = " << currentNeuron->wordObject->tagName << endl;
+		#ifdef SANI_SEQUENCE_GRAMMAR_STORE_SEQUENCEELEMENT_OBJECTS
+		cout << "SANInodesClass::traceBackpropNeuralNetwork: prevCompIndex = " << previousComponentIndex << ", prevCompType = " << previousComponentType << ", currentNeuron->sequenceElementObject->wordReference->tagName = " << currentNeuron->sequenceElementObject->wordReference->tagName << endl;
 		#else
 		cout << "SANInodesClass::traceBackpropNeuralNetwork: prevCompIndex = " << previousComponentIndex << ", prevCompType = " << previousComponentType << ", currentNeuron->groupIndex = " << currentNeuron->groupIndex << endl;
 		#endif

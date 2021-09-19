@@ -26,7 +26,7 @@
  * File Name: SANIformation.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Formation
  * /
@@ -212,9 +212,11 @@ bool SANIformationClass::createInputNeuronLayerSectionWordOrig(SANIGroupNeuralNe
 	//initialise section as null
 	return result;
 }
-bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlainTextWord* currentWord, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection, vector<SANIGroupType*>* SANIGroupTypes)
+bool SANIformationClass::addInputNeuronLayerSectionWordOrig(const SANIForwardPropogationSequenceElementData* forwardPropogationSequenceElementData, constEffective SANIGroupNeuralNetwork** currentGroupInInputLayerSection, vector<SANIGroupType*>* SANIGroupTypes)
 {	
 	bool result = true;
+
+	LRPpreprocessorPlainTextWord* currentWord = forwardPropogationSequenceElementData->wordReference;
 		
 	int* numberOfGroupsInSection = &numberOfInputGroupsInSectionWordOrig;
 
@@ -232,9 +234,9 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlain
 	#ifdef SANI_SEQUENCE_GRAMMAR
 	currentGroupInInputLayerSectionWordOrig->inputLayerNeuron = true;	//moved @SANI1p6a
 	//cout << "currentGroupInInputLayerSectionWordOrig->inputLayerNeuron" << endl;
-	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
-	currentGroupInInputLayerSectionWordOrig->wordObject	= currentWord;	//added @SANI1p6a
-	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS_CALCULATE_POS_AMBIGUITY_INFO
+	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_SEQUENCEELEMENT_OBJECTS
+	currentGroupInInputLayerSectionWordOrig->sequenceElementObject = forwardPropogationSequenceElementData;	//added @SANI1p6a
+	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_SEQUENCEELEMENT_OBJECTS_CALCULATE_POS_AMBIGUITY_INFO
 	LRPpreprocessorPOStagger.recordPOSambiguityInfo(currentWord);
 	#endif
 	#endif
@@ -261,10 +263,11 @@ bool SANIformationClass::addInputNeuronLayerSectionWordOrig(LRPpreprocessorPlain
 	
 	return result;
 }
-bool SANIformationClass::findInputNeuronLayerSectionWordOrig(const LRPpreprocessorPlainTextWord* currentWord, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
+bool SANIformationClass::findInputNeuronLayerSectionWordOrig(const SANIForwardPropogationSequenceElementData* forwardPropogationSequenceElementData, SANIGroupNeuralNetwork** currentGroupInInputLayerSection)
 {
 	bool result = false;
 	
+	LRPpreprocessorPlainTextWord* currentWord = forwardPropogationSequenceElementData->wordReference;
 	string wordOrig = currentWord->tagName;
 	unordered_map<string,SANIGroupNeuralNetwork*>::iterator iter = inputLayerSectionWordOrigMap.find(wordOrig);
 	if(iter != inputLayerSectionWordOrigMap.end())

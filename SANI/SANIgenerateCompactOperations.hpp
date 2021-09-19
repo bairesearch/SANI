@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Operations - unsupervised training of sequence grammar parse network
  * /
@@ -80,17 +80,17 @@ class SANIgenerateCompactOperationsClass
 	private: SANIgenerateCompactIdentifyClass SANIgenerateCompactIdentify;
 	
 
-	public: bool addComponentToFirstLevelHiddenLayerGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* inputLayerPOSneuron, SANIGroupNeuralNetwork* newNeuronSequenceGroup);
-	public: SANIGroupNeuralNetwork* createNewHiddenLayerGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes);
+	public: bool addComponentToFirstLevelHiddenLayerGroup(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* inputLayerPOSneuron, SANIGroupNeuralNetwork* newNeuronSequenceGroup);
+	public: SANIGroupNeuralNetwork* createNewHiddenLayerGroup(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupType*>* SANIGroupTypes);
 
-	public: bool addVariableComponentToGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, bool addToStart);
-	public: bool addComponentToGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, const bool componentTypeString, bool insertAtStart);
-	public: bool addComponentToGroup(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent);
+	public: bool addVariableComponentToGroup(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, bool addToStart);
+	public: bool addComponentToGroup(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* group, SANIGroupNeuralNetwork* higherLevelComponentGroupOwner, const bool componentTypeString, bool insertAtStart);
+	public: bool addComponentToGroup(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* group, SANIComponentNeuralNetwork* higherLevelComponent);
 		public: SANIGroupNeuralNetwork* createNewGroup();
 
 	private: bool findGroupDirectlyAbove(const SANIGroupNeuralNetwork* group1, const SANIGroupNeuralNetwork* group2);
 
-	private: bool verifyLastWordIndex(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupParseTree* parseTreeGroup, const int lastWordIndex, bool* adjacent);
+	private: bool verifyLastSequenceIndex(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const SANIGroupParseTree* parseTreeGroup, const int lastSequenceIndex, bool* adjacent);
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
 
@@ -103,12 +103,12 @@ class SANIgenerateCompactOperationsClass
 	#endif
 	#endif
 		
-	public: int calculateNextIndexInSequence(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData);
+	public: int calculateNextIndexInSequence(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData);
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_ADD_NEW_NEURONS_TO_SYMMETRICAL_TREE
 	public: bool findLowestLayerNeuron(const vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, SANIGroupNeuralNetwork** lowestLayerNeuron, int* lowestLayerNeuronIndex);
 	public: bool findHighestLayerNeuron(const vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, SANIGroupNeuralNetwork** highestLayerNeuron, int* highestLayerNeuronIndex);
-	public: bool updateHighLevelNeuronHierachy(vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, const int lowestLayerNeuronIndex, SANIGroupNeuralNetwork* grammaticalSentenceNeuronSub, const bool completedIdentifyingSentenceHighLevelNeurons);
+	public: bool updateHighLevelNeuronHierachy(vector<SANIGroupType*>* SANIGroupTypes, const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupNeuralNetwork*>* highLevelNeuronPriorArray, const int lowestLayerNeuronIndex, SANIGroupNeuralNetwork* grammaticalSentenceNeuronSub, const bool completedIdentifyingSentenceHighLevelNeurons);
 	#endif
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_MARK_AS_UNAMBIGUOUS

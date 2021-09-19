@@ -26,7 +26,7 @@
  * File Name: SANInodesGroupClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Group Class
  * /
@@ -159,8 +159,8 @@ public:
 	#endif
 	//bool createNewConnections;
 	//int maxLayerToCreateNewConnections;
-	int activatedNeuronWithMaxWordIndexCoverageFirstWordIndexAllowed;
-	int activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed;	//OLD: +1 (e.g. sentence length); ie word indices must occur before activatedNeuronWithMaxWordIndexCoverageLastWordIndex
+	int activatedNeuronWithMaxSequenceIndexCoverageFirstSequenceIndexAllowed;
+	int activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed;	//OLD: +1 (e.g. sentence length); ie sequenceElement indices must occur before activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndex
 	#endif
 	
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
@@ -169,7 +169,7 @@ public:
 	int wordVerbVariantType;
 	#endif
 	
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY
 	bool foundPreviousActiveWord;
 	#endif
 	
@@ -184,7 +184,7 @@ public:
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
 	double activationSignalStrength;
-	vector<LRPpreprocessorPlainTextWord*> wordsCaptured;
+	vector<LRPpreprocessorPlainTextWord*> sequenceElementsCaptured;
 	multimap<double, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance;	//multimap<int64_t, SANIGroupNeuralNetwork*>* propagatedGroupsListPerformance;
 	int maxNumberWordsCaptured;
 	int firstWordPropagatedIndex;
@@ -194,27 +194,27 @@ public:
 	#endif
 };
 
-class SANIForwardPropogationWordData
+class SANIForwardPropogationSequenceElementData
 {
 public:
-	SANIForwardPropogationWordData(void);
-	~SANIForwardPropogationWordData(void);
+	SANIForwardPropogationSequenceElementData(void);
+	~SANIForwardPropogationSequenceElementData(void);
 		
-	 //word specific variables:
+	 //sequenceElement specific variables:
 	LRPpreprocessorPlainTextWord* wordReference;
 	#ifdef SANI_PREVIOUS_WORD_POS_TYPE_CHECKS
 	int wordPOStype;	
 	#endif
 	
-	int w;
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BASIC
+	int sequenceIndex;
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BASIC
 	bool expectToSeeConnectionWithPreviousWordTrace;
 	#endif
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC
-	vector<SANIForwardPropogationWordData*> previousWordConnections;
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_POSTHOC
+	vector<SANIForwardPropogationSequenceElementData*> previousSequenceElementConnections;
 	#endif
 		
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BASIC
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BASIC
 	bool foundPreviousActiveWord;	//debug only
 	#endif
 };
@@ -252,8 +252,8 @@ public:
 	#ifdef SANI_INVERSE
 	int numberOfConsecutiveTimesPreviousGroupType;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
-	int wordVerbVariantTypeDerived;
-	int wordNounVariantTypeDerived;	
+	int sequenceElementVerbVariantTypeDerived;
+	int sequenceElementNounVariantTypeDerived;	
 	#endif
 	#endif	
 	#endif
@@ -280,7 +280,7 @@ public:
 	int networkDepth;
 	int networkLeafSize;
 	#endif	
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
 	vector<SANIGroupParseTree*> parseTreeGroupMemory;
 	#endif
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
@@ -290,10 +290,10 @@ public:
 	bool counted;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
-	bool activatedNeuronWithMaxWordIndexCoverageVariableStartComponentTemp;
+	bool activatedNeuronWithMaxSequenceIndexCoverageVariableStartComponentTemp;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS
-	bool activatedNeuronWithMaxWordIndexCoverageVariableEndComponentTemp;
+	bool activatedNeuronWithMaxSequenceIndexCoverageVariableEndComponentTemp;
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_LAST_COMPONENTS_GENERATE_DETECT_COVERAGE_SUPPORT_VARIABLE_END_COMPONENT
 	bool lowestLayerInArray;
 	#endif
@@ -306,12 +306,11 @@ public:
 	#endif	
 	bool inputLayerNeuron;	//neuron is in first layer of generated network
 	bool groupTypeIsString;
-	//SANIForwardPropogationWordData* wordDataTemp;
-	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS_INPUT_NEURONS_STORE_WORD_OBJECTS
-	LRPpreprocessorPlainTextWord* wordObject;
+	//SANIForwardPropogationSequenceElementData* sequenceElementDataTemp;
+	#ifdef SANI_SEQUENCE_GRAMMAR_STORE_SEQUENCEELEMENT_OBJECTS
+	SANIForwardPropogationSequenceElementData* sequenceElementObject;	//updated @SANI1q2a - old type LRPpreprocessorPlainTextWord //note this is currently only used for SANI_SEQUENCE_GRAMMAR_INPUT_NLP:SANI_SEMANTIC_NETWORK, and objects will only remain valid during SANIgenerate/propagate procedure; see SANIgenerateCompactClass::testAndGeneratePosRelTranslatorNeuralNetwork:SANIpropagateCompact.executePosRelTranslatorNeuralNetworkStart (if sequenceElementObject->wordReference data needs to be stored permanently then SANIForwardPropogationSequenceElementData* sequenceElementObject needs to be initialised as new object for each network input group) 
 	#endif
-	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
-	#else
+	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS
 	int wordPOStype;
 	#endif
 	int groupIndex;
@@ -357,7 +356,7 @@ public:
 	#endif
 	bool neuronGenerated;
 	bool neuronPropagated;
-	#ifdef SANI_LIGHT_OPTIMISED_RESET_ONLY_ONCE_FOUND_FIRST_COMPONENT_RESET_ONCE_PER_WORD_BASIC
+	#ifdef SANI_LIGHT_OPTIMISED_RESET_ONLY_ONCE_FOUND_FIRST_COMPONENT_RESET_ONCE_PER_SEQUENCEELEMENT_BASIC
 	bool neuronProcessed;
 	#endif
 	bool neuronPropagatedSave;
@@ -413,15 +412,15 @@ public:
 	double referenceSetCandidateBestMetric;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_IDENTIFY_VARIABLE_COMPONENTS
-	bool startOfSentenceWordDetected;
-	bool endOfSentenceWordDetected;
+	bool startOfSequenceElementDetected;
+	bool endOfSequenceElementDetected;
 	bool markToErase;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
 	multimap<double, SANIGroupNeuralNetwork*> directNeuronAssociationList;	
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
 	double activationSignalStrength;
-	vector<LRPpreprocessorPlainTextWord*> wordsCaptured;
+	vector<LRPpreprocessorPlainTextWord*> sequenceElementsCaptured;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_CONCEPTS
 	bool SANIisConceptNeuron;
@@ -433,7 +432,7 @@ public:
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 	bool inputLayerNeuronArtificialAmbiguousPOSpermutations;
-	uint64_t inputLayerNeuronArtificialAmbiguousPOSpermutationsPOSambiguityInfo;	//temporarily store word objects containing POS ambiguity info of artificial POS ambiguous input neuron
+	uint64_t inputLayerNeuronArtificialAmbiguousPOSpermutationsPOSambiguityInfo;	//temporarily store sequenceElement objects containing POS ambiguity info of artificial POS ambiguous input neuron
 	#endif
 };
 
@@ -451,11 +450,11 @@ public:
 	#ifdef SANI_FORWARD
 	#ifdef SANI_HEAVY
 	#ifdef SANI_HEAVY_OPTIMISED
-	int numberWordsInSet;
+	int numberSequenceElementsInSet;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_COMPONENT_WORD_NOUN_VERB_VARIANT
 	SANIForwardPropogationSignalData forwardPropogationSignalData;
 	#endif
-	SANIForwardPropogationWordData forwardPropogationWordData;
+	SANIForwardPropogationSequenceElementData forwardPropogationSequenceElementData;
 	int layer;
 	bool inputGroupString;
 	#ifdef SANI_SAVE_MEMORY_GROUPS
@@ -464,13 +463,13 @@ public:
 	#ifdef SANI_EFFICIENCY_STORE_POINT_ARRAY_IN_BASE_GROUP
 	bool pointArrayGenerated;
 	bool firstLevelActivationPointAdded;
-	vector<SANIGroupActivationMemory*> activationPathWordFirstActivationMemoryGroupActivationPointArray;
+	vector<SANIGroupActivationMemory*> activationPathSequenceElementFirstActivationMemoryGroupActivationPointArray;
 	#endif
-	bool wordGroupNeuron;
+	bool sequenceElementGroupNeuron;
 	#endif
 	#ifdef SANI_SAVE_MEMORY_GROUPS
 	#ifdef SANI_SAVE_MEMORY_GROUPS_PREVENT_CIRCULAR_CONNECTION_LOOPS
-	int lastWordIndexActivated;
+	int lastSequenceIndexActivated;
 	#endif
 	#endif
 	#endif
@@ -506,7 +505,7 @@ public:
 	#ifdef SANI_HEAVY
 	#ifdef SANI_HEAVY_OPTIMISED
 	#ifdef SANI_EFFICIENCY_STORE_POINT_ARRAY_IN_BASE_GROUP
-	vector<SANIGroupParseTree*> activationPathWordFirstParseTreeGroupActivationPointArray;	
+	vector<SANIGroupParseTree*> activationPathSequenceElementFirstParseTreeGroupActivationPointArray;	
 	#endif
 	#endif	
 	SANIForwardPropogationSignalData semanticRelationReturnEntityForwardPropogationSignalData;
@@ -526,8 +525,8 @@ public:
 	bool neuronActive;	//interpretation: all components are active (unless they are optional / unused or cases)
 	#endif
 	#ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
-	int parseTreeMinWordIndex;
-	int parseTreeMaxWordIndex;
+	int parseTreeMinSequenceIndex;
+	int parseTreeMaxSequenceIndex;
 	#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT_DYNAMIC
 	double parseTreeMaxWeight;	//NOT USED
 	double parseTreeMinWeight;
@@ -577,31 +576,31 @@ public:
 	
 	bool generateActivationPointArray;
 	bool connectToPreviousActivationGroup;
-	vector<SANIGroupActivationMemory*>* activationPathWordFirstActivationMemoryGroupActivationPointArray;
-	vector<SANIGroupParseTree*>* activationPathWordFirstParseTreeGroupActivationPointArray;
+	vector<SANIGroupActivationMemory*>* activationPathSequenceElementFirstActivationMemoryGroupActivationPointArray;
+	vector<SANIGroupParseTree*>* activationPathSequenceElementFirstParseTreeGroupActivationPointArray;
 	int layer;	
 	int activationPathW;
 };
 
-class SANIForwardPropogationSentenceData
+class SANIForwardPropogationSequenceData
 {
 public:
-	SANIForwardPropogationSentenceData(void);
-	~SANIForwardPropogationSentenceData(void);
+	SANIForwardPropogationSequenceData(void);
+	~SANIForwardPropogationSequenceData(void);
 	
 	bool parseSentenceReverse;
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR
-	bool recordActivatedNeuronWithMaxWordIndexCoverage;
-	SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage;
-	bool activatedNeuronWithMaxWordIndexCoveragePartial;
+	bool recordActivatedNeuronWithMaxSequenceIndexCoverage;
+	SANIGroupParseTree* activatedNeuronWithMaxSequenceIndexCoverage;
+	bool activatedNeuronWithMaxSequenceIndexCoveragePartial;
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-	bool recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent;
-	bool activatedNeuronWithMaxWordIndexCoverageVariableEndComponent;
+	bool recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableEndComponent;
+	bool activatedNeuronWithMaxSequenceIndexCoverageVariableEndComponent;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-	bool recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableStartComponent;
-	bool activatedNeuronWithMaxWordIndexCoverageVariableStartComponent;	//ie candidateCoverageMissingOrVariableStartComponent
+	bool recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableStartComponent;
+	bool activatedNeuronWithMaxSequenceIndexCoverageVariableStartComponent;	//ie candidateCoverageMissingOrVariableStartComponent
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH
 	int variableFirstComponentMaxDepth;
 	#endif
@@ -611,7 +610,7 @@ public:
 	#endif
 	/*
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_FIRST_COMPONENTS
-	bool activatedNeuronWithMaxWordIndexCoverageMissingStartComponent;
+	bool activatedNeuronWithMaxSequenceIndexCoverageMissingStartComponent;
 	#endif
 	*/
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_DETECT_LOCAL_VARATION
@@ -641,18 +640,18 @@ public:
 	//#endif
 	#endif
 	
-	bool finishedPassingSentenceWords;
+	bool finishedPassingSequenceElements;
 	
 	vector<SANIGroupType*>* SANIGroupTypes;
 
-	vector<SANIForwardPropogationWordData*> forwardPropogationWordDataArray;
+	vector<SANIForwardPropogationSequenceElementData*> forwardPropogationSequenceElementDataArray;
 	
 	#ifdef SANI_HEAVY
 	#ifdef SANI_HEAVY_UNOPTIMISED
-	vector<SANIGroupParseTree*> activationPathWordFirstParseTreeGroupArray;
+	vector<SANIGroupParseTree*> activationPathSequenceElementFirstParseTreeGroupArray;
 	#else
-	vector<vector<SANIGroupActivationMemory*>> activationPathWordFirstActivationMemoryGroupArray;
-	vector<vector<SANIGroupParseTree*>> activationPathWordFirstParseTreeGroupArray;
+	vector<vector<SANIGroupActivationMemory*>> activationPathSequenceElementFirstActivationMemoryGroupArray;
+	vector<vector<SANIGroupParseTree*>> activationPathSequenceElementFirstParseTreeGroupArray;
 	#endif
 	#endif
 	
@@ -695,7 +694,7 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
 	bool artificialInputNeuronLinkPosAmbiguousPermuations;
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
-	bool activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext;
+	bool activatedNeuronWithMaxSequenceIndexCoverageRequirePosAmbiguousContext;
 	#endif	
 	#endif
 	

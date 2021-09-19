@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -120,9 +120,9 @@ SANIComponent::SANIComponent(void)
 
 	#ifdef SANI_FORWARD
 	neuronComponentConnectionActive = false;
-	neuronComponentConnectionActiveWordRecord = NULL;
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
-	//neuronComponentConnectionActiveWordRecordMemory = NULL;
+	neuronComponentConnectionActiveSequenceElementRecord = NULL;
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+	//neuronComponentConnectionActiveSequenceElementRecordMemory = NULL;
 	#endif
 	#endif
 	candidateStringMatch = NULL;
@@ -161,7 +161,7 @@ SANIComponentNeuralNetwork::SANIComponentNeuralNetwork(void)
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
 	activationSignalStrength = 0.0;
-	//wordsCaptured = NULL;
+	//sequenceElementsCaptured = NULL;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS
 	refsetConnectionType = LRP_SHARED_ENTITY_CONNECTION_TYPE_UNDEFINED;	//SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS_TYPE_UNKNOWN;
@@ -193,8 +193,8 @@ SANIComponentParseTree::SANIComponentParseTree(void)
 	groupFrontComponentConnectionListIndex = INT_DEFAULT_VALUE;
 	numberOfWordsCurrentlyParsed = INT_DEFAULT_VALUE;
 	#endif
-	#ifdef SANI_PARSE_RECORD_COMPONENT_WORD_INDEX
-	wordIndex = INT_DEFAULT_VALUE;	//CHECKTHIS
+	#ifdef SANI_PARSE_RECORD_COMPONENT_SEQUENCE_INDEX
+	sequenceIndex = INT_DEFAULT_VALUE;	//CHECKTHIS
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	
 	parseTreeComponentTypeString = false;

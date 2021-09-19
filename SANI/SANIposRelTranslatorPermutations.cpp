@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -61,7 +61,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper(SANIt
 	
 	/*
 	algorithm (v0.1);
-		For every word in sentence
+		For every word (sequenceElement) in sentence (sequence)
 			calculate pos ambiguity info (possible pos types)
 		Generate all possible pos sequences representing sentence
 		For every possible pos sequence representing sentence
@@ -131,7 +131,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslatorWrapper2(SANI
 
 	/*
 	algorithm (v0.1);
-		For every word in sentence
+		For every word (sequenceElement) in sentence (sequence)
 			calculate pos ambiguity info (possible pos types)
 		Generate all possible pos sequences representing sentence
 		For every possible pos sequence representing sentence
@@ -295,7 +295,7 @@ bool SANIposRelTranslatorPermutationsClass::executePosRelTranslator(SANItranslat
 
 	/*
 	algorithm (v0.1);
-		For every word in sentence
+		For every word (sequenceElement) in sentence (sequence)
 			calculate pos ambiguity info (possible pos types)
 		Generate all possible pos sequences representing sentence
 		For every possible pos sequence representing sentence

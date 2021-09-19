@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -67,10 +67,10 @@ class SANIpropagateOperationsParseTreeClass
 
 	#ifdef SANI_FORWARD
 	
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
-	public: bool getMinMaxWordIndexInParseTree(const SANIGroupParseTree* currentParseTreeGroup, const bool findMaxOrMinWordIndex, int* wordIndexMaxOrMin, int level);
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
-	public: bool componentWordConnectivityTestsCompareToMemory(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int wordIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent);
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
+	public: bool getMinMaxSequenceIndexInParseTree(const SANIGroupParseTree* currentParseTreeGroup, const bool findMaxOrMinSequenceIndex, int* sequenceIndexMaxOrMin, int level);
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+	public: bool componentWordConnectivityTestsCompareToMemory(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int sequenceIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent);
 	#endif
 	#endif
 		
@@ -82,18 +82,18 @@ class SANIpropagateOperationsParseTreeClass
 	#ifdef SANI_PARSE
 	#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-	public: bool updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
+	public: bool updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer);
 	#endif
-		public: bool updateAndVerifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
-		public: bool updatePerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
-		public: bool verifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer);
-			public: bool updateAndOrVerifyPerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer, const bool updatePerformance, const bool verifyPerformance, const bool partialSentenceSequence, const SANIForwardPropogationSignalData* forwardPropogationSignalData);
+		public: bool updateAndVerifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer);
+		public: bool updatePerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer);
+		public: bool verifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer);
+			public: bool updateAndOrVerifyPerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer, const bool updatePerformance, const bool verifyPerformance, const bool partialSentenceSequence, const SANIForwardPropogationSignalData* forwardPropogationSignalData);
 	#endif
 		public: bool traceBackpropParseTreeSetTraced(SANIGroupParseTree* currentParseTreeGroup, int level);
 		#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE_METHOD_OLD_INCREMENT_FOR_EVERY_GROUP_REF_RECURSE
 		public: bool traceBackpropParseTreePerformance(SANIGroupParseTree* currentParseTreeGroup, int level, int* performance);
 		#else
-		public: bool traceBackpropParseTreeWordIndexCoverage(SANIGroupParseTree* currentParseTreeGroup, int level, vector<LRPpreprocessorPlainTextWord*>* sentenceContents);
+		public: bool traceBackpropParseTreeSequenceIndexCoverage(SANIGroupParseTree* currentParseTreeGroup, int level, vector<LRPpreprocessorPlainTextWord*>* sentenceContents);
 		#endif
 		#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT
 		public: bool traceBackpropParseTreeCalculateWeight(SANIGroupParseTree* currentParseTreeGroup, int level, int* maxWeight);
@@ -126,9 +126,9 @@ class SANIpropagateOperationsParseTreeClass
 	#endif
 	
 	#ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
-	public: void updateParseTreeMaxMinWordIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup);
+	public: void updateParseTreeMaxMinSequenceIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup);
 		#ifdef SANI_SEQUENCE_GRAMMAR
-		public: void updateParseTreeMaxMinWordIndexOfParentBasic(SANIGroupParseTree* parentGroup, SANIForwardPropogationWordData* forwardPropogationWordData, SANIGroupParseTree* childGroup);
+		public: void updateParseTreeMaxMinSequenceIndexOfParentBasic(SANIGroupParseTree* parentGroup, SANIForwardPropogationSequenceElementData* forwardPropogationSequenceElementData, SANIGroupParseTree* childGroup);
 		#endif
 	#endif
 	

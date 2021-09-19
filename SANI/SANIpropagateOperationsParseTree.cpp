@@ -26,7 +26,7 @@
  * File Name: SANIpropagateOperationsParseTree.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Operations Parse Tree - generic functions
  * /
@@ -38,32 +38,32 @@
 
 #ifdef SANI_FORWARD
 
-#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
-bool SANIpropagateOperationsParseTreeClass::getMinMaxWordIndexInParseTree(const SANIGroupParseTree* currentParseTreeGroup, const bool findMaxOrMinWordIndex, int* wordIndexMaxOrMin, int level)
+#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT
+bool SANIpropagateOperationsParseTreeClass::getMinMaxSequenceIndexInParseTree(const SANIGroupParseTree* currentParseTreeGroup, const bool findMaxOrMinSequenceIndex, int* sequenceIndexMaxOrMin, int level)
 {
 	bool result = false;
 	
 	#ifdef SANI_DEBUG_PROPAGATE_EXTRA6
-	if(findMaxOrMinWordIndex)
+	if(findMaxOrMinSequenceIndex)
 	{
 		SANInodes.printParseTreeDebugIndentation(level);
-		cout << "SANIpropagateOperationsParseTreeClass::getMinMaxWordIndexInParseTree: currentParseTreeGroup: " <<  currentParseTreeGroup->groupTypeName << ":" << currentParseTreeGroup->groupName << endl;
+		cout << "SANIpropagateOperationsParseTreeClass::getMinMaxSequenceIndexInParseTree: currentParseTreeGroup: " <<  currentParseTreeGroup->groupTypeName << ":" << currentParseTreeGroup->groupName << endl;
 	}
 	#endif
 	
 	#ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
 	if(currentParseTreeGroup->components.size() > 0)
 	{
-		if(findMaxOrMinWordIndex)
+		if(findMaxOrMinSequenceIndex)
 		{
-			*wordIndexMaxOrMin = currentParseTreeGroup->parseTreeMaxWordIndex;
-			//cout << "currentParseTreeGroup->parseTreeMaxWordIndex = " << currentParseTreeGroup->parseTreeMaxWordIndex << endl;
+			*sequenceIndexMaxOrMin = currentParseTreeGroup->parseTreeMaxSequenceIndex;
+			//cout << "currentParseTreeGroup->parseTreeMaxSequenceIndex = " << currentParseTreeGroup->parseTreeMaxSequenceIndex << endl;
 			result = true;
 		}
 		else
 		{
-			*wordIndexMaxOrMin = currentParseTreeGroup->parseTreeMinWordIndex;
-			//cout << "currentParseTreeGroup->parseTreeMinWordIndex = " << currentParseTreeGroup->parseTreeMinWordIndex << endl;
+			*sequenceIndexMaxOrMin = currentParseTreeGroup->parseTreeMinSequenceIndex;
+			//cout << "currentParseTreeGroup->parseTreeMinSequenceIndex = " << currentParseTreeGroup->parseTreeMinSequenceIndex << endl;
 			result = true;
 		}
 	}
@@ -73,33 +73,33 @@ bool SANIpropagateOperationsParseTreeClass::getMinMaxWordIndexInParseTree(const 
 		SANIComponentParseTree* currentComponent = (currentParseTreeGroup->components)[i];
 		
 		#ifdef SANI_DEBUG_PROPAGATE_EXTRA6
-		if(!findMaxOrMinWordIndex)
+		if(!findMaxOrMinSequenceIndex)
 		{
 			SANInodes.printParseTreeDebugIndentation(level);
-			cout << "currentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex = " << currentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex  << endl;
+			cout << "currentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex = " << currentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex  << endl;
 		}
 		#endif
 		
-		if(findMaxOrMinWordIndex)
+		if(findMaxOrMinSequenceIndex)
 		{
-			if(currentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex > *wordIndexMaxOrMin)
+			if(currentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex > *sequenceIndexMaxOrMin)
 			{
-				*wordIndexMaxOrMin = currentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;
+				*sequenceIndexMaxOrMin = currentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex;
 				result = true;
 			}
 		}
 		else
 		{
-			if(currentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex < *wordIndexMaxOrMin)
+			if(currentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex < *sequenceIndexMaxOrMin)
 			{
-				*wordIndexMaxOrMin = currentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;
+				*sequenceIndexMaxOrMin = currentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex;
 				result = true;
 			}
 		}
 						
 		if(currentComponent->parseTreeGroupRef != NULL)
 		{					
-			if(getMinMaxWordIndexInParseTree(currentComponent->parseTreeGroupRef, findMaxOrMinWordIndex, wordIndexMaxOrMin, level+1))
+			if(getMinMaxSequenceIndexInParseTree(currentComponent->parseTreeGroupRef, findMaxOrMinSequenceIndex, sequenceIndexMaxOrMin, level+1))
 			{
 				result = true;
 			}
@@ -109,61 +109,61 @@ bool SANIpropagateOperationsParseTreeClass::getMinMaxWordIndexInParseTree(const 
 	
 	return result;	
 }
-#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
-bool SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int wordIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent)
+#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+bool SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int sequenceIndexProspectiveFirst, SANIGroupNeuralNetwork* ownerGroup, SANIComponent* lastActiveComponent)
 {
 	bool result = false;
 	
-	if(lastActiveComponent->neuronComponentConnectionActiveWordRecord == NULL)
+	if(lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecord == NULL)
 	{
 		cerr << "lastActiveComponent->componentIndex = " << lastActiveComponent->componentIndex << endl;
 		cerr << "lastActiveComponent->componentType = " << lastActiveComponent->componentType << endl;
 		cerr << "ownerGroup->groupIndex = " << ownerGroup->groupIndex << endl;
-		cerr << "SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory error: lastActiveComponent->neuronComponentConnectionActiveWordRecord == NULL" << endl;
+		cerr << "SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory error: lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecord == NULL" << endl;
 		exit(EXIT_ERROR);
 	}
 	
-	if(lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory.size() != ownerGroup->parseTreeGroupMemory.size())
+	if(lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecordMemory.size() != ownerGroup->parseTreeGroupMemory.size())
 	{
-		cerr << "lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory.size() = " << lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory.size() << endl;
+		cerr << "lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecordMemory.size() = " << lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecordMemory.size() << endl;
 		cerr << "ownerGroup->parseTreeGroupMemory.size() = " << ownerGroup->parseTreeGroupMemory.size() << endl;
-		cerr << "SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory error: (lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory.size() != ownerGroup->parseTreeGroupMemory.size())" << endl;
+		cerr << "SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory error: (lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecordMemory.size() != ownerGroup->parseTreeGroupMemory.size())" << endl;
 		exit(EXIT_ERROR);
 	}
 	
-	int ownerGroupParseTreeGroupMemorySize = ownerGroup->parseTreeGroupMemory.size();	//OR: lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory.size()
-	LRPpreprocessorPlainTextWord* lastActiveComponentNeuronComponentConnectionActiveWordRecordOrig = lastActiveComponent->neuronComponentConnectionActiveWordRecord;
+	int ownerGroupParseTreeGroupMemorySize = ownerGroup->parseTreeGroupMemory.size();	//OR: lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecordMemory.size()
+	SANIForwardPropogationSequenceElementData* lastActiveComponentNeuronComponentConnectionActiveSequenceElementRecordOrig = lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecord;
 	
 	for(int m=0; m<ownerGroupParseTreeGroupMemorySize; m++)
 	{
 		//cout << "m = " << m << endl;
 		
-		int wordIndexMin;
-		int wordIndexMax;
-		LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordOption = lastActiveComponent->neuronComponentConnectionActiveWordRecordMemory[m];
+		int sequenceIndexMin;
+		int sequenceIndexMax;
+		SANIForwardPropogationSequenceElementData* neuronComponentConnectionActiveSequenceElementOption = lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecordMemory[m];
 		
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
-			wordIndexMin = neuronComponentConnectionActiveWordOption->translatorSentenceWordIndex;
-			wordIndexMax = wordIndexProspectiveFirst;
+			sequenceIndexMin = neuronComponentConnectionActiveSequenceElementOption->sequenceIndex;
+			sequenceIndexMax = sequenceIndexProspectiveFirst;
 		}
 		else
 		{
-			wordIndexMin = wordIndexProspectiveFirst;
-			wordIndexMax = neuronComponentConnectionActiveWordOption->translatorSentenceWordIndex;
+			sequenceIndexMin = sequenceIndexProspectiveFirst;
+			sequenceIndexMax = neuronComponentConnectionActiveSequenceElementOption->sequenceIndex;
 		}
 		
 		/*
-		cout << "wordIndexProspectiveFirst = " << wordIndexProspectiveFirst << endl;
-		cout << "neuronComponentConnectionActiveWordOption->translatorSentenceWordIndex = " << neuronComponentConnectionActiveWordOption->translatorSentenceWordIndex << endl;
-		cout << "wordIndexMin = " << wordIndexMin << endl;
-		cout << "wordIndexMax = " << wordIndexMax << endl;
+		cout << "sequenceIndexProspectiveFirst = " << sequenceIndexProspectiveFirst << endl;
+		cout << "neuronComponentConnectionActiveSequenceElementOption->translatorSentenceWordIndex = " << neuronComponentConnectionActiveSequenceElementOption->translatorSentenceWordIndex << endl;
+		cout << "sequenceIndexMin = " << sequenceIndexMin << endl;
+		cout << "sequenceIndexMax = " << sequenceIndexMax << endl;
 		*/
 		
-		if(wordIndexMin-wordIndexMax == 1)
+		if(sequenceIndexMin-sequenceIndexMax == 1)
 		{
 			bool overWrite = false;
-			if(!result || neuronComponentConnectionActiveWordOption == lastActiveComponentNeuronComponentConnectionActiveWordRecordOrig)
+			if(!result || neuronComponentConnectionActiveSequenceElementOption == lastActiveComponentNeuronComponentConnectionActiveSequenceElementRecordOrig)
 			{
 				overWrite = true;	//favour existing currentParseTreeGroupTemp
 			}
@@ -171,7 +171,7 @@ bool SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompar
 			{
 				//cout << "SANIpropagateOperationsParseTreeClass::componentWordConnectivityTestsCompareToMemory; overWrite" << endl;
 				
-				lastActiveComponent->neuronComponentConnectionActiveWordRecord = neuronComponentConnectionActiveWordOption;	//GIA3k13a
+				lastActiveComponent->neuronComponentConnectionActiveSequenceElementRecord = neuronComponentConnectionActiveSequenceElementOption;	//GIA3k13a
 				ownerGroup->currentParseTreeGroupTemp = ownerGroup->parseTreeGroupMemory[m];	//GIA3k13a
 
 				result = true;
@@ -231,14 +231,14 @@ bool SANIpropagateOperationsParseTreeClass::setPerformanceWeightOfParseTree(SANI
 #ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE
 
 #ifdef GIA_POS_REL_TRANSLATOR_RULES_USE
-bool SANIpropagateOperationsParseTreeClass::updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer)
+bool SANIpropagateOperationsParseTreeClass::updatePerformance(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer)
 {
 	bool result = true;
 	
-	bool topLevelGroup = SANInodesGroupClassObject.isTopLevelGroupType(currentParseTreeGroup->groupTypeName, currentParseTreeGroup->groupTypeReferenceSetType, forwardPropogationSentenceData->isQuery, forwardPropogationSentenceData->parseIsolatedSubreferenceSets);
+	bool topLevelGroup = SANInodesGroupClassObject.isTopLevelGroupType(currentParseTreeGroup->groupTypeName, currentParseTreeGroup->groupTypeReferenceSetType, forwardPropogationSequenceData->isQuery, forwardPropogationSequenceData->parseIsolatedSubreferenceSets);
 	if(topLevelGroup)
 	{
-		result = updateAndVerifyPerformanceGroupSentence(currentParseTreeGroup, forwardPropogationSentenceData, layer);
+		result = updateAndVerifyPerformanceGroupSentence(currentParseTreeGroup, forwardPropogationSequenceData, layer);
 	}
 	
 	return result;
@@ -246,25 +246,25 @@ bool SANIpropagateOperationsParseTreeClass::updatePerformance(SANIGroupParseTree
 #endif
 
 //doesn't perform topLevelGroup check;
-bool SANIpropagateOperationsParseTreeClass::updateAndVerifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer)
+bool SANIpropagateOperationsParseTreeClass::updateAndVerifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer)
 {
 	bool updatePerformance = true;
 	bool verifyPerformance = true;
-	return updateAndOrVerifyPerformanceGroup(currentParseTreeGroup, forwardPropogationSentenceData, layer, updatePerformance, verifyPerformance, false, NULL);
+	return updateAndOrVerifyPerformanceGroup(currentParseTreeGroup, forwardPropogationSequenceData, layer, updatePerformance, verifyPerformance, false, NULL);
 }
-bool SANIpropagateOperationsParseTreeClass::updatePerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer)
+bool SANIpropagateOperationsParseTreeClass::updatePerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer)
 {
 	bool updatePerformance = true;
 	bool verifyPerformance = false;
-	return updateAndOrVerifyPerformanceGroup(currentParseTreeGroup, forwardPropogationSentenceData, layer, updatePerformance, verifyPerformance, false, NULL);
+	return updateAndOrVerifyPerformanceGroup(currentParseTreeGroup, forwardPropogationSequenceData, layer, updatePerformance, verifyPerformance, false, NULL);
 }
-bool SANIpropagateOperationsParseTreeClass::verifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer)
+bool SANIpropagateOperationsParseTreeClass::verifyPerformanceGroupSentence(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer)
 {
 	bool updatePerformance = false;
 	bool verifyPerformance = true;
-	return updateAndOrVerifyPerformanceGroup(currentParseTreeGroup, forwardPropogationSentenceData, layer, updatePerformance, verifyPerformance, false, NULL);
+	return updateAndOrVerifyPerformanceGroup(currentParseTreeGroup, forwardPropogationSequenceData, layer, updatePerformance, verifyPerformance, false, NULL);
 }
-bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const int layer, const bool updatePerformance, const bool verifyPerformance, const bool partialSentenceSequence, const SANIForwardPropogationSignalData* forwardPropogationSignalData)
+bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SANIGroupParseTree* currentParseTreeGroup, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const int layer, const bool updatePerformance, const bool verifyPerformance, const bool partialSentenceSequence, const SANIForwardPropogationSignalData* forwardPropogationSignalData)
 {
 	bool result = true;
 			
@@ -272,34 +272,34 @@ bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SA
 	
 	#ifdef SANI_PARSE_PERFORMANCE_BIO
 	
-	performance = currentParseTreeGroup->parseTreeMaxWordIndex - currentParseTreeGroup->parseTreeMinWordIndex + 1;
+	performance = currentParseTreeGroup->parseTreeMaxSequenceIndex - currentParseTreeGroup->parseTreeMinSequenceIndex + 1;
 	
 	#else
 	
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_WORDCONNECTIVITY_VERIFICATION
-	cout << "SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION: SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup, traceBackpropParseTreeWordIndexCoverage:" << endl;
+	cout << "SANI_SEQUENCE_SEQUENCEELEMENT_CONNECTIVITY_VERIFICATION: SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup, traceBackpropParseTreeSequenceIndexCoverage:" << endl;
 	#endif
 	
 	#ifdef SANI_PARSE_PERFORMANCE_RECORD_PERFORMANCE_METHOD_OLD_INCREMENT_FOR_EVERY_GROUP_REF_RECURSE
 	int performanceTemp = 0;
 	if(!traceBackpropParseTreePerformance(currentParseTreeGroup, 1, &performanceTemp))
 	{
-		//cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeWordIndexCoverage fail #1" << endl;
+		//cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeSequenceIndexCoverage fail #1" << endl;
 		result = false;
 	}
 	resetNeuronBackprop(currentParseTreeGroup, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
 	performance = performanceTemp;
 	#else
-	if(!traceBackpropParseTreeWordIndexCoverage(currentParseTreeGroup, 1, forwardPropogationSentenceData->sentenceContents))	
+	if(!traceBackpropParseTreeSequenceIndexCoverage(currentParseTreeGroup, 1, forwardPropogationSequenceData->sentenceContents))	
 	{
-		//cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeWordIndexCoverage fail #1" << endl;
+		//cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:traceBackpropParseTreeSequenceIndexCoverage fail #1" << endl;
 		result = false;
 	}
 	resetNeuronBackprop(currentParseTreeGroup, GIA_POS_REL_TRANSLATOR_RULES_GROUP_BOOL_INDEX_BACKPROP_NEURON_TRACED);
 	performance = 0;
-	for(int i=0; i<forwardPropogationSentenceData->sentenceContents->size(); i++)
+	for(int i=0; i<forwardPropogationSequenceData->sentenceContents->size(); i++)
 	{
-		LRPpreprocessorPlainTextWord* currentWord = (forwardPropogationSentenceData->sentenceContents)->at(i);
+		LRPpreprocessorPlainTextWord* currentWord = (forwardPropogationSequenceData->sentenceContents)->at(i);
 		if(currentWord->alreadyFoundMatch)
 		{
 			performance = performance + 1;
@@ -314,32 +314,32 @@ bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SA
 	#ifdef SANI_PARSE	//SANI_PARSE_PERFORMANCE
 	if(updatePerformance)
 	{
-		forwardPropogationSentenceData->performance = performance;
+		forwardPropogationSequenceData->performance = performance;
 	}
 	#endif
 	
 	
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_POSTHOC_STRICT
 	if(verifyPerformance)
 	{
 		if(result)
 		{
-			bool wordConnectivityTest = false;
+			bool sequenceElementConnectivityTest = false;
 			
 			#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 			if(partialSentenceSequence)
 			{
 				int parseTreeFirstIndex;
 				int parseTreeLastIndex;
-				if(forwardPropogationSentenceData->parseSentenceReverse)
+				if(forwardPropogationSequenceData->parseSentenceReverse)
 				{
-					parseTreeFirstIndex = currentParseTreeGroup->parseTreeMaxWordIndex;
-					parseTreeLastIndex = currentParseTreeGroup->parseTreeMinWordIndex;
+					parseTreeFirstIndex = currentParseTreeGroup->parseTreeMaxSequenceIndex;
+					parseTreeLastIndex = currentParseTreeGroup->parseTreeMinSequenceIndex;
 				}
 				else
 				{
-					parseTreeFirstIndex = currentParseTreeGroup->parseTreeMinWordIndex;
-					parseTreeLastIndex = currentParseTreeGroup->parseTreeMaxWordIndex;
+					parseTreeFirstIndex = currentParseTreeGroup->parseTreeMinSequenceIndex;
+					parseTreeLastIndex = currentParseTreeGroup->parseTreeMaxSequenceIndex;
 				}
 
 				if(forwardPropogationSignalData->firstIndexInSequence == parseTreeFirstIndex)
@@ -348,7 +348,7 @@ bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SA
 					{	
 						if(performance = (forwardPropogationSignalData->currentIndexInSequence - forwardPropogationSignalData->firstIndexInSequence + 1))
 						{
-							wordConnectivityTest = true;
+							sequenceElementConnectivityTest = true;
 						}
 					}
 				}	
@@ -356,18 +356,18 @@ bool SANIpropagateOperationsParseTreeClass::updateAndOrVerifyPerformanceGroup(SA
 			else
 			{	
 			#endif			
-				if(performance == forwardPropogationSentenceData->sentenceContents->size())
+				if(performance == forwardPropogationSequenceData->sentenceContents->size())
 				{
-					wordConnectivityTest = true;
+					sequenceElementConnectivityTest = true;
 				}
 			#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 			}
 			#endif
 			
-			if(!wordConnectivityTest)
+			if(!sequenceElementConnectivityTest)
 			{
-				#ifndef SANI_SEQUENCE_WORDCONNECTIVITY_VERIFICATION_DO_NOT_STOP
-				cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:wordConnectivityTest fail #2" << endl;
+				#ifndef SANI_SEQUENCE_SEQUENCEELEMENT_CONNECTIVITY_VERIFICATION_DO_NOT_STOP
+				cout << "SANIpropagateOperationsParseTreeClass::updateOrVerifyPerformanceGroup:sequenceElementConnectivityTest fail #2" << endl;
 				#endif
 				result = false;
 			}
@@ -470,7 +470,7 @@ bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTreePerformance(SA
 	return result;
 }
 #else
-bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTreeWordIndexCoverage(SANIGroupParseTree* currentParseTreeGroup, int level, vector<LRPpreprocessorPlainTextWord*>* sentenceContents)
+bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTreeSequenceIndexCoverage(SANIGroupParseTree* currentParseTreeGroup, int level, vector<LRPpreprocessorPlainTextWord*>* sentenceContents)
 {
 	bool result = true;
 	
@@ -488,12 +488,12 @@ bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTreeWordIndexCover
 			{
 				if(LRPpreprocessorWordClassObject.isWordInWordlist(sentenceContents, currentComponent->candidateStringMatch))
 				{	
-					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_MUTUALLY_EXCLUSIVE
+					#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_POSTHOC_STRICT_MUTUALLY_EXCLUSIVE
 					if(currentComponent->candidateStringMatch->alreadyFoundMatch)
 					{
 						result = false;
-						//cout << "duplicate instance of word detected in parsetree - fail to parse sentence" << endl;
-						//duplicate instance of word detected in parsetree - fail to parse sentence
+						//cout << "duplicate instance of sequenceElement detected in parsetree - fail to parse sentence" << endl;
+						//duplicate instance of sequenceElement detected in parsetree - fail to parse sentence
 					}
 					else
 					{
@@ -501,7 +501,7 @@ bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTreeWordIndexCover
 							currentComponent->candidateStringMatch->alreadyFoundMatch = true;
 							//nb this method won't work if subReferenceSets are syntactically identical (and neural net groups are therefore reused); eg the red dog eats a blue apple.
 								//"the" and "a" will use identical neural groups and so will only count to +1 performance total
-					#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_POSTHOC_STRICT_MUTUALLY_EXCLUSIVE
+					#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_POSTHOC_STRICT_MUTUALLY_EXCLUSIVE
 					}
 					#endif
 				}
@@ -512,7 +512,7 @@ bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTreeWordIndexCover
 			#endif					
 				if(currentComponent->parseTreeGroupRef != NULL)
 				{													
-					if(!traceBackpropParseTreeWordIndexCoverage(currentComponent->parseTreeGroupRef, level+1, sentenceContents))
+					if(!traceBackpropParseTreeSequenceIndexCoverage(currentComponent->parseTreeGroupRef, level+1, sentenceContents))
 					{
 						result = false;
 					}
@@ -604,7 +604,7 @@ bool SANIpropagateOperationsParseTreeClass::traceBackpropParseTreePrint(SANIGrou
 		#ifdef SANI_SEQUENCE_GRAMMAR
 		cout << "traceBackpropParseTreePrint: currentParseTreeGroup->groupName = " << currentParseTreeGroup->groupName << ", currentParseTreeGroup->groupRef->groupIndex = " << currentParseTreeGroup->groupRef->groupIndex << endl;
 		#else
-		cout << "traceBackpropParseTreePrint: currentParseTreeGroup->groupName = " << currentParseTreeGroup->groupName << ", currentParseTreeGroup->groupTypeName = " << currentParseTreeGroup->groupTypeName << endl;		//<< ", parse word (providing semanticRelationReturnEntity) = ?"
+		cout << "traceBackpropParseTreePrint: currentParseTreeGroup->groupName = " << currentParseTreeGroup->groupName << ", currentParseTreeGroup->groupTypeName = " << currentParseTreeGroup->groupTypeName << endl;		//<< ", parse sequenceElement (providing semanticRelationReturnEntity) = ?"
 		#endif
 		//#endif
 		
@@ -669,17 +669,17 @@ bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGrou
 	bool result = true;	
 	
 	#ifdef SANI_EFFICIENCY_STORE_POINT_ARRAY_IN_BASE_GROUP			
-	for(int i=1; i<activationMemoryGroup->activationPathWordFirstActivationMemoryGroupActivationPointArray.size(); i++)	//i=1; never remove the first activationPathWordFirstActivationMemoryGroupActivationPoint (as this will correspond to activationPathWordFirstActivationMemoryGroup)
+	for(int i=1; i<activationMemoryGroup->activationPathSequenceElementFirstActivationMemoryGroupActivationPointArray.size(); i++)	//i=1; never remove the first activationPathSequenceElementFirstActivationMemoryGroupActivationPoint (as this will correspond to activationPathSequenceElementFirstActivationMemoryGroup)
 	{
-		SANIGroupActivationMemory* activationPathWordFirstActivationMemoryGroupActivationPointTemp = activationMemoryGroup->activationPathWordFirstActivationMemoryGroupActivationPointArray[i];
-		SANIGroupParseTree* activationPathWordFirstParseTreeGroupActivationPointTemp = currentParseTreeGroup->activationPathWordFirstParseTreeGroupActivationPointArray[i];
+		SANIGroupActivationMemory* activationPathSequenceElementFirstActivationMemoryGroupActivationPointTemp = activationMemoryGroup->activationPathSequenceElementFirstActivationMemoryGroupActivationPointArray[i];
+		SANIGroupParseTree* activationPathSequenceElementFirstParseTreeGroupActivationPointTemp = currentParseTreeGroup->activationPathSequenceElementFirstParseTreeGroupActivationPointArray[i];
 		
-		if(!(activationPathWordFirstActivationMemoryGroupActivationPointTemp->firstLevelActivationPointAdded))
+		if(!(activationPathSequenceElementFirstActivationMemoryGroupActivationPointTemp->firstLevelActivationPointAdded))
 		{
-			SANInodes.deleteGroup(activationPathWordFirstActivationMemoryGroupActivationPointTemp);	
+			SANInodes.deleteGroup(activationPathSequenceElementFirstActivationMemoryGroupActivationPointTemp);	
 			if(!(currentParseTreeGroup->neuronTraced))	//parseTreeGroups in activationPointArray >i=0 can still be added to final parseTree
 			{
-				SANInodes.deleteGroup(activationPathWordFirstParseTreeGroupActivationPointTemp);
+				SANInodes.deleteGroup(activationPathSequenceElementFirstParseTreeGroupActivationPointTemp);
 			}
 		}
 	}
@@ -763,8 +763,8 @@ bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGrou
 	group->currentParseTreeGroupTemp = SANInodes.convertNeuralNetworkGroupToParseTreeGroupNew(group); 	//new SANIGroupParseTree(*convertNeuralNetworkGroupToParseTreeGroup(group));
 	group->currentParseTreeGroupTemp->components.clear();	//added 3g1h
 	
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY	
-	//clear neuronComponentConnectionActiveWordRecordMemory
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY	
+	//clear neuronComponentConnectionActiveSequenceElementRecordMemory
 	if(deleteExistingParseTreeGroupRef)
 	{
 		group->parseTreeGroupMemory.clear();
@@ -772,7 +772,7 @@ bool SANIpropagateOperationsParseTreeClass::resetGroupParseTreeGroupRef(SANIGrou
 		for(int i=0; i<group->components.size(); i++)
 		{
 			SANIComponent* currentComponent = (group->components)[i];
-			currentComponent->neuronComponentConnectionActiveWordRecordMemory.clear();
+			currentComponent->neuronComponentConnectionActiveSequenceElementRecordMemory.clear();
 		}
 	}
 	#endif
@@ -881,7 +881,7 @@ bool SANIpropagateOperationsParseTreeClass::deinitialiseParseTreeGroupList(vecto
 
 
 #ifdef SANI_BIO_DO_NOT_RELY_ON_PARSE_TREE_MEMORY
-void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup)
+void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinSequenceIndexOfParent(SANIGroupParseTree* parentGroup, SANIComponentParseTree* parentComponent, SANIGroupParseTree* childGroup)
 {
 	#ifdef SANI_PARSE_GENERATE_PARSE_TREE
 	if(!SANInodes.parseTreeNodeInputLayer(parentComponent->parseTreeGroupRef))
@@ -893,13 +893,13 @@ void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfPare
 		#ifdef SANI_PARSE_GENERATE_PARSE_TREE
 		childGroup = parentComponent->parseTreeGroupRef;	//not required
 		#endif
-		if(childGroup->parseTreeMaxWordIndex > parentGroup->parseTreeMaxWordIndex)
+		if(childGroup->parseTreeMaxSequenceIndex > parentGroup->parseTreeMaxSequenceIndex)
 		{
-			parentGroup->parseTreeMaxWordIndex = childGroup->parseTreeMaxWordIndex;
+			parentGroup->parseTreeMaxSequenceIndex = childGroup->parseTreeMaxSequenceIndex;
 		}
-		if(childGroup->parseTreeMinWordIndex < parentGroup->parseTreeMinWordIndex)
+		if(childGroup->parseTreeMinSequenceIndex < parentGroup->parseTreeMinSequenceIndex)
 		{
-			parentGroup->parseTreeMinWordIndex = childGroup->parseTreeMinWordIndex;
+			parentGroup->parseTreeMinSequenceIndex = childGroup->parseTreeMinSequenceIndex;
 		}
 		
 		#ifdef SANI_TAKE_LAST_SUCCESSFUL_PARSE_LIMIT_ITERATIONS_PREFERENCE_WEIGHT_DYNAMIC_BIO
@@ -916,13 +916,13 @@ void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfPare
 	}
 	else
 	{
-		if(parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex > parentGroup->parseTreeMaxWordIndex)
+		if(parentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex > parentGroup->parseTreeMaxSequenceIndex)
 		{
-			parentGroup->parseTreeMaxWordIndex = parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;
+			parentGroup->parseTreeMaxSequenceIndex = parentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex;
 		}
-		if(parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex < parentGroup->parseTreeMinWordIndex)
+		if(parentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex < parentGroup->parseTreeMinSequenceIndex)
 		{
-			parentGroup->parseTreeMinWordIndex = parentComponent->neuronComponentConnectionActiveWordRecord->translatorSentenceWordIndex;
+			parentGroup->parseTreeMinSequenceIndex = parentComponent->neuronComponentConnectionActiveSequenceElementRecord->sequenceIndex;
 		}
 	
 		/*//FUTURE; take into account component weights;
@@ -941,18 +941,18 @@ void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfPare
 	}
 }
 #ifdef SANI_SEQUENCE_GRAMMAR
-void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfParentBasic(SANIGroupParseTree* parentGroup, SANIForwardPropogationWordData* forwardPropogationWordData, SANIGroupParseTree* childGroup)
+void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinSequenceIndexOfParentBasic(SANIGroupParseTree* parentGroup, SANIForwardPropogationSequenceElementData* forwardPropogationSequenceElementData, SANIGroupParseTree* childGroup)
 {
 	if(!SANInodes.parseTreeNodeInputLayer(childGroup))
 	{	
 		//has children
-		if(childGroup->parseTreeMaxWordIndex > parentGroup->parseTreeMaxWordIndex)
+		if(childGroup->parseTreeMaxSequenceIndex > parentGroup->parseTreeMaxSequenceIndex)
 		{
-			parentGroup->parseTreeMaxWordIndex = childGroup->parseTreeMaxWordIndex;
+			parentGroup->parseTreeMaxSequenceIndex = childGroup->parseTreeMaxSequenceIndex;
 		}
-		if(childGroup->parseTreeMinWordIndex < parentGroup->parseTreeMinWordIndex)
+		if(childGroup->parseTreeMinSequenceIndex < parentGroup->parseTreeMinSequenceIndex)
 		{
-			parentGroup->parseTreeMinWordIndex = childGroup->parseTreeMinWordIndex;
+			parentGroup->parseTreeMinSequenceIndex = childGroup->parseTreeMinSequenceIndex;
 		}
 		
 		/*
@@ -971,13 +971,13 @@ void SANIpropagateOperationsParseTreeClass::updateParseTreeMaxMinWordIndexOfPare
 	}
 	else
 	{
-		if(forwardPropogationWordData->wordReference->translatorSentenceWordIndex > parentGroup->parseTreeMaxWordIndex)
+		if(forwardPropogationSequenceElementData->sequenceIndex > parentGroup->parseTreeMaxSequenceIndex)
 		{
-			parentGroup->parseTreeMaxWordIndex = forwardPropogationWordData->wordReference->translatorSentenceWordIndex;
+			parentGroup->parseTreeMaxSequenceIndex = forwardPropogationSequenceElementData->sequenceIndex;
 		}
-		if(forwardPropogationWordData->wordReference->translatorSentenceWordIndex < parentGroup->parseTreeMinWordIndex)
+		if(forwardPropogationSequenceElementData->sequenceIndex < parentGroup->parseTreeMinSequenceIndex)
 		{
-			parentGroup->parseTreeMinWordIndex = forwardPropogationWordData->wordReference->translatorSentenceWordIndex;
+			parentGroup->parseTreeMinSequenceIndex = forwardPropogationSequenceElementData->sequenceIndex;
 		}
 	
 		/*//FUTURE; take into account component weights;

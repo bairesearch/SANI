@@ -26,7 +26,7 @@
  * File Name: SANInodes.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes
  * /
@@ -197,10 +197,10 @@ class SANInodesClass
 	
 	public: bool currentWordPOSunknown(const LRPpreprocessorPlainTextWord* currentWord);
 
-	public: int convertWordIndexToSentenceEntityIndex(const int wordIndex);
-	public: int convertSentenceEntityIndexToWordIndex(const int sentenceEntityIndex);
+	public: int convertSequenceIndexToSentenceEntityIndex(const int sequenceIndex);
+	public: int convertSentenceEntityIndexToSequenceIndex(const int sentenceEntityIndex);
 
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_VERIFY_HYPOTHETICAL_PROPOGATION_FINDS_PREVIOUS_WORD_NOUNS_ONLY
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_VERIFY_HYPOTHETICAL_PROPOGATION_FINDS_PREVIOUS_SEQUENCEELEMENT_NOUNS_ONLY
 	public: bool isWordPOStypeNoun(const int wordPOStype);
 	#endif
 	
@@ -223,8 +223,8 @@ class SANInodesClass
 	#endif
 	#endif
 
-	public: SANIComponentNeuralNetwork* getFirstComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentNeuron, bool fromStart);
-	public: SANIComponentParseTree* getFirstComponent(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* currentNeuron, bool fromStart);
+	public: SANIComponentNeuralNetwork* getFirstComponent(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* currentNeuron, bool fromStart);
+	public: SANIComponentParseTree* getFirstComponent(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupParseTree* currentNeuron, bool fromStart);
 
 	#ifdef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS_GENERATE_VARIABLE_COMPONENTS_X_COMP_REQUIRE_MATCHING_DEPTH	
 	public: int calculateDepthFromBinaryTreeLeafSize(const int numberOfLeafNodesInBinaryTree);
@@ -265,7 +265,7 @@ class SANInodesClass
 	#endif
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR
-	public: int calculateCoverage(const SANIGroupParseTree* activatedNeuronWithMaxWordIndexCoverage);
+	public: int calculateCoverage(const SANIGroupParseTree* activatedNeuronWithMaxSequenceIndexCoverage);
 	public: bool traceBackpropNeuralNetwork(const SANIGroupNeuralNetwork* currentNeuron, const int level, const int previousComponentIndex, const int previousComponentType);
 	public: bool isNeuronString(const SANIGroupNeuralNetwork* currentNeuron);
 	#endif

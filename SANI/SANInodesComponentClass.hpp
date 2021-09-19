@@ -26,7 +26,7 @@
  * File Name: SANInodesComponentClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Nodes Component Class
  * /
@@ -111,6 +111,7 @@ static string SANIGroupsComponentStringTypes[GIA_POS_REL_TRANSLATOR_RULES_GROUPS
 
 
 class SANIGroupType;
+class SANIForwardPropogationSequenceElementData;
 class SANIGroupNeuralNetwork;
 class SANIGroupParseTree;
 #ifdef SANI_PARSE_SIMULTANEOUS_BIO
@@ -201,9 +202,9 @@ public:
 		
 	#ifdef SANI_FORWARD
 	bool neuronComponentConnectionActive;
-	LRPpreprocessorPlainTextWord* neuronComponentConnectionActiveWordRecord;
-	#ifdef SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
-	vector<LRPpreprocessorPlainTextWord*> neuronComponentConnectionActiveWordRecordMemory;
+	SANIForwardPropogationSequenceElementData* neuronComponentConnectionActiveSequenceElementRecord;	//updated @SANI1q2a - old type LRPpreprocessorPlainTextWord
+	#ifdef SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT_MEMORY
+	vector<SANIForwardPropogationSequenceElementData*> neuronComponentConnectionActiveSequenceElementRecordMemory;	//updated @SANI1q2a - old type LRPpreprocessorPlainTextWord
 	#endif
 	#endif
 	LRPpreprocessorPlainTextWord* candidateStringMatch;
@@ -242,7 +243,7 @@ public:
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_PROPAGATE
 	double activationSignalStrength;
-	vector<LRPpreprocessorPlainTextWord*> wordsCaptured;
+	vector<LRPpreprocessorPlainTextWord*> sequenceElementsCaptured;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_REFERENCE_SET_IDENTIFICATION_REFSET_DELIMITER_CONNECTIONS
 	int refsetConnectionType;
@@ -275,8 +276,8 @@ public:
 	int groupFrontComponentConnectionListIndex;
 	int numberOfWordsCurrentlyParsed;
 	#endif
-	#ifdef SANI_PARSE_RECORD_COMPONENT_WORD_INDEX
-	int wordIndex;
+	#ifdef SANI_PARSE_RECORD_COMPONENT_SEQUENCE_INDEX
+	int sequenceIndex;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING_OR_GROUP	
 	bool parseTreeComponentTypeString;

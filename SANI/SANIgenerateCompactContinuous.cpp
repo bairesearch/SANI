@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactContinuous.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1c 25-August-2021
+ * Project Version: 1q2a 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Continuous - unsupervised training of sequence grammar parse network
  * /
@@ -38,7 +38,7 @@
 
 #ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_CONTINUOUS
 
-bool SANIgenerateCompactContinuousClass::findAndReconcileVariationWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, const vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
+bool SANIgenerateCompactContinuousClass::findAndReconcileVariationWrapper(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, const vector<LRPpreprocessorPlainTextWord*>* sentenceContents, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const bool supportVariableFirstComponents)
 {
 	bool result = true;
 	
@@ -46,7 +46,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileVariationWrapper(SANItr
 	cout << "\nfindAndReconcileVariationWrapper:" << endl;
 	#endif
 	
-	if(!findAndReconcileVariation(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, supportVariableFirstComponents))
+	if(!findAndReconcileVariation(translatorVariables, SANIGroupTypes, forwardPropogationSequenceData, supportVariableFirstComponents))
 	{
 		result = false;
 	}
@@ -54,7 +54,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileVariationWrapper(SANItr
 	return result;
 }
 			
-bool SANIgenerateCompactContinuousClass::findAndReconcileVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
+bool SANIgenerateCompactContinuousClass::findAndReconcileVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const bool supportVariableFirstComponents)
 {
 	bool result = true;
 	
@@ -62,7 +62,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileVariation(SANItranslato
 	if(translatorVariables->currentPreprocessorSentenceInList->sentenceIndexOriginal <= translatorVariables->maxNumberSentences/2)
 	{
 	#endif
-		bool foundAndReconciledMissingOrDifferentIncrementalNeurons = findAndReconcileIncrementalVariation(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, supportVariableFirstComponents);
+		bool foundAndReconciledMissingOrDifferentIncrementalNeurons = findAndReconcileIncrementalVariation(translatorVariables, SANIGroupTypes, forwardPropogationSequenceData, supportVariableFirstComponents);
 		result = foundAndReconciledMissingOrDifferentIncrementalNeurons;
 
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_TEST_VERIFICATION_AFTER_GENERATION
@@ -72,7 +72,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileVariation(SANItranslato
 	return result;
 }
 
-bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const bool supportVariableFirstComponents)
+bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SANItranslatorVariablesClass* translatorVariables, vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const bool supportVariableFirstComponents)
 {
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
 	cout << "SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation" << endl;
@@ -81,35 +81,35 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	bool foundAndReconciledMissingOrDifferentIncrementalNeurons = false;
 	
 	
-	//if SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY, first layer contains firstPOS neuron for each wordIndex only
+	//if SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY, first layer contains firstPOS neuron for each sequenceIndex only
 	vector<SANIGroupNeuralNetwork*> firstLayer;
-	forwardPropogationSentenceData->firstLayer = &firstLayer;
-	SANIpropagateCompact.defineFirstLayer(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData);
+	forwardPropogationSequenceData->firstLayer = &firstLayer;
+	SANIpropagateCompact.defineFirstLayer(translatorVariables, SANIGroupTypes, forwardPropogationSequenceData);
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_HISTORY
-	forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory.clear();
+	forwardPropogationSequenceData->listOfHighLevelNeuronsCompleteHistory.clear();
 	#endif
 	
 	/*
 	algorithm2;
-	let l be the first word in the sentence word sequence
-	for every input neuron in sentence word sequence starting at l*
+	let l be the first sequenceElement in the sentence sequenceElement sequence
+	for every input neuron in sentence sequenceElement sequence starting at l*
 		propagate its input through the network
-			ensure word index is contiguous during forward prop (SANI_ENFORCE_WORD_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT: SANIpropagateOperations.componentWordConnectivityTestsWrapper)
+			ensure sequenceElement index is contiguous during forward prop (SANI_ENFORCE_SEQUENCEELEMENT_CONNECTIVITY_BETWEEN_PREVIOUS_ACTIVE_COMPONENTS_AND_NEWLY_ACTIVATED_COMPONENT: SANIpropagateOperations.componentWordConnectivityTestsWrapper)
 			mark all hidden neurons that fire (these are candidates)
 			mark all hidden neurons that are only partially activated
 				these become candidates for splitting
 				never split a neuron below 2 components
-			take the hidden neuron that support the most words in the sentence from l (whether it is fully activated or partially activated)
+			take the hidden neuron that support the most sequenceElements in the sentence from l (whether it is fully activated or partially activated)
 				if necessary (it is partially activated) split the neuron;
 					b) take its components and forge a new neuron
 					add to vector q
 				c) if it is fully activated add to vector q
-				then repeat* from last word index (l)
-		if no appropriate hidden neuron is found create a a) new hidden neuron containing the first input in the current part of the sentence word sequence*
+				then repeat* from last sequenceElement index (l)
+		if no appropriate hidden neuron is found create a a) new hidden neuron containing the first input in the current part of the sentence sequenceElement sequence*
 			add to vector q
 			OLD: how to determine whether to use this new neuron or just connect its first input to..
-			then repeat* from last word index (l)
+			then repeat* from last sequenceElement index (l)
 	combine all the a) new, b) splitted, or c) fully activated neurons into a d) new neuron on a higher layer
 		this new higher layer neuron d) represents a successfully parsed sentence m
 			OPTIONAL: add this neuron to the highest level full gramatical sentence neuron
@@ -117,10 +117,10 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		1 the dog barks
 		2 the dog that is near the house barks
 		will create 2 independent top level groups (the dog barks group will not be reused by 2)
-		possibly look for and catch recursive group connectivity and ensure that groups can only support varied word index ranges when they refer to recursive (optional) groups
+		possibly look for and catch recursive group connectivity and ensure that groups can only support varied sequenceElement index ranges when they refer to recursive (optional) groups
 	*/
 	
-	SANIpropagateOperations.setParseSentenceReverse(true, forwardPropogationSentenceData);
+	SANIpropagateOperations.setParseSentenceReverse(true, forwardPropogationSequenceData);
 	//SANIGroupNeuralNetwork* firstLayerNeuronGroupStart = NULL;
 	
 	int indexInSequence = 0;
@@ -129,7 +129,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 
 	vector<SANIGroupNeuralNetwork*> listOfHighLevelNeurons1;	//vectorQ
 	vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeuronsCurrent = &listOfHighLevelNeurons1;
-	bool creatingNewNeuronSequence1 = false;	//this is used to ensure that only a single neuron is created to store the unrecognised sequence (not 1 neuron per word of the sequence)
+	bool creatingNewNeuronSequence1 = false;	//this is used to ensure that only a single neuron is created to store the unrecognised sequence (not 1 neuron per sequenceElement of the sequence)
 	int neuronSequenceIndex1 = 0;
 	SANIGroupNeuralNetwork* newNeuronSequenceGroup1 = NULL;
 
@@ -137,8 +137,8 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	bool findingCandidateComponent1 = true;
 	bool findingCandidateComponent2 = false;
 	bool findingCentralVariation = false;
-	int activatedNeuronWithMaxWordIndexCoverageFirstWordIndexAllowed = INT_DEFAULT_VALUE;	//for central variation detection only
-	int activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed = INT_DEFAULT_VALUE;	//for central variation detection only
+	int activatedNeuronWithMaxSequenceIndexCoverageFirstSequenceIndexAllowed = INT_DEFAULT_VALUE;	//for central variation detection only
+	int activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed = INT_DEFAULT_VALUE;	//for central variation detection only
 	SANIGroupParseTree* candidateNeuronBaseParseTree = NULL;
 	vector<SANIGroupNeuralNetwork*> listOfHighLevelNeuronsCentralVariation;
 	#endif
@@ -146,10 +146,10 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	int loopIndex = 0;
 	
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableStartComponent = false;	//see SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady: if(forwardPropogationSignalData->firstIndexInSequence == 0) check
+	forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableStartComponent = false;	//see SANIpropagateOperationsClass::propagateWordThroughNetworkGroupVerifyComponentSequenceActivationReady: if(forwardPropogationSignalData->firstIndexInSequence == 0) check
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent = false;
+	forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableEndComponent = false;
 	#endif
 	//#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 	SANIGroupNeuralNetwork* highLevelNeuronExpectingVariableLastComponent = NULL;
@@ -158,16 +158,16 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	while(stillIdentifyingHighLevelNeurons)
 	{	
 		int currentFirstInputNeuronIndexInSequence;
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
-			currentFirstInputNeuronIndexInSequence = forwardPropogationSentenceData->sentenceContents->size()-1-indexInSequence;
+			currentFirstInputNeuronIndexInSequence = forwardPropogationSequenceData->sentenceContents->size()-1-indexInSequence;
 		}
 		else
 		{
 			currentFirstInputNeuronIndexInSequence = indexInSequence;
 		}
 		
-		LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSentenceData->sentenceContents))[currentFirstInputNeuronIndexInSequence];
+		LRPpreprocessorPlainTextWord* currentWord = (*(forwardPropogationSequenceData->sentenceContents))[currentFirstInputNeuronIndexInSequence];
 		
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 		cout << "currentWord->tagName = " << currentWord->tagName << endl;
@@ -176,46 +176,46 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 		if(highLevelNeuronExpectingVariableLastComponent == NULL)
 		{
-			forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent = true;
+			forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableEndComponent = true;
 		}
 		else
 		{
-			forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent = false;
+			forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableEndComponent = false;
 		}
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 		if(loopIndex > 0)
 		{
-			forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableStartComponent = true;
+			forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableStartComponent = true;
 		}
 		#endif
 
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
-		cout << "\e[35m \n** loopIndex = " << loopIndex << ", indexInSequence = " << indexInSequence << ", word = " << (forwardPropogationSentenceData->sentenceContents)->at(currentFirstInputNeuronIndexInSequence)->tagName << " \e[0m" << endl;
+		cout << "\e[35m \n** loopIndex = " << loopIndex << ", indexInSequence = " << indexInSequence << ", sequenceElement = " << (forwardPropogationSequenceData->sentenceContents)->at(currentFirstInputNeuronIndexInSequence)->tagName << " \e[0m" << endl;
 		#endif
 
 		#ifdef SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY
-		//if SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY, first layer contains firstPOS neuron for each wordIndex only
-		SANIGroupNeuralNetwork* currentLayerNeuronGroupStart = (firstLayer)[currentFirstInputNeuronIndexInSequence];	//will only be valid for pos unambiguous words
+		//if SANI_PROPAGATE_ALL_POS_VALUES_SIMULTANEOUSLY, first layer contains firstPOS neuron for each sequenceIndex only
+		SANIGroupNeuralNetwork* currentLayerNeuronGroupStart = (firstLayer)[currentFirstInputNeuronIndexInSequence];	//will only be valid for pos unambiguous sequenceElements
 		#else
 		SANIGroupNeuralNetwork* currentLayerNeuronGroupStart = (firstLayer)[currentFirstInputNeuronIndexInSequence];
 		#endif
 		
-		forwardPropogationSentenceData->toplevelGroupActivationFound = false;
+		forwardPropogationSequenceData->toplevelGroupActivationFound = false;
 
-		forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverage = true;
-		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage = NULL;
-		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial = false;
+		forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverage = true;
+		forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage = NULL;
+		forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoveragePartial = false;
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent = false;
+		forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableStartComponent = false;
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent = false;
+		forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableEndComponent = false;
 		#endif
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS
-		forwardPropogationSentenceData->simultaneousAmbiguousPOSpropagation = true;
+		forwardPropogationSequenceData->simultaneousAmbiguousPOSpropagation = true;
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
-		forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = true;
+		forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageRequirePosAmbiguousContext = true;
 		#endif
 		#endif
 
@@ -229,18 +229,18 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		if(findingCentralVariation)
 		{
 			bool resetAllNeuronComponents = true;
-			if(SANIpropagateCompact.performPropagation(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, resetAllNeuronComponents, false, indexInSequence, activatedNeuronWithMaxWordIndexCoverageFirstWordIndexAllowed, activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed))
+			if(SANIpropagateCompact.performPropagation(translatorVariables, SANIGroupTypes, forwardPropogationSequenceData, resetAllNeuronComponents, false, indexInSequence, activatedNeuronWithMaxSequenceIndexCoverageFirstSequenceIndexAllowed, activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed))
 			{
-				toplevelGroupActivationFound = true;	//note this will only be set true if the entire sentence word indices have been covered (ie only when currentFirstInputNeuronIndexInSequence=start)
+				toplevelGroupActivationFound = true;	//note this will only be set true if the entire sentence sequenceElement indices have been covered (ie only when currentFirstInputNeuronIndexInSequence=start)
 			}
 		}
 		else
 		{
 		#endif			
 			bool resetAllNeuronComponents = true;
-			if(SANIpropagateCompact.performPropagation(translatorVariables, SANIGroupTypes, forwardPropogationSentenceData, resetAllNeuronComponents, false, indexInSequence))
+			if(SANIpropagateCompact.performPropagation(translatorVariables, SANIGroupTypes, forwardPropogationSequenceData, resetAllNeuronComponents, false, indexInSequence))
 			{
-				toplevelGroupActivationFound = true;	//note this will only be set true if the entire sentence word indices have been covered (ie only when currentFirstInputNeuronIndexInSequence=start)
+				toplevelGroupActivationFound = true;	//note this will only be set true if the entire sentence sequenceElement indices have been covered (ie only when currentFirstInputNeuronIndexInSequence=start)
 			}
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_DETECT_LOCAL_VARATION
 		}
@@ -251,24 +251,24 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		{
 			findingCandidateComponent2 = false;
 			
-			if(forwardPropogationSentenceData->foundCandidateComponent2)
+			if(forwardPropogationSequenceData->foundCandidateComponent2)
 			{
 				listOfHighLevelNeuronsCurrent->push_back(candidateNeuronBaseParseTree->groupRef);
 
-				SANIGroupParseTree* candidateComponent2sourceParseTreeGroup = forwardPropogationSentenceData->candidateComponent2sourceParseTreeGroup;
+				SANIGroupParseTree* candidateComponent2sourceParseTreeGroup = forwardPropogationSequenceData->candidateComponent2sourceParseTreeGroup;
 
-				if(forwardPropogationSentenceData->parseSentenceReverse)
+				if(forwardPropogationSequenceData->parseSentenceReverse)
 				{
-					activatedNeuronWithMaxWordIndexCoverageFirstWordIndexAllowed = candidateNeuronBaseParseTree->parseTreeMinWordIndex-1;
-					activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed = candidateComponent2sourceParseTreeGroup->parseTreeMaxWordIndex+1;
+					activatedNeuronWithMaxSequenceIndexCoverageFirstSequenceIndexAllowed = candidateNeuronBaseParseTree->parseTreeMinSequenceIndex-1;
+					activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed = candidateComponent2sourceParseTreeGroup->parseTreeMaxSequenceIndex+1;
 				}
 				else
 				{
-					activatedNeuronWithMaxWordIndexCoverageFirstWordIndexAllowed = candidateNeuronBaseParseTree->parseTreeMaxWordIndex+1;
-					activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed = candidateComponent2sourceParseTreeGroup->parseTreeMinWordIndex-1;
+					activatedNeuronWithMaxSequenceIndexCoverageFirstSequenceIndexAllowed = candidateNeuronBaseParseTree->parseTreeMaxSequenceIndex+1;
+					activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed = candidateComponent2sourceParseTreeGroup->parseTreeMinSequenceIndex-1;
 				}
 				
-				if(activatedNeuronWithMaxWordIndexCoverageFirstWordIndexAllowed == activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed)
+				if(activatedNeuronWithMaxSequenceIndexCoverageFirstSequenceIndexAllowed == activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed)
 				{
 					//perfect match detected between activated section of candidateNeuronBaseParseTree and candidateComponent2sourceParseTreeGroup, set component2 of candidateNeuronBase as optional
 				}
@@ -280,20 +280,20 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 			}
 			else
 			{
-				SANIGroupNeuralNetwork* newNeuron = splitNeuron(SANIGroupTypes, forwardPropogationSentenceData, candidateNeuronBaseParseTree);	//listOfHighLevelNeuronsCurrent CHECKTHIS
+				SANIGroupNeuralNetwork* newNeuron = splitNeuron(SANIGroupTypes, forwardPropogationSequenceData, candidateNeuronBaseParseTree);	//listOfHighLevelNeuronsCurrent CHECKTHIS
 				listOfHighLevelNeuronsCurrent->push_back(newNeuron);
 								
 				//go back to standard findAndReconcileIncrementalVariation routine
 			}
 			
-			forwardPropogationSentenceData->findingCandidateComponent2 = false;
-			forwardPropogationSentenceData->candidateComponent2ToFind = NULL;
+			forwardPropogationSequenceData->findingCandidateComponent2 = false;
+			forwardPropogationSequenceData->candidateComponent2ToFind = NULL;
 			candidateNeuronBaseParseTree = NULL;
 		}
 		else
 		{
 		#endif
-			if(!SANIpropagateCompactGenerateOperations.verifyActivatedNeuronsAtLeastOne(forwardPropogationSentenceData, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage, newNeuronSequenceGroup1))
+			if(!SANIpropagateCompactGenerateOperations.verifyActivatedNeuronsAtLeastOne(forwardPropogationSequenceData, forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage, newNeuronSequenceGroup1))
 			{
 				//case a						
 				foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
@@ -301,7 +301,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 				#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_SIMULTANEOUSLY_PROPAGATE_UNAMBIGUOUS_POS_PERMUTATIONS
 				if(LRPpreprocessorPOStagger.isWordPOSambiguous(currentWord))
 				{
-					currentLayerNeuronGroupStart = SANIpropagateCompact.createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation(translatorVariables, currentWord, currentFirstInputNeuronIndexInSequence, forwardPropogationSentenceData);
+					currentLayerNeuronGroupStart = SANIpropagateCompact.createNewArtificalNeuronRepresentingAmbiguousPOSinputPermutation(translatorVariables, currentWord, currentFirstInputNeuronIndexInSequence, forwardPropogationSequenceData);
 				}	
 				#endif
 				#ifdef SANI_SEQUENCE_GRAMMAR_POS_MAP_LONGEST_POS_UNAMBIGUOUS_SUBSEQUENCES
@@ -317,7 +317,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 				#endif
 				
 				#ifdef SANI_SEQUENCE_GRAMMAR_DISALLOW_DIRECT_REFSET_AND_DELIMITER_POS_COMPONENTS_ON_SAME_NEURON
-				bool refsetDelimiterPOSfound = wordHasRefsetDelimiterPOS(currentLayerNeuronGroupStart);
+				bool refsetDelimiterPOSfound = sequenceElementHasRefsetDelimiterPOS(currentLayerNeuronGroupStart);
 				bool highLevelListEnd = false;
 				if(refsetDelimiterPOSfound)
 				{
@@ -341,7 +341,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 				}
 				#endif
 
-				createOrAppendFirstLevelHiddenLayerGroup(SANIGroupTypes, forwardPropogationSentenceData, currentLayerNeuronGroupStart, &creatingNewNeuronSequence1, &neuronSequenceIndex1, &newNeuronSequenceGroup1, listOfHighLevelNeuronsCurrent);
+				createOrAppendFirstLevelHiddenLayerGroup(SANIGroupTypes, forwardPropogationSequenceData, currentLayerNeuronGroupStart, &creatingNewNeuronSequence1, &neuronSequenceIndex1, &newNeuronSequenceGroup1, listOfHighLevelNeuronsCurrent);
 				
 				indexInSequence++;
 			}
@@ -352,29 +352,29 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 				foundAndReconciledMissingOrDifferentIncrementalNeurons = true;
 
 				#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_MARK_AS_UNAMBIGUOUS
-				SANIgenerateCompactOperations.markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage, true);
+				SANIgenerateCompactOperations.markAmbiguousFirstHiddenLayerNeuronsAsUnambiguous(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage, true);
 				#endif
 						
 				#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 				#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-				if(!(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial || forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent))
+				if(!(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoveragePartial || forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableEndComponent))
 				#else
-				if(!(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoveragePartial))
+				if(!(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoveragePartial))
 				#endif
 				{
 				#endif
 					//case c
 					#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
-					cout << "B addNeuronToList, indexInSequence = " << indexInSequence  << ", nextIndexInSequence = " << SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSentenceData) << ", groupIndexes = " << SANInodes.printParseTreeGroupIndicesFlat(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage) << endl;
+					cout << "B addNeuronToList, indexInSequence = " << indexInSequence  << ", nextIndexInSequence = " << SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSequenceData) << ", groupIndexes = " << SANInodes.printParseTreeGroupIndicesFlat(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage) << endl;
 					#endif
 					
 					//fully activated group coverage+weight is > partially activated group coverage+weight
 					
 					#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-					addVariableFirstComponent(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef);
+					addVariableFirstComponent(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage->groupRef);
 					#endif
 	
-					addNeuronToList(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef, &indexInSequence, &highLevelNeuronExpectingVariableLastComponent);
+					addNeuronToList(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage->groupRef, &indexInSequence, &highLevelNeuronExpectingVariableLastComponent);
 				
 				#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
 				}
@@ -382,7 +382,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 				{
 					//case b
 					#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
-					cout << "C splitGroupAtLastActivatedComponent + addNeuronToList, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef->groupIndex = " << forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef->groupIndex << endl;
+					cout << "C splitGroupAtLastActivatedComponent + addNeuronToList, forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage->groupRef->groupIndex = " << forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage->groupRef->groupIndex << endl;
 					#endif
 					//partially activated group coverage+weight is > fully activated group coverage+weight
 					
@@ -391,34 +391,34 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 					if(findingCandidateComponent1)
 					{
 						SANIComponentNeuralNetwork* candidateComponent2 = NULL; 
-						candidateNeuronBaseParseTree = forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage;
-						if(verifyAndMarkNeuronAsCandidateWrapper(forwardPropogationSentenceData, candidateNeuronBaseParseTree, &candidateComponent2))
+						candidateNeuronBaseParseTree = forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage;
+						if(verifyAndMarkNeuronAsCandidateWrapper(forwardPropogationSequenceData, candidateNeuronBaseParseTree, &candidateComponent2))
 						{
 							foundLocalVariationCandidate = true;
 							findingCandidateComponent1 = false;
 							findingCandidateComponent2 = true;
-							forwardPropogationSentenceData->findingCandidateComponent2 = true;
-							forwardPropogationSentenceData->candidateComponent2ToFind = candidateComponent2;
+							forwardPropogationSequenceData->findingCandidateComponent2 = true;
+							forwardPropogationSequenceData->candidateComponent2ToFind = candidateComponent2;
 						}
 					}
 					if(!foundLocalVariationCandidate)
 					{
 					#endif
 						#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-						if(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent)
+						if(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableEndComponent)
 						{
-							prepareVariableLastComponent(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage, &highLevelNeuronExpectingVariableLastComponent);
+							prepareVariableLastComponent(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage, &highLevelNeuronExpectingVariableLastComponent);
 						}
 						else
 						{
 						#endif
 							#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-							addVariableFirstComponent(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage->groupRef);
+							addVariableFirstComponent(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeuronsCurrent, forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage->groupRef);
 							#endif
 	
-							SANIGroupNeuralNetwork* newNeuron = splitNeuron(SANIGroupTypes, forwardPropogationSentenceData, forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverage);
+							SANIGroupNeuralNetwork* newNeuron = splitNeuron(SANIGroupTypes, forwardPropogationSequenceData, forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverage);
 							
-							addNeuronToList(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, newNeuron, &indexInSequence, &highLevelNeuronExpectingVariableLastComponent);
+							addNeuronToList(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeuronsCurrent, newNeuron, &indexInSequence, &highLevelNeuronExpectingVariableLastComponent);
 							
 						#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 						}
@@ -432,24 +432,24 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 			}			
 
 			#ifdef SANI_FREE_MEMORY
-			SANIpropagateOperationsParseTree.deinitialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSentenceData->parseTreeGroupListPropagate));
+			SANIpropagateOperationsParseTree.deinitialiseParseTreeGroupList(SANIGroupTypes, &(forwardPropogationSequenceData->parseTreeGroupListPropagate));
 			#endif
 			
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_DETECT_LOCAL_VARATION
 			if(findingCentralVariation)
 			{
-				if(currentFirstInputNeuronIndexInSequence == activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed)
+				if(currentFirstInputNeuronIndexInSequence == activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed)
 				{
 					SANIGroupNeuralNetwork* grammaticalSentenceNeuron = NULL;
-					if(connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeuronsCurrent, &grammaticalSentenceNeuron, false))
+					if(connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeuronsCurrent, &grammaticalSentenceNeuron, false))
 					{
 						listOfHighLevelNeurons1.push_back(grammaticalSentenceNeuron);
 					}
 					findingCentralVariation = false;
 					findingCandidateComponent1 = true;
 					listOfHighLevelNeuronsCurrent = &listOfHighLevelNeurons1;
-					activatedNeuronWithMaxWordIndexCoverageFirstWordIndexAllowed = INT_DEFAULT_VALUE;
-					activatedNeuronWithMaxWordIndexCoverageLastWordIndexAllowed = INT_DEFAULT_VALUE;
+					activatedNeuronWithMaxSequenceIndexCoverageFirstSequenceIndexAllowed = INT_DEFAULT_VALUE;
+					activatedNeuronWithMaxSequenceIndexCoverageLastSequenceIndexAllowed = INT_DEFAULT_VALUE;
 					//candidateNeuronBaseParseTree = NULL;	//already done
 				}
 			}
@@ -459,10 +459,10 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 		}
 		#endif
 		
-		if(indexInSequence < forwardPropogationSentenceData->sentenceContents->size())
+		if(indexInSequence < forwardPropogationSequenceData->sentenceContents->size())
 		{
 			stillIdentifyingHighLevelNeurons = true;	
-			//see how many words successfully propagated through the next time
+			//see how many sequenceElements successfully propagated through the next time
 		}
 		else
 		{
@@ -479,21 +479,21 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 	}
 		
 	SANIGroupNeuralNetwork* grammaticalSentenceNeuron = NULL;
-	connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSentenceData, &listOfHighLevelNeurons1, &grammaticalSentenceNeuron, true);
+	connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSequenceData, &listOfHighLevelNeurons1, &grammaticalSentenceNeuron, true);
 	
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING_EFFICIENT
 	SANIgenerateCompactIdentify.markSubNeuronsReset(grammaticalSentenceNeuron);	
 	#endif
 
-	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverage = false;
+	forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverage = false;
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableStartComponent = false;
+	forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableStartComponent = false;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-	forwardPropogationSentenceData->recordActivatedNeuronWithMaxWordIndexCoverageSupportVariableEndComponent = false;
+	forwardPropogationSequenceData->recordActivatedNeuronWithMaxSequenceIndexCoverageSupportVariableEndComponent = false;
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ALLOW_TO_BE_MATCHED_REQUIRE_POS_UNAMBIGUOUS_CONTEXT
-	forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageRequirePosAmbiguousContext = false;
+	forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageRequirePosAmbiguousContext = false;
 	#endif
 					
 	return foundAndReconciledMissingOrDifferentIncrementalNeurons;
@@ -502,7 +502,7 @@ bool SANIgenerateCompactContinuousClass::findAndReconcileIncrementalVariation(SA
 
 		
 
-bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron, int* indexInSequence, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
+bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron, int* indexInSequence, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
 {	
 	bool result = true;
 	
@@ -510,14 +510,14 @@ bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupT
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
 	if(*highLevelNeuronExpectingVariableLastComponent != NULL)
 	{
-		addVariableLastComponent(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeurons, neuron, highLevelNeuronExpectingVariableLastComponent);
+		addVariableLastComponent(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeurons, neuron, highLevelNeuronExpectingVariableLastComponent);
 		neuron = *highLevelNeuronExpectingVariableLastComponent;
 		*highLevelNeuronExpectingVariableLastComponent = NULL;
 	}
 	#endif
 	#endif
 	
-	*indexInSequence = SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSentenceData);
+	*indexInSequence = SANIgenerateCompactOperations.calculateNextIndexInSequence(forwardPropogationSequenceData);
 		
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 	#ifdef SANI_SEQUENCE_PREVENT_INTRASENTENCE_MATCHING
@@ -529,7 +529,7 @@ bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupT
 	neuron->marked = true;	
 	#endif
 	#ifdef SANI_SEQUENCE_GRAMMAR_GENERATE_ENSURE_ALL_NEURONS_IN_SUBGROUP_DO_NOT_HAVE_CONNECTIONS_TO_ANY_NEW_CANDIDATE
-	SANIgenerateCompactOperations.addParentNeuronsToList(&(forwardPropogationSentenceData->listOfHighLevelNeuronsCompleteHistory), neuron);
+	SANIgenerateCompactOperations.addParentNeuronsToList(&(forwardPropogationSequenceData->listOfHighLevelNeuronsCompleteHistory), neuron);
 	#ifdef SANI_SEQUENCE_GRAMMAR_OPTIMISE_FOR_DIVERGENT_CONVERGENT_PATHWAYS
 	SANIgenerateCompactOperations.addParentNeuronsToListReset(neuron);
 	#endif
@@ -538,7 +538,7 @@ bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupT
 	
 	/*//this code has been moved outside of SANIgenerateCompactContinuousClass::addNeuronToList @SANI1m6a
 	#ifndef SANI_SEQUENCE_GRAMMAR_LIMIT_NUM_COMPONENTS
-	addVariableFirstComponent(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeurons, neuron);
+	addVariableFirstComponent(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeurons, neuron);
 	#endif
 	*/
 	
@@ -550,20 +550,20 @@ bool SANIgenerateCompactContinuousClass::addNeuronToList(const vector<SANIGroupT
 }
 
 #ifndef SANI_SEQUENCE_GRAMMAR_GENERATE_INCREMENTALLY_SECTIONED
-SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* partiallyActivatedNeuronWithMaxWordIndexCoverage)
+SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupParseTree* partiallyActivatedNeuronWithMaxSequenceIndexCoverage)
 {	
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 	
 	int indexToSplitVector1 = INT_DEFAULT_VALUE;
 	int indexToSplitVector2 = INT_DEFAULT_VALUE;			
-	SANIpropagateCompactGenerateOperations.identifyComponentIndexFirstAndLastActivatedIndexUnordered(forwardPropogationSentenceData, partiallyActivatedNeuronWithMaxWordIndexCoverage, &indexToSplitVector1, &indexToSplitVector2);
+	SANIpropagateCompactGenerateOperations.identifyComponentIndexFirstAndLastActivatedIndexUnordered(forwardPropogationSequenceData, partiallyActivatedNeuronWithMaxSequenceIndexCoverage, &indexToSplitVector1, &indexToSplitVector2);
 	#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-	if(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent)
+	if(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableStartComponent)
 	{
 		//ensure not to split off the first variable component (keep it in the group)
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
-			indexToSplitVector2 = partiallyActivatedNeuronWithMaxWordIndexCoverage->groupRef->components.size()-1;
+			indexToSplitVector2 = partiallyActivatedNeuronWithMaxSequenceIndexCoverage->groupRef->components.size()-1;
 		}
 		else
 		{
@@ -576,21 +576,21 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitNeuron(vector<S
 	cout << "indexToSplitVector1 = " << indexToSplitVector1 << endl;
 	cout << "indexToSplitVector2 = " << indexToSplitVector2 << endl;				
 	#endif				
-	SANIGroupNeuralNetwork* newNeuron = splitGroupAtLastActivatedComponentUnordered(forwardPropogationSentenceData, SANIGroupTypes, partiallyActivatedNeuronWithMaxWordIndexCoverage->groupRef, indexToSplitVector1, indexToSplitVector2);	//note passing partiallyActivatedNeuronWithMaxWordIndexCoverage instead of partiallyActivatedNeuronWithMaxWordIndexCoverage->groupRef because groupRef's activations may have been overwritten if the neuron was reset after being saved to partiallyActivatedNeuronWithMaxWordIndexCoverage
+	SANIGroupNeuralNetwork* newNeuron = splitGroupAtLastActivatedComponentUnordered(forwardPropogationSequenceData, SANIGroupTypes, partiallyActivatedNeuronWithMaxSequenceIndexCoverage->groupRef, indexToSplitVector1, indexToSplitVector2);	//note passing partiallyActivatedNeuronWithMaxSequenceIndexCoverage instead of partiallyActivatedNeuronWithMaxSequenceIndexCoverage->groupRef because groupRef's activations may have been overwritten if the neuron was reset after being saved to partiallyActivatedNeuronWithMaxSequenceIndexCoverage
 	
 	#else
 	
 	int indexToSplitVector = INT_DEFAULT_VALUE;
-	SANIpropagateCompact.identifyComponentIndexLastActivatedIndex(forwardPropogationSentenceData, partiallyActivatedNeuronWithMaxWordIndexCoverage, &indexToSplitVector);
+	SANIpropagateCompact.identifyComponentIndexLastActivatedIndex(forwardPropogationSequenceData, partiallyActivatedNeuronWithMaxSequenceIndexCoverage, &indexToSplitVector);
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
 	cout << "indexToSplitVector = " << indexToSplitVector << endl;				
 	#endif
-	SANIGroupNeuralNetwork* newNeuron = splitGroupAtLastActivatedComponent(forwardPropogationSentenceData, SANIGroupTypes, partiallyActivatedNeuronWithMaxWordIndexCoverage->groupRef, indexToSplitVector);	//note passing partiallyActivatedNeuronWithMaxWordIndexCoverage instead of partiallyActivatedNeuronWithMaxWordIndexCoverage->groupRef because groupRef's activations may have been overwritten if the neuron was reset after being saved to partiallyActivatedNeuronWithMaxWordIndexCoverage
+	SANIGroupNeuralNetwork* newNeuron = splitGroupAtLastActivatedComponent(forwardPropogationSequenceData, SANIGroupTypes, partiallyActivatedNeuronWithMaxSequenceIndexCoverage->groupRef, indexToSplitVector);	//note passing partiallyActivatedNeuronWithMaxSequenceIndexCoverage instead of partiallyActivatedNeuronWithMaxSequenceIndexCoverage->groupRef because groupRef's activations may have been overwritten if the neuron was reset after being saved to partiallyActivatedNeuronWithMaxSequenceIndexCoverage
 	#endif
 
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
-	cout << "partiallyActivatedNeuronWithMaxWordIndexCoverage->parseTreeMaxWordIndex = " << partiallyActivatedNeuronWithMaxWordIndexCoverage->parseTreeMaxWordIndex << endl;
-	cout << "partiallyActivatedNeuronWithMaxWordIndexCoverage->parseTreeMinWordIndex = " << partiallyActivatedNeuronWithMaxWordIndexCoverage->parseTreeMinWordIndex << endl;
+	cout << "partiallyActivatedNeuronWithMaxSequenceIndexCoverage->parseTreeMaxSequenceIndex = " << partiallyActivatedNeuronWithMaxSequenceIndexCoverage->parseTreeMaxSequenceIndex << endl;
+	cout << "partiallyActivatedNeuronWithMaxSequenceIndexCoverage->parseTreeMinSequenceIndex = " << partiallyActivatedNeuronWithMaxSequenceIndexCoverage->parseTreeMinSequenceIndex << endl;
 	//cout << "indexInSequence = " << indexInSequence << endl;
 	
 	#endif
@@ -598,18 +598,18 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitNeuron(vector<S
 	return newNeuron;
 }
 #ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
-bool SANIgenerateCompactContinuousClass::addVariableFirstComponent(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron)
+bool SANIgenerateCompactContinuousClass::addVariableFirstComponent(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork* neuron)
 {	
 	bool result = true;
 	
-	if(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent)
+	if(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableStartComponent)
 	{		
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
-		cout << "(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableStartComponent)" << endl;
+		cout << "(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableStartComponent)" << endl;
 		#endif
 		
 		int variableComponentInGroup = 0;
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
 			variableComponentInGroup = neuron->components.size() - 1;
 		}
@@ -635,10 +635,10 @@ bool SANIgenerateCompactContinuousClass::addVariableFirstComponent(vector<SANIGr
 		#endif
 		
 		SANIGroupNeuralNetwork* grammaticalSentenceNeuron = NULL;
-		if(connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeurons, &grammaticalSentenceNeuron, false))
+		if(connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeurons, &grammaticalSentenceNeuron, false))
 		{
 			listOfHighLevelNeurons->clear();
-			SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuron, variableComponent);
+			SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, grammaticalSentenceNeuron, variableComponent);
 		}
 	}	
 	
@@ -646,7 +646,7 @@ bool SANIgenerateCompactContinuousClass::addVariableFirstComponent(vector<SANIGr
 }
 #endif
 #ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_LAST_COMPONENTS
-bool SANIgenerateCompactContinuousClass::prepareVariableLastComponent(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, constEffective SANIGroupParseTree* partiallyActivatedNeuronWithMaxWordIndexCoverage, constEffective SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
+bool SANIgenerateCompactContinuousClass::prepareVariableLastComponent(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, constEffective SANIGroupParseTree* partiallyActivatedNeuronWithMaxSequenceIndexCoverage, constEffective SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
 {	
 	bool result = true;
 
@@ -655,25 +655,25 @@ bool SANIgenerateCompactContinuousClass::prepareVariableLastComponent(vector<SAN
 	#endif
 
 	SANIGroupNeuralNetwork* grammaticalSentenceNeuron = NULL;
-	if(connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSentenceData, listOfHighLevelNeurons, &grammaticalSentenceNeuron, false))
+	if(connectListOfHighLevelNeuronsToNewNeuron(SANIGroupTypes, forwardPropogationSequenceData, listOfHighLevelNeurons, &grammaticalSentenceNeuron, false))
 	{
 		listOfHighLevelNeurons->clear();
 	}	
 	
-	*highLevelNeuronExpectingVariableLastComponent = partiallyActivatedNeuronWithMaxWordIndexCoverage->groupRef;
+	*highLevelNeuronExpectingVariableLastComponent = partiallyActivatedNeuronWithMaxSequenceIndexCoverage->groupRef;
 	
 	return result;	
 }
-bool SANIgenerateCompactContinuousClass::addVariableLastComponent(const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, const SANIGroupNeuralNetwork* neuron, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
+bool SANIgenerateCompactContinuousClass::addVariableLastComponent(const vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, const SANIGroupNeuralNetwork* neuron, SANIGroupNeuralNetwork** highLevelNeuronExpectingVariableLastComponent)
 {	
 	bool result = true;
 
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
-	cout << "(forwardPropogationSentenceData->activatedNeuronWithMaxWordIndexCoverageVariableEndComponent)" << endl;
+	cout << "(forwardPropogationSequenceData->activatedNeuronWithMaxSequenceIndexCoverageVariableEndComponent)" << endl;
 	#endif
 
 	int variableComponentInGroup;
-	if(forwardPropogationSentenceData->parseSentenceReverse)
+	if(forwardPropogationSequenceData->parseSentenceReverse)
 	{
 		variableComponentInGroup = 0;
 	}
@@ -698,7 +698,7 @@ bool SANIgenerateCompactContinuousClass::addVariableLastComponent(const vector<S
 	}
 	#endif
 
-	SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, (*highLevelNeuronExpectingVariableLastComponent), variableComponent);
+	SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, (*highLevelNeuronExpectingVariableLastComponent), variableComponent);
 		
 	return result;	
 }
@@ -708,7 +708,7 @@ bool SANIgenerateCompactContinuousClass::addVariableLastComponent(const vector<S
 
 
 
-bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork** grammaticalSentenceNeuron, const bool createTopLevelNeuron)
+bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons, SANIGroupNeuralNetwork** grammaticalSentenceNeuron, const bool createTopLevelNeuron)
 {
 	bool result = false;
 	
@@ -723,7 +723,7 @@ bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuro
 	#endif
 		result = true;
 		
-		SANIGroupNeuralNetwork* grammaticalSentenceNeuronSub = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSentenceData, SANIGroupTypes);
+		SANIGroupNeuralNetwork* grammaticalSentenceNeuronSub = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSequenceData, SANIGroupTypes);
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 		cout << grammaticalSentenceNeuronSub->groupIndex << " ";
 		#endif
@@ -743,17 +743,17 @@ bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuro
 			SANIGroupNeuralNetwork* grammaticalSentenceNeuronSubHigher = NULL;
 	
 			bool componentTypeString = SANInodes.calculateComponentTypeString(currentHighLevelNeuron);
-			SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, componentTypeString, false);
+			SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, componentTypeString, false);
 			
 			//add new higher level group in elongated tree
 			if(k>0 && k<listOfHighLevelNeurons->size()-1)
 			{//there is still another neuron in listOfHighLevelNeurons to be added to the tree
 				
-				grammaticalSentenceNeuronSubHigher = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSentenceData, SANIGroupTypes);
+				grammaticalSentenceNeuronSubHigher = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSequenceData, SANIGroupTypes);
 				#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_NETWORK_NODES
 				cout << grammaticalSentenceNeuronSubHigher->groupIndex << " ";
 				#endif
-				SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, false, false);
+				SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, grammaticalSentenceNeuronSub, grammaticalSentenceNeuronSubHigher, false, false);
 
 				
 				#ifdef SANI_DEBUG_FORMATION
@@ -771,10 +771,10 @@ bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuro
 			SANIGroupNeuralNetwork* currentHighLevelNeuron = (*listOfHighLevelNeurons)[k];
 				
 			#ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS_ENFORCE_DURING_FIRST_HIDDEN_LAYER_GENERATION
-			if(!directWireLowLevelPOSneuronToGrammaticalSentenceNeuron(SANIGroupTypes, forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub))
+			if(!directWireLowLevelPOSneuronToGrammaticalSentenceNeuron(SANIGroupTypes, forwardPropogationSequenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub))
 			{
 			#endif
-				SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, false, false);
+				SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, currentHighLevelNeuron, grammaticalSentenceNeuronSub, false, false);
 			#ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS_ENFORCE_DURING_FIRST_HIDDEN_LAYER_GENERATION
 			}
 			#endif
@@ -835,7 +835,7 @@ bool SANIgenerateCompactContinuousClass::connectListOfHighLevelNeuronsToNewNeuro
 
 	
 #ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_DETECT_LOCAL_VARATION
-bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidateWrapper(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupParseTree* candidateNeuronBaseParseTree, SANIComponentNeuralNetwork** candidateComponent2)
+bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidateWrapper(SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupParseTree* candidateNeuronBaseParseTree, SANIComponentNeuralNetwork** candidateComponent2)
 {
 	bool result = false;
 	
@@ -843,12 +843,12 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidateWrapper(S
 		
 	int lastActivatedIndex = INT_DEFAULT_VALUE;
 	int firstUnactivatedIndex = INT_DEFAULT_VALUE;	
-	SANIpropagateCompactGenerateOperations.identifyComponentIndexLastActivatedAndFirstUnactivatedIndex(forwardPropogationSentenceData, candidateNeuronBaseParseTree, &lastActivatedIndex, &firstUnactivatedIndex);
+	SANIpropagateCompactGenerateOperations.identifyComponentIndexLastActivatedAndFirstUnactivatedIndex(forwardPropogationSequenceData, candidateNeuronBaseParseTree, &lastActivatedIndex, &firstUnactivatedIndex);
 		
 	#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
 	bool missingStartComponentFound = false;
 	int indexOfFirstComponent;
-	if(forwardPropogationSentenceData->parseSentenceReverse)
+	if(forwardPropogationSequenceData->parseSentenceReverse)
 	{
 		indexOfFirstComponent = candidateNeuronBaseParseTree->components.size()-1;
 		SANIComponentParseTree* firstActiveComponent = candidateNeuronBaseParseTree->components[indexOfFirstComponent];
@@ -871,7 +871,7 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidateWrapper(S
 	#endif
 		bool missingEndComponentsFound = false;
 		int missingEndComponentsIndex;
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
 			if(firstUnactivatedIndex > 0)
 			{
@@ -895,7 +895,7 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidateWrapper(S
 		}
 		else
 		{
-			if(verifyAndMarkNeuronAsCandidate(forwardPropogationSentenceData, candidateNeuronBase, candidateComponent2))
+			if(verifyAndMarkNeuronAsCandidate(forwardPropogationSequenceData, candidateNeuronBase, candidateComponent2))
 			{
 				result = true;
 			}
@@ -908,7 +908,7 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidateWrapper(S
 	return result;
 }
 	
-bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidate(const SANIForwardPropogationSentenceData* forwardPropogationSentenceData, const SANIGroupNeuralNetwork* currentNeuron, SANIComponentNeuralNetwork** candidateComponent2)
+bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidate(const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const SANIGroupNeuralNetwork* currentNeuron, SANIComponentNeuralNetwork** candidateComponent2)
 {
 	bool result = false;
 	
@@ -927,7 +927,7 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidate(const SA
 		for(int j=0; j<higherLevelGroup->components.size(); j++)
 		{
 			int c;
-			if(forwardPropogationSentenceData->parseSentenceReverse)
+			if(forwardPropogationSequenceData->parseSentenceReverse)
 			{
 				c = higherLevelGroup->components.size()-1-j;
 			}
@@ -968,7 +968,7 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidate(const SA
 		}
 		if(allPriorComponentsActive && !foundPostComponent)
 		{
-			if(verifyAndMarkNeuronAsCandidate(forwardPropogationSentenceData, higherLevelGroup, candidateComponent2))
+			if(verifyAndMarkNeuronAsCandidate(forwardPropogationSequenceData, higherLevelGroup, candidateComponent2))
 			{
 				result = true;
 			}
@@ -980,7 +980,7 @@ bool SANIgenerateCompactContinuousClass::verifyAndMarkNeuronAsCandidate(const SA
 #endif
 	
 
-bool SANIgenerateCompactContinuousClass::createOrAppendFirstLevelHiddenLayerGroup(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* currentLayerNeuronGroupStart, bool* creatingNewNeuronSequence, int* neuronSequenceIndex, SANIGroupNeuralNetwork** newNeuronSequenceGroup, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons)
+bool SANIgenerateCompactContinuousClass::createOrAppendFirstLevelHiddenLayerGroup(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* currentLayerNeuronGroupStart, bool* creatingNewNeuronSequence, int* neuronSequenceIndex, SANIGroupNeuralNetwork** newNeuronSequenceGroup, vector<SANIGroupNeuralNetwork*>* listOfHighLevelNeurons)
 {
 	bool result = true;
 	#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_PRINT_GROUP_INDICES
@@ -1002,7 +1002,7 @@ bool SANIgenerateCompactContinuousClass::createOrAppendFirstLevelHiddenLayerGrou
 
 	if(*creatingNewNeuronSequence)
 	{
-		SANIgenerateCompactOperations.addComponentToFirstLevelHiddenLayerGroup(forwardPropogationSentenceData, currentLayerNeuronGroupStart, *newNeuronSequenceGroup);
+		SANIgenerateCompactOperations.addComponentToFirstLevelHiddenLayerGroup(forwardPropogationSequenceData, currentLayerNeuronGroupStart, *newNeuronSequenceGroup);
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
 		cout << "creatingNewNeuronSequence: newNeuronSequenceGroup->groupIndex = " << (*newNeuronSequenceGroup)->groupIndex << endl;
 		#endif
@@ -1011,14 +1011,14 @@ bool SANIgenerateCompactContinuousClass::createOrAppendFirstLevelHiddenLayerGrou
 	{
 		*neuronSequenceIndex = 0;
 		*creatingNewNeuronSequence = true;
-		SANIGroupNeuralNetwork* newNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSentenceData, SANIGroupTypes);
+		SANIGroupNeuralNetwork* newNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSequenceData, SANIGroupTypes);
 		#ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS_ENFORCE_DURING_FIRST_HIDDEN_LAYER_GENERATION
 		newNeuron->firstHiddenLayerNeuron = true;
 		#endif
 		#ifdef SANI_DEBUG_SEQUENCE_GRAMMAR_BASIC
 		cout << "!creatingNewNeuronSequence: newNeuron->groupIndex = " << newNeuron->groupIndex << endl;
 		#endif
-		SANIgenerateCompactOperations.addComponentToFirstLevelHiddenLayerGroup(forwardPropogationSentenceData, currentLayerNeuronGroupStart, newNeuron);
+		SANIgenerateCompactOperations.addComponentToFirstLevelHiddenLayerGroup(forwardPropogationSequenceData, currentLayerNeuronGroupStart, newNeuron);
 		listOfHighLevelNeurons->push_back(newNeuron);
 		#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS
 		//all sublayer neurons are POS inputs/strings and will not be added to listOfHighLevelNeuronsCompleteHistory
@@ -1037,7 +1037,7 @@ bool SANIgenerateCompactContinuousClass::createOrAppendFirstLevelHiddenLayerGrou
 }		
 			
 #ifdef SANI_SEQUENCE_GRAMMAR_REQUIRE_NUM_COMPONENTS_ENFORCE_DURING_FIRST_HIDDEN_LAYER_GENERATION
-bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammaticalSentenceNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSentenceData* forwardPropogationSentenceData, SANIGroupNeuralNetwork* singleComponentNeuronCandidate, SANIGroupNeuralNetwork* grammaticalSentenceNeuron)
+bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammaticalSentenceNeuron(vector<SANIGroupType*>* SANIGroupTypes, SANIForwardPropogationSequenceData* forwardPropogationSequenceData, SANIGroupNeuralNetwork* singleComponentNeuronCandidate, SANIGroupNeuralNetwork* grammaticalSentenceNeuron)
 {
 	bool directWire = false;
 	if(singleComponentNeuronCandidate->firstHiddenLayerNeuron)
@@ -1086,7 +1086,7 @@ bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammatica
 					}
 				}
 
-				SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, lowerLevelPOSgroup, grammaticalSentenceNeuron, true, false);	//fixed GIA3j5aTEMP61 
+				SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, lowerLevelPOSgroup, grammaticalSentenceNeuron, true, false);	//fixed GIA3j5aTEMP61 
 			}
 
 			SANIGroupType* groupType = SANInodes.getSequenceGrammarGroupTypeDefault(SANIGroupTypes);
@@ -1103,14 +1103,14 @@ bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammatica
 
 			#ifdef SANI_SEQUENCE_GRAMMAR_COMPONENT_GENERATE_VARIABLE_FIRST_COMPONENTS_CLEAN_PARSE_TREE_MEMORY
 			//required when SANIpropagateCompactGenerateClass::connectListOfHighLevelNeuronsToNewNeuron:directWireLowLevelPOSneuronToGrammaticalSentenceNeuron is executed before deinitialiseParseTreeGroupList
-			for(int i2=0; i2<forwardPropogationSentenceData->parseTreeGroupListPropagate.size(); i2++)
+			for(int i2=0; i2<forwardPropogationSequenceData->parseTreeGroupListPropagate.size(); i2++)
 			{
-				SANIGroupParseTree* parseTreeGroupTemp = (forwardPropogationSentenceData->parseTreeGroupListPropagate)[i2];
+				SANIGroupParseTree* parseTreeGroupTemp = (forwardPropogationSequenceData->parseTreeGroupListPropagate)[i2];
 				if(parseTreeGroupTemp == singleComponentNeuron->currentParseTreeGroupTemp)
 				{
 					//cout << "(parseTreeGroupTemp == singleComponentNeuron->currentParseTreeGroupTemp)" << endl;
 					SANInodes.deleteGroup(parseTreeGroupTemp);
-					forwardPropogationSentenceData->parseTreeGroupListPropagate.erase(forwardPropogationSentenceData->parseTreeGroupListPropagate.begin()+i2);
+					forwardPropogationSequenceData->parseTreeGroupListPropagate.erase(forwardPropogationSequenceData->parseTreeGroupListPropagate.begin()+i2);
 					i2--;
 				}
 			}
@@ -1121,7 +1121,7 @@ bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammatica
 	}
 	if(!directWire)
 	{
-		singleComponentNeuronCandidate->firstHiddenLayerNeuron = false;	//NOT REQUIRED? prevents parsing of future sentence from matching this neuron as activatedNeuronWithMaxWordIndexCoverage, and then treating it like firstHiddenLayerNeuron above
+		singleComponentNeuronCandidate->firstHiddenLayerNeuron = false;	//NOT REQUIRED? prevents parsing of future sentence from matching this neuron as activatedNeuronWithMaxSequenceIndexCoverage, and then treating it like firstHiddenLayerNeuron above
 	}
 	
 	return directWire;
@@ -1130,16 +1130,16 @@ bool SANIgenerateCompactContinuousClass::directWireLowLevelPOSneuronToGrammatica
 
 
 
-//NB indexToSplitVector = lastActivatedComponent (the last component index in the first part of component to be splitted) (do not assume normal order: "first" and "last" definitions respect (forwardPropogationSentenceData->parseSentenceReverse))
-SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponent(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector)
+//NB indexToSplitVector = lastActivatedComponent (the last component index in the first part of component to be splitted) (do not assume normal order: "first" and "last" definitions respect (forwardPropogationSequenceData->parseSentenceReverse))
+SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponent(SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector)
 {
-	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSentenceData, SANIGroupTypes);	
+	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSequenceData, SANIGroupTypes);	
 		
 	vector<SANIComponentNeuralNetwork*>* components = &(neuronToSplit->components);
 	vector<SANIComponentNeuralNetwork*> componentsPart1(components->begin(), components->begin() + indexToSplitVector+1);
         vector<SANIComponentNeuralNetwork*> componentsPart2(components->begin() + indexToSplitVector+1, components->end());
 	
-	if(forwardPropogationSentenceData->parseSentenceReverse)
+	if(forwardPropogationSequenceData->parseSentenceReverse)
 	{
 		newHiddenLayerNeuron->components = componentsPart2;
 		neuronToSplit->components = componentsPart1;
@@ -1152,17 +1152,17 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActi
 	SANInodes.updateComponentsOwnerGroupAndIndexes(newHiddenLayerNeuron, &(newHiddenLayerNeuron->components), false, NULL);
 	SANInodes.updateComponentsOwnerGroupAndIndexes(neuronToSplit, &(neuronToSplit->components), false, NULL);	
 	
-	SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, true);	//CHECKTHIS	
+	SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, newHiddenLayerNeuron, neuronToSplit, false, true);	//CHECKTHIS	
 		
 	return newHiddenLayerNeuron;
 }
 
 #ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_PARTIAL_SENTENCE_PROPAGATION
-//indexToSplitVector1 = firstActivatedComponent (unordered; always assume normal order: "first" and "last" definitions do not respect (forwardPropogationSentenceData->parseSentenceReverse))
-//indexToSplitVector2 = lastActivatedComponent (unordered; always assume normal order: "first" and "last" definitions do not respect (forwardPropogationSentenceData->parseSentenceReverse))
-SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponentUnordered(SANIForwardPropogationSentenceData* forwardPropogationSentenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector1, int indexToSplitVector2)
+//indexToSplitVector1 = firstActivatedComponent (unordered; always assume normal order: "first" and "last" definitions do not respect (forwardPropogationSequenceData->parseSentenceReverse))
+//indexToSplitVector2 = lastActivatedComponent (unordered; always assume normal order: "first" and "last" definitions do not respect (forwardPropogationSequenceData->parseSentenceReverse))
+SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActivatedComponentUnordered(SANIForwardPropogationSequenceData* forwardPropogationSequenceData, vector<SANIGroupType*>* SANIGroupTypes, SANIGroupNeuralNetwork* neuronToSplit, const int indexToSplitVector1, int indexToSplitVector2)
 {
-	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSentenceData, SANIGroupTypes);
+	SANIGroupNeuralNetwork* newHiddenLayerNeuron = SANIgenerateCompactOperations.createNewHiddenLayerGroup(forwardPropogationSequenceData, SANIGroupTypes);
 				
 	vector<SANIComponentNeuralNetwork*>* components = &(neuronToSplit->components);
 	
@@ -1182,11 +1182,11 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActi
 		SANInodes.updateComponentsOwnerGroupAndIndexes(neuronToSplit, &(neuronToSplit->components), false, NULL);	
 
 		bool insertAtStart = true;
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
 			insertAtStart = false;	//compensate for SANIgenerateCompactOperations.addComponentToGroup specification limitation
 		}
-		SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
+		SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
 	}
 	else if(indexToSplitVector2 == components->size()-1)
 	{
@@ -1204,11 +1204,11 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActi
 		SANInodes.updateComponentsOwnerGroupAndIndexes(neuronToSplit, &(neuronToSplit->components), false, NULL);	
 
 		bool insertAtStart = false;
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
 			insertAtStart = true;	//compensate for SANIgenerateCompactOperations.addComponentToGroup specification limitation
 		}
-		SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
+		SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
 	}
 	else
 	{
@@ -1229,11 +1229,11 @@ SANIGroupNeuralNetwork* SANIgenerateCompactContinuousClass::splitGroupAtLastActi
 		SANInodes.updateComponentsOwnerGroupAndIndexes(neuronToSplit, &(neuronToSplit->components), false, NULL);
 		
 		bool insertAtStart = false;
-		if(forwardPropogationSentenceData->parseSentenceReverse)
+		if(forwardPropogationSequenceData->parseSentenceReverse)
 		{
 			insertAtStart = true;	//compensate for SANIgenerateCompactOperations.addComponentToGroup specification limitation
 		}
-		SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSentenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
+		SANIgenerateCompactOperations.addComponentToGroup(forwardPropogationSequenceData, newHiddenLayerNeuron, neuronToSplit, false, insertAtStart);	//CHECKTHIS
 		
 		neuronToSplit->components.insert(neuronToSplit->components.end(), componentsPart3.begin(), componentsPart3.end());
 		SANInodes.updateComponentsOwnerGroupAndIndexes(neuronToSplit, &(neuronToSplit->components), false, NULL);
@@ -1263,7 +1263,7 @@ bool SANIgenerateCompactContinuousClass::determineListHighLevelNeuronsDirectInpu
 			{
 				//cout << "inputLayerNeuron->inputLayerNeuron" << endl;
 
-				bool refsetDelimiterPOSfound = wordHasRefsetDelimiterPOS(inputLayerNeuron);
+				bool refsetDelimiterPOSfound = sequenceElementHasRefsetDelimiterPOS(inputLayerNeuron);
 				if(refsetDelimiterPOSfound)
 				{
 					*highLevelListHasDirectInputRefSetDelimiterPOS = true;
@@ -1290,7 +1290,7 @@ bool SANIgenerateCompactContinuousClass::determineListHighLevelNeuronsDirectInpu
 		SANIGroupNeuralNetwork* inputLayerNeuron = listOfInputNeurons->at(i);
 		if(inputLayerNeuron->inputLayerNeuron)
 		{			
-			bool refsetDelimiterPOSfound = wordHasRefsetDelimiterPOS(inputLayerNeuron);
+			bool refsetDelimiterPOSfound = sequenceElementHasRefsetDelimiterPOS(inputLayerNeuron);
 			if(refsetDelimiterPOSfound)
 			{
 				*highLevelListHasDirectInputRefSetDelimiterPOS = true;
@@ -1305,14 +1305,14 @@ bool SANIgenerateCompactContinuousClass::determineListHighLevelNeuronsDirectInpu
 	return result;
 }		
 		
-bool SANIgenerateCompactContinuousClass::wordHasRefsetDelimiterPOS(SANIGroupNeuralNetwork* inputNeuron)
+bool SANIgenerateCompactContinuousClass::sequenceElementHasRefsetDelimiterPOS(SANIGroupNeuralNetwork* inputNeuron)
 {
 	bool refsetDelimiterPOSfound = false;
 	
 	for(int q=0; q<SANI_SEQUENCE_GRAMMAR_REFSET_DELIMITER_POS_NUMBER_OF_TYPES; q++)
 	{
 		#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_WORDS
-		if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(inputNeuron->wordObject->POSambiguityInfo, refsetDelimiterPOSarray[q]))
+		if(LRPpreprocessorPOStagger.getPOSambiguityInfoBit(inputNeuron->sequenceElementObject->POSambiguityInfo, refsetDelimiterPOSarray[q]))
 		#else
 		if(inputNeuron->wordPOStype == refsetDelimiterPOSarray[q])	//highLevelListHasDirectInputDelimiterPOS = SHAREDvars.intInIntArray(inputNeuron->wordPOStype, refsetDelimiterPOSarray, SANI_SEQUENCE_GRAMMAR_REFSET_DELIMITER_POS_NUMBER_OF_TYPES))
 		#endif
