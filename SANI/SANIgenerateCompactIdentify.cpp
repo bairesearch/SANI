@@ -26,7 +26,7 @@
  * File Name: SANIgenerateCompactIdentify.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q1a 25-August-2021
+ * Project Version: 1q1c 25-August-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Generate Compact Identify - identify and connect regions
  * /
@@ -170,14 +170,15 @@ bool SANIgenerateCompactIdentifyClass::identifyStartEndOfSentenceWordDetected(SA
 		}
 		else
 		{
+		#else
+		if(!SANInodes.parseTreeComponentOnFirstHiddenLayer(parseTreeComponent))
+		{
 		#endif
 			if(!identifyStartEndOfSentenceWordDetected(forwardPropogationSentenceData, parseTreeComponent->parseTreeGroupRef))
 			{
 				result = false;
 			}
-		#ifdef SANI_SEQUENCE_GRAMMAR_SUPPORT_VARIABLE_COMPONENTS_STRING
 		}
-		#endif
 	}
 	
 	return result;
