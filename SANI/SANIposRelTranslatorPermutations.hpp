@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q2a 19-September-2021
+ * Project Version: 1q2b 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -85,9 +85,11 @@ class SANIposRelTranslatorPermutationsClass
 	private: SANInodesClass SANInodes;
 	#ifdef SANI_FORWARD
 	private: SANIformationClass SANIformation;
+	#endif
 #ifdef SANI_SEQUENCE_GRAMMAR
 	private: SANIgenerateCompactClass SANIgenerateCompact;
 #else
+#ifdef SANI_FORWARD
 	#ifdef SANI_HEAVY
 	#ifdef SANI_HEAVY_UNOPTIMISED
 	private: SANIpropagateHeavyUnoptimisedClass SANIpropagateHeavyUnoptimised;
@@ -96,15 +98,15 @@ class SANIposRelTranslatorPermutationsClass
 	#endif
 	#else
 	#ifdef SANI_LIGHT_UNOPTIMISED
-	private: SANIpropagateLightUnoptimisedClass SANIpropagateLightUnoptimised;	
+	private: SANIpropagateLightUnoptimisedClass SANIpropagateLightUnoptimised; 
 	#else
-	private: SANIpropagateLightOptimisedClass SANIpropagateLightOptimised;	
+	private: SANIpropagateLightOptimisedClass SANIpropagateLightOptimised; 
 	#endif
 	#endif
-#endif
-	#else
+#else
 	private: SANIpropagateInverseClass SANIpropagateInverse;	
-	#endif
+#endif
+#endif
 	private: SANIpropagateOperationsClass SANIpropagateOperations;	//required for printComponent/printParseTreeDebugIndentation
 	/*
 	private: SANIrulesClass SANIrules;

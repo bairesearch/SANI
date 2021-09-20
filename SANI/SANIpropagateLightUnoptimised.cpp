@@ -26,7 +26,7 @@
  * File Name: SANIpropagateLightUnoptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q2a 19-September-2021
+ * Project Version: 1q2b 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Light Unoptimised - ~O(n^2)
  * /
@@ -52,9 +52,11 @@ bool SANIpropagateLightUnoptimisedClass::executePosRelTranslatorNeuralNetwork(co
 	SANIpropagateOperations.setParseSentenceReverse(true, &forwardPropogationSequenceData);
 	forwardPropogationSequenceData.toplevelGroupActivationFound = false;
 	//forwardPropogationSequenceData.performance = performance;
-	#ifdef SANI_PARSE_SIMULTANEOUS
+	/*//unsupported;
+	#ifdef SANI_PARSE_SIMULTANEOUS    
 	forwardPropogationSequenceData.parserEnabled = parserEnabled;
 	#endif
+	*/
 	forwardPropogationSequenceData.sentenceContents = sentenceContents;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
 	forwardPropogationSequenceData.isQuery = SANInodesGroupClassObject.determineIsQuery(sentenceContents);
@@ -633,7 +635,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 {
 	bool result = false;
 	
-	#ifdef SANI_LIGHT_NEW
+	#ifdef SANI_LIGHT_NEW_CODE
 	#ifdef SANI_LIGHT_MEM
 	SANIGroupNeuralNetwork* ownerGroupOrig = SANInodes.copyGroup(ownerGroup);
 	#else
@@ -706,7 +708,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 	{		
 		ownerGroup->neuronActive = true;	//not used
 		
-		#ifdef SANI_LIGHT_NEW
+		#ifdef SANI_LIGHT_NEW_CODE
 		SANIpropagateOperations.resetGroupActivation(ownerGroup);
 		#ifdef SANI_PARSE
 		//create new currentParseTreeGroupTemp for ownerGroup;
@@ -841,7 +843,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 		}
 	}
 	
-	#ifdef SANI_LIGHT_NEW
+	#ifdef SANI_LIGHT_NEW_CODE
 	#ifdef SANI_LIGHT_MEM
 	SANInodes.deleteGroup(ownerGroupOrig);
 	#endif
@@ -854,7 +856,7 @@ bool SANIpropagateLightUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 
 void SANIpropagateLightUnoptimisedClass::restoreGroupActivations(SANIGroupNeuralNetwork* ownerGroup, SANIGroupNeuralNetwork* ownerGroupOrig, SANIGroupParseTree* activationPathWordCurrentParseTreeGroupOwner, const SANIForwardPropogationSequenceElementData* forwardPropogationSequenceElementData, const SANIForwardPropogationSequenceData* forwardPropogationSequenceData, const bool restoreCurrentParseTreeGroupTemp)
 {
-	#ifdef SANI_LIGHT_NEW
+	#ifdef SANI_LIGHT_NEW_CODE
 	if(restoreCurrentParseTreeGroupTemp)
 	{
 		SANIpropagateOperationsParseTree.restoreGroupParseTreeGroupRef(ownerGroup, activationPathWordCurrentParseTreeGroupOwner);	//restore original group from memory

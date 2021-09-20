@@ -26,7 +26,7 @@
  * File Name: SANIposRelTranslatorPermutations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q2a 19-September-2021
+ * Project Version: 1q2b 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Part-of-speech Relation Translator Permutations
  * /
@@ -506,8 +506,9 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			int performanceTemp = 0;
 			bool passedTemp = false;
 			 
-			#ifdef SANI_FORWARD
+			
 			bool parserEnabled = false;
+			
 			#ifdef SANI_SEQUENCE_GRAMMAR
 			bool createNewConnections = true; 
 			#ifdef SANI_SEQUENCE_GRAMMAR_INPUT_POS_AMBIGUOUS_PERMUTATIONS_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START	//assume SANI_POS_REL_TRANSLATOR_RULES_ITERATE_OVER_UNAMBIGUOUS_POS_PERMUTATIONS_AT_START
@@ -521,7 +522,9 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			#endif
 			if(SANIgenerateCompact.testAndGeneratePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp, createNewConnections, simultaneousAmbiguousPOSpropagation))
 			#endif
+			
 			#else
+			#ifdef SANI_FORWARD
 			#ifdef SANI_HEAVY
 			#ifdef SANI_HEAVY_UNOPTIMISED
 			if(SANIpropagateHeavyUnoptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
@@ -535,9 +538,10 @@ bool SANIposRelTranslatorPermutationsClass::generateParseTreeIntroWrapper(SANItr
 			if(SANIpropagateLightOptimised.executePosRelTranslatorNeuralNetwork(translatorVariables, SANIGroupTypes, sentenceContents, &firstParseTreeGroupTemp, parseIsolatedSubreferenceSets, parserEnabled, &performanceTemp))
 			#endif
 			#endif
-			#endif
 			#else	
 			if(SANIpropagateInverse.executePosRelTranslatorNeuralNetworkInverse(SANIrulesTokenLayers, SANIGroupTypes, sentenceContents, firstParseTreeGroupTemp, &performanceTemp, parseIsolatedSubreferenceSets))
+			#endif
+			
 			#endif
 			{
 				passedTemp =  true;

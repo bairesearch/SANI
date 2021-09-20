@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyUnoptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q2a 19-September-2021
+ * Project Version: 1q2b 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Heavy Unoptimised - ~O(n^2)
  * /
@@ -53,9 +53,11 @@ bool SANIpropagateHeavyUnoptimisedClass::executePosRelTranslatorNeuralNetwork(co
 	SANIpropagateOperations.setParseSentenceReverse(true, &forwardPropogationSequenceData);
 	forwardPropogationSequenceData.toplevelGroupActivationFound = false;
 	//forwardPropogationSequenceData.performance = performance;
-	#ifdef SANI_PARSE_SIMULTANEOUS
-	//forwardPropogationSequenceData.parserEnabled = parserEnabled;
+	/*//unsupported;
+	#ifdef SANI_PARSE_SIMULTANEOUS    
+	forwardPropogationSequenceData.parserEnabled = parserEnabled;
 	#endif
+	*/
 	forwardPropogationSequenceData.sentenceContents = sentenceContents;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
 	forwardPropogationSequenceData.isQuery = SANInodesGroupClassObject.determineIsQuery(sentenceContents);
@@ -987,7 +989,7 @@ bool SANIpropagateHeavyUnoptimisedClass::propagateWordThroughNetworkGroupCompone
 		int wPrevious2 = forwardPropogationSequenceElementData->sequenceIndex - 1;
 		if(wPrevious2 >= 0)	//redundant
 		{
-			if(previousActiveComponent->neuronComponentConnectionActiveSequenceElementRecord == (*(forwardPropogationSequenceData->sentenceContents))[wPrevious2])
+			if(previousActiveComponent->neuronComponentConnectionActiveSequenceElementRecord->wordReference == (*(forwardPropogationSequenceData->sentenceContents))[wPrevious2])
 			{
 				forwardPropogationSignalData->foundPreviousActiveWord = true;
 				#ifdef SANI_DEBUG_PROPAGATE_EXTRA5

@@ -26,7 +26,7 @@
  * File Name: SANIpropagateHeavyOptimised.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q2a 19-September-2021
+ * Project Version: 1q2b 19-September-2021
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Heavy Optimised - ~O(nlogn)
  * /
@@ -54,9 +54,11 @@ bool SANIpropagateHeavyOptimisedClass::executePosRelTranslatorNeuralNetwork(cons
 	SANIpropagateOperations.setParseSentenceReverse(true, &forwardPropogationSequenceData);
 	forwardPropogationSequenceData.toplevelGroupActivationFound = false;
 	//forwardPropogationSequenceData.performance = performance;
-	#ifdef SANI_PARSE_SIMULTANEOUS
-	//forwardPropogationSequenceData.parserEnabled = parserEnabled;
+	/*//unsupported;
+	#ifdef SANI_PARSE_SIMULTANEOUS    
+	forwardPropogationSequenceData.parserEnabled = parserEnabled;
 	#endif
+	*/
 	forwardPropogationSequenceData.sentenceContents = sentenceContents;
 	#ifdef GIA_POS_REL_TRANSLATOR_RULES_CODE_QUERIES
 	forwardPropogationSequenceData.isQuery = SANInodesGroupClassObject.determineIsQuery(sentenceContents);
@@ -786,7 +788,7 @@ bool SANIpropagateHeavyOptimisedClass::connectToPreviousActivationGroup(const SA
 								//FUTURE: ideally this should be done (set correctly originally) in SANIpropagateHeavyOptimisedClass::propagateWordThroughNetworkGroupComponent:
 								SANIGroupActivationMemory* newGroup = forwardPropogationSequenceData->activationPathSequenceElementFirstActivationMemoryGroupArray[forwardPropogationSequenceElementData->sequenceIndex].back();	//forwardPropogationSequenceData->forwardPropogationActivationPointData->activationPathW
 								newGroup->numberSequenceElementsInSet = activationPathSequenceElementFirstActivationMemoryGroup->numberSequenceElementsInSet + activationPathSequenceElementFirstActivationMemoryGroupNext->numberSequenceElementsInSet;	//CHECKTHIS
-								newGroup->forwardPropogationSequenceElementData.w = forwardPropogationSequenceElementData->sequenceIndex;
+								newGroup->forwardPropogationSequenceElementData.sequenceIndex = forwardPropogationSequenceElementData->sequenceIndex;
 								
 								#ifdef SANI_DEBUG_PROPAGATE_EXTRA6
 								cout << "\tnewGroup: " <<  newGroup->groupTypeName << ":" << newGroup->groupName << endl;	
@@ -1126,7 +1128,7 @@ bool SANIpropagateHeavyOptimisedClass::propagateWordThroughNetworkGroupComponent
 	SANIComponentParseTree* newParseComponent = SANInodes.convertNeuralNetworkComponentToParseTreeComponentNew(currentComponent);	//new SANIComponentParseTree(*SANIpropagateOperations.convertNeuralNetworkComponentToParseTreeComponent(currentComponent));	//copy rules component
 	newParseComponent->componentRef = currentComponent;	
 	newParseComponent->neuronComponentConnectionActive = true;
-	newParseComponent->neuronComponentConnectionActiveSequenceElementRecord = forwardPropogationSequenceElementData->wordReference;
+	newParseComponent->neuronComponentConnectionActiveSequenceElementRecord = forwardPropogationSequenceElementData;
 	newParseComponent->parseTreeGroupRef = activationPathSequenceElementCurrentParseTreeGroup;
 	if(newParseComponent->groupRefName == "")
 	{
