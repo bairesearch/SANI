@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: SANIpropagateCompactReferenceSets.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2021 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2022 Baxter AI (baxterai.com)
  * Project: Sequentially Activated Neuronal Input neural network
- * Project Version: 1q2b 19-September-2021
+ * Project Version: 1r1a 05-June-2022
  * Requirements: requires text parsed by BAI Language Reduction Preprocessor (LRP)
  * Description: Propagate Compact Reference Sets - ~O(n)
  * /
